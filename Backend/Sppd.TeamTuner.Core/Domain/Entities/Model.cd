@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.BaseEntity">
+    <Position X="8.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAgAACCAAAAAAEAAAAAAAEAAAAAAQAAAAQEAAAA=</HashCode>
+      <FileName>Domain\Entities\BaseEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.Card">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACBAAAQAAAAAAQAAAAgQAIgAQAQAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Card.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.CardLevel">
+    <Position X="2.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABBAAAAAAAAAAAAAAAAAAgAAAAAAAABAAAAAAgAAAA=</HashCode>
+      <FileName>Domain\Entities\CardLevel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.CardType">
+    <Position X="14" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\CardType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.DescriptiveEntity">
+    <Position X="7.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\DescriptiveEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.Federation">
+    <Position X="7.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACiAAAAAIAAAAAAAAAEAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Federation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.NamedEntity">
+    <Position X="10.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\NamedEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.Rarity">
+    <Position X="16.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Rarity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.Team">
+    <Position X="5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAICAAAAAIAAAAAAAAAEAAAAAAAIAAAAAEAAAAQAA=</HashCode>
+      <FileName>Domain\Entities\Team.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUser">
+    <Position X="9.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EACAIAAQACCACAAIAAAAAAADAAAAAAAAGAAAAAAAQAA=</HashCode>
+      <FileName>Domain\Entities\TeamTunerUser.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Sppd.TeamTuner.Core.Domain.Entities.Theme">
+    <Position X="11.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Theme.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
