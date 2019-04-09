@@ -36,12 +36,12 @@ namespace Sppd.TeamTuner.Core.Services
         ///     Updates the entity and commits changes.
         /// </summary>
         /// <param name="entity">The entity to update.</param>
-        /// <param name="propertiesToUpdate">
+        /// <param name="propertyNames">
         ///     The properties to update. If null is being specified all properties which are not part
         ///     of <see cref="BaseEntity" /> will be updated.
         /// </param>
         /// <returns>The updated entity</returns>
-        Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertiesToUpdate);
+        Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames);
 
         /// <summary>
         ///     Deletes the entity and commits changes.

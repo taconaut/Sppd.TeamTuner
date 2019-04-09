@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain.Entities;
-using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
+using Sppd.TeamTuner.Core.Utils.Extensions;
 
 namespace Sppd.TeamTuner.Infrastructure.Services
 {
@@ -56,56 +54,13 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             await UnitOfWork.CommitAsync();
         }
 
-        public virtual async Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertiesToUpdate)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames)
         {
             var storedEntity = await Repository.GetAsync(entity.Id);
-            MapProperties(storedEntity, entity, propertiesToUpdate);
+            storedEntity.MapProperties(entity, propertyNames);
             Repository.Update(storedEntity);
             await UnitOfWork.CommitAsync();
             return storedEntity;
-        }
-
-        /// <summary>
-        ///     Maps the properties from <see cref="entitySource" /> to <see cref="entityDest" />. If
-        ///     <see cref="propertyNamesToUpdate" /> has been specified, only those properties will be updated; if it hasn't been
-        ///     specified, all public properties, except the ones from <see cref="BaseEntity" /> will be mapped.
-        /// </summary>
-        /// <param name="entityDest">The destination entity.</param>
-        /// <param name="entitySource">The source entity.</param>
-        /// <param name="propertyNamesToUpdate">The property names to update.</param>
-        /// <exception cref="BusinessException">
-        ///     Thrown if a property specified in <see cref="propertyNamesToUpdate" /> could not be
-        ///     found for <see cref="TEntity" />
-        /// </exception>
-        private static void MapProperties(TEntity entityDest, TEntity entitySource, IEnumerable<string> propertyNamesToUpdate)
-        {
-            var baseEntityProperties = typeof(BaseEntity).GetProperties();
-            var entityProperties = typeof(TEntity).GetProperties();
-
-            var propertiesToUpdate = entityProperties.Where(pt => !baseEntityProperties.Any(pb => AreEqual(pb, pt)));
-
-            if (propertyNamesToUpdate != null)
-            {
-                var toUpdateNames = propertyNamesToUpdate.ToList();
-                var unknownPropertyNames = toUpdateNames.Where(pn => !propertiesToUpdate.Select(p => p.Name).Contains(pn)).ToList();
-                if (unknownPropertyNames.Any())
-                {
-                    throw new BusinessException($"Unknown property names: {string.Join(", ", unknownPropertyNames)}");
-                }
-
-                propertiesToUpdate = propertiesToUpdate.Where(p => toUpdateNames.Contains(p.Name));
-            }
-
-            foreach (var propertyInfo in propertiesToUpdate)
-            {
-                var newValue = propertyInfo.GetValue(entitySource);
-                propertyInfo.SetValue(entityDest, newValue);
-            }
-        }
-
-        private static bool AreEqual(MemberInfo p1, MemberInfo p2)
-        {
-            return p1.MetadataToken == p2.MetadataToken && p1.Module.Equals(p2.Module);
         }
     }
 }
