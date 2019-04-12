@@ -24,22 +24,17 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
         /// </summary>
         protected TeamTunerContext Context { get; }
 
-        /// <summary>
-        ///     Override in derived types to specify global includes.
-        /// </summary>
-        public virtual Func<IQueryable<TEntity>, IQueryable<TEntity>> Includes { get; } = null;
-
         public Repository(TeamTunerContext context)
         {
             Context = context;
         }
 
-        public async Task<TEntity> GetAsync(Guid entityId)
+        public async Task<TEntity> GetAsync(Guid entityId, IEnumerable<string> includeProperties = null)
         {
             TEntity entity;
             try
             {
-                entity = await GetQueryWithIncludes().SingleAsync(e => e.Id == entityId);
+                entity = await GetQueryableWithIncludes(includeProperties).SingleAsync(e => e.Id == entityId);
             }
             catch (InvalidOperationException)
             {
@@ -49,9 +44,9 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
             return entity;
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync(IEnumerable<string> includeProperties = null)
         {
-            return await GetQueryWithIncludes().ToListAsync();
+            return await GetQueryableWithIncludes(includeProperties).ToListAsync();
         }
 
         public void Add(TEntity entity)
@@ -68,14 +63,23 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
         {
             var entityToDelete = await GetAsync(entityId);
             entityToDelete.IsDeleted = true;
-            Set.Update(entityToDelete);
         }
 
-        protected IQueryable<TEntity> GetQueryWithIncludes()
+        protected IQueryable<TEntity> GetQueryableWithIncludes(IEnumerable<string> includeProperties = null)
         {
-            return Includes == null
-                ? Set
-                : Includes(Set);
+            IQueryable<TEntity> queryable = Set;
+
+            if (includeProperties == null)
+            {
+                return queryable;
+            }
+
+            foreach (var propertyName in includeProperties)
+            {
+                queryable = queryable.Include(propertyName);
+            }
+
+            return queryable;
         }
     }
 }

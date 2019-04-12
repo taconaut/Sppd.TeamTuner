@@ -12,8 +12,6 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
 {
     internal class TeamRepository : Repository<Team>, ITeamRepository
     {
-        public override Func<IQueryable<Team>, IQueryable<Team>> Includes => teams => teams.Include(team => team.Users);
-
         public TeamRepository(TeamTunerContext context)
             : base(context)
         {
@@ -21,7 +19,9 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
 
         public async Task<IEnumerable<Team>> GetAllAsync(Guid federationId)
         {
-            return await GetQueryWithIncludes().Where(team => team.FederationId == federationId).ToListAsync();
+            return await GetQueryableWithIncludes()
+                         .Where(team => team.FederationId == federationId)
+                         .ToListAsync();
         }
     }
 }

@@ -7,40 +7,41 @@ using Sppd.TeamTuner.Core.Exceptions;
 
 namespace Sppd.TeamTuner.Core.Utils.Extensions
 {
+    /// <summary>
+    ///     Extension methods for entities
+    /// </summary>
     public static class EntityExtensions
     {
         /// <summary>
         ///     Maps the properties from <see cref="entitySource" /> to <see cref="entityDest" />. If
         ///     <see cref="propertyNames" /> has been specified, only those properties will be updated; if it hasn't been
-        ///     specified, all public properties, except the ones from <see cref="BaseEntity" /> will be mapped.
+        ///     specified, all public properties will be mapped.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="entityDest">The destination entity.</param>
         /// <param name="entitySource">The source entity.</param>
         /// <param name="propertyNames">The property names to update.</param>
-        /// <param name="includeBaseEntityProperties">if set to <c>true</c> [include base entity properties].</param>
+        /// <param name="includeBaseEntityProperties">
+        ///     if set to <c>true</c>, properties of <see cref="BaseEntity" /> will also be
+        ///     mapped.
+        /// </param>
         /// <exception cref="BusinessException">
-        ///     Unknown property names: {string.Join(", ",
-        ///     unknownPropertyNames)}
-        /// </exception>
-        /// <exception cref="BusinessException">
-        ///     Thrown if a property specified in <see cref="propertyNames" /> could not be
-        ///     found for <see cref="TEntity" />
+        ///     Thrown if a property specified in <see cref="propertyNames" /> could not be found for <see cref="TEntity" />
         /// </exception>
         public static void MapProperties<TEntity>(this TEntity entityDest, TEntity entitySource, IEnumerable<string> propertyNames = null, bool includeBaseEntityProperties = false)
             where TEntity : BaseEntity
         {
             var entityProperties = GetEntityProperties<TEntity>(includeBaseEntityProperties);
-            var filteredEntityProperties = GetFilteredEntityProperties(entityProperties, propertyNames);
+            var entityPropertiesToUpdate = GetEntityPropertiesToUpdate(entityProperties, propertyNames);
 
-            foreach (var propertyInfo in filteredEntityProperties)
+            foreach (var propertyInfo in entityPropertiesToUpdate)
             {
                 var newValue = propertyInfo.GetValue(entitySource);
                 propertyInfo.SetValue(entityDest, newValue);
             }
         }
 
-        private static IEnumerable<PropertyInfo> GetFilteredEntityProperties(IEnumerable<PropertyInfo> entityProperties, IEnumerable<string> propertyNamesToUpdate)
+        private static IEnumerable<PropertyInfo> GetEntityPropertiesToUpdate(IEnumerable<PropertyInfo> entityProperties, IEnumerable<string> propertyNamesToUpdate)
         {
             if (propertyNamesToUpdate == null)
             {
@@ -62,7 +63,9 @@ namespace Sppd.TeamTuner.Core.Utils.Extensions
             var baseEntityProperties = typeof(BaseEntity).GetProperties();
             var entityProperties = typeof(TEntity).GetProperties();
 
-            return includeBaseEntityProperties ? entityProperties : entityProperties.Where(pt => !baseEntityProperties.Any(pb => AreEqual(pb, pt)));
+            return includeBaseEntityProperties
+                ? entityProperties
+                : entityProperties.Where(pt => !baseEntityProperties.Any(pb => AreEqual(pb, pt)));
         }
 
         private static bool AreEqual(MemberInfo p1, MemberInfo p2)

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Moq;
 
@@ -19,7 +20,8 @@ namespace Sppd.TeamTuner.Tests.Unit
 
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var teamTunerRepositoryMock = new Mock<ITeamTunerUserRepository>();
-            teamTunerRepositoryMock.Setup(r => r.GetAsync(_testUser.Id)).ReturnsAsync(_testUser);
+            teamTunerRepositoryMock.Setup(r => r.GetAsync(_testUser.Id, It.IsAny<IEnumerable<string>>()))
+                                   .ReturnsAsync(_testUser);
 
             _userService = new TeamTunerUserService(teamTunerRepositoryMock.Object, unitOfWorkMock.Object);
         }

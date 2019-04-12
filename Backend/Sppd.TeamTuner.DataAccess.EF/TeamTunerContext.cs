@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,6 +11,9 @@ using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Domain.Interfaces;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
+
+// Allows testing elements marked as internal in the specified namespace
+[assembly: InternalsVisibleTo("Sppd.TeamTuner.Tests.Integration.Common")]
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 {
