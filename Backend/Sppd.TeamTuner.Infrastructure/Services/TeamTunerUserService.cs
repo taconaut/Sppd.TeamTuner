@@ -11,6 +11,8 @@ using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
 
+using ArgumentException = Sppd.TeamTuner.Core.Exceptions.ArgumentException;
+
 namespace Sppd.TeamTuner.Infrastructure.Services
 {
     public class TeamTunerUserService : ServiceBase<TeamTunerUser>, ITeamTunerUserService
@@ -93,7 +95,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         {
             if (password == null)
             {
-                throw new ArgumentNullException(nameof(password));
+                throw new ArgumentException("Value is NULL", nameof(password));
             }
 
             if (string.IsNullOrWhiteSpace(password))
@@ -112,7 +114,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         {
             if (password == null)
             {
-                throw new ArgumentNullException(nameof(password));
+                throw new ArgumentException("Value is NULL", nameof(password));
             }
 
             if (string.IsNullOrWhiteSpace(password))

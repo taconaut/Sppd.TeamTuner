@@ -8,8 +8,13 @@ using Newtonsoft.Json;
 
 using Sppd.TeamTuner.Core.Exceptions;
 
+using ArgumentException = Sppd.TeamTuner.Core.Exceptions.ArgumentException;
+
 namespace Sppd.TeamTuner.Middlewares
 {
+    /// <summary>
+    ///     Handles all uncaught exceptions and returns an error response.
+    /// </summary>
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
@@ -46,6 +51,11 @@ namespace Sppd.TeamTuner.Middlewares
                 case SecurityException _:
                     code = HttpStatusCode.Forbidden;
                     message = $"Not authorized: {ex.Message}";
+                    break;
+
+                case ArgumentException e:
+                    code = HttpStatusCode.InternalServerError;
+                    message = $"Invalid argument for parameter {e.ParameterName}: {ex.Message}";
                     break;
 
                 case BusinessException _:
