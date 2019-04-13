@@ -58,6 +58,11 @@ namespace Sppd.TeamTuner.Middlewares
                     message = $"Invalid argument for parameter {e.ParameterName}: {ex.Message}";
                     break;
 
+                case ConcurrentUpdateException _:
+                    code = HttpStatusCode.Conflict;
+                    message = "The entity cannot be saved because it has been modified since you last retrieved it";
+                    break;
+
                 case BusinessException _:
                     code = HttpStatusCode.BadRequest;
                     message = $"A business error has occured: {ex.Message}";

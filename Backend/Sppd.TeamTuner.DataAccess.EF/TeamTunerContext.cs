@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Domain.Interfaces;
+using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
@@ -38,26 +39,24 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 
         public override int SaveChanges()
         {
-            PrepareSaveChanges();
-            return base.SaveChanges();
+            throw new NotSupportedException("Use SaveChangesAsync");
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            PrepareSaveChanges();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
+            throw new NotSupportedException("Use SaveChangesAsync");
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             PrepareSaveChanges();
-            return await base.SaveChangesAsync(cancellationToken);
+            return await ExecuteAndHandleExceptions(base.SaveChangesAsync(cancellationToken));
         }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             PrepareSaveChanges();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            return await ExecuteAndHandleExceptions(base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken));
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -73,6 +72,20 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             builder.Entity<TeamTunerUser>(ConfigureTeamTunerUser);
             builder.Entity<Team>(ConfigureTeam);
             builder.Entity<Federation>(ConfigureFederation);
+        }
+
+        private static async Task<TResult> ExecuteAndHandleExceptions<TResult>(Task<TResult> task)
+        {
+            try
+            {
+                await task;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new ConcurrentUpdateException("The entity has been modified since you last retrieved it");
+            }
+
+            return task.Result;
         }
 
         private void PrepareSaveChanges()

@@ -66,7 +66,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Extensions
                     Task.WaitAll(seedTasks.ToArray());
 
                     // The changes are usually being saved by a unit of work. Here, while starting the application, we will do it on the context itself.
-                    context.SaveChanges();
+                    context.SaveChangesAsync().Wait();
                 }
             }
 

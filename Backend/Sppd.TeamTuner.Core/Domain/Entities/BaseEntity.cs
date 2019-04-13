@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 using Sppd.TeamTuner.Core.Domain.Interfaces;
 using Sppd.TeamTuner.Core.Domain.Validation;
@@ -52,6 +53,13 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
         ///     Specifies by whom the entity instance has been deleted.
         /// </summary>
         public Guid? DeletedById { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the version of the entity.
+        ///     Used for optimistic locking.
+        /// </summary>
+        [Timestamp]
+        public byte[] Version { get; set; }
 
         protected BaseEntity()
         {

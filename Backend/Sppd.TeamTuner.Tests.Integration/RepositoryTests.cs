@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Shared;
 
@@ -122,6 +123,114 @@ namespace Sppd.TeamTuner.Tests.Integration
 
             // Assert
             Assert.NotNull(exception);
+        }
+
+        /// <summary>
+        /// Tests that an update fails if the <see cref="BaseEntity.Version"/> has been modified.
+        /// </summary>
+        [Fact]
+        public async Task CannotUpdateWithDifferentVersionTest()
+        {
+            // Arrange
+            var user = new TeamTunerUser
+                       {
+                           Email = "a3@b.c",
+                           Description = "Description3",
+                           Name = "Name3",
+                           SppdName = "SppdName3",
+                           PasswordHash = Encoding.UTF8.GetBytes("A"),
+                           PasswordSalt = Encoding.UTF8.GetBytes("A"),
+                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                       };
+            var updatedEmail = "tutu@tata.com";
+            // Act
+
+            // Create user
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Add(user);
+                await unitOfWork.CommitAsync();
+            }
+
+            // Update properties
+            user.Email = updatedEmail;
+            user.Version[0]++;
+
+            // Update user
+            ConcurrentUpdateException exception = null;
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Update(user);
+                try
+                {
+                    await unitOfWork.CommitAsync();
+                }
+                catch (ConcurrentUpdateException ex)
+                {
+                    exception = ex;
+                }
+            }
+
+            // Assert
+            Assert.NotNull(exception);
+        }
+
+        /// <summary>
+        /// Tests that an update fails if the <see cref="BaseEntity.Version"/> has been modified.
+        /// </summary>
+        [Fact]
+        public async Task CanUpdateWithSameVersionTest()
+        {
+            // Arrange
+            var user = new TeamTunerUser
+                       {
+                           Email = "a3@b.c",
+                           Description = "Description3",
+                           Name = "Name3",
+                           SppdName = "SppdName3",
+                           PasswordHash = Encoding.UTF8.GetBytes("A"),
+                           PasswordSalt = Encoding.UTF8.GetBytes("A"),
+                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                       };
+            var updatedEmail = "tutu@tata.com";
+            // Act
+
+            // Create user
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Add(user);
+                await unitOfWork.CommitAsync();
+            }
+
+            var initialVersion = user.Version;
+
+            // Update user
+            user.Email = updatedEmail;
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Update(user);
+                await unitOfWork.CommitAsync();
+            }
+
+            var updatedVersion = user.Version;
+
+            // Assert
+            Assert.Equal(user.Email, updatedEmail);
+            Assert.NotNull(initialVersion);
+            Assert.NotNull(updatedVersion);
+            Assert.NotEqual(initialVersion, updatedVersion);
         }
 
         /// <summary>

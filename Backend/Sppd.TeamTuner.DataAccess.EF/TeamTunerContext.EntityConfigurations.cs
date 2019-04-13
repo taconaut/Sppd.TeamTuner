@@ -15,10 +15,6 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
         private static void ConfigureBaseEntity<TEntity>(EntityTypeBuilder<TEntity> builder)
             where TEntity : BaseEntity
         {
-            builder.Property(e => e.ModifiedOnUtc)
-                   // TODO: check if IsConcurrencyToken works; it seems not to.
-                   .IsConcurrencyToken();
-
             // Do not load soft deleted entities
             builder.HasQueryFilter(m => Microsoft.EntityFrameworkCore.EF.Property<bool>(m, DataAccessConstants.IS_DELETED_PROPERTY_NAME) == false);
         }
