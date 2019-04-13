@@ -12,10 +12,12 @@ namespace Sppd.TeamTuner.Core.Utils.Extensions
     /// </summary>
     public static class EntityExtensions
     {
+        private static readonly PropertyInfo s_versionPropertyInfo = typeof(BaseEntity).GetProperty(nameof(BaseEntity.Version));
+
         /// <summary>
         ///     Maps the properties from <see cref="entitySource" /> to <see cref="entityDest" />. If
-        ///     <see cref="propertyNames" /> has been specified, only those properties will be updated; if it hasn't been
-        ///     specified, all public properties will be mapped.
+        ///     <see cref="propertyNames" /> has been specified, only those properties will be updated; if it hasn't, all public
+        ///     properties will be mapped.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="entityDest">The destination entity.</param>
@@ -43,29 +45,42 @@ namespace Sppd.TeamTuner.Core.Utils.Extensions
 
         private static IEnumerable<PropertyInfo> GetEntityPropertiesToUpdate(IEnumerable<PropertyInfo> entityProperties, IEnumerable<string> propertyNamesToUpdate)
         {
-            if (propertyNamesToUpdate == null)
+            var propertyNames = propertyNamesToUpdate?.ToList();
+            if (propertyNames == null || !propertyNames.Any())
             {
                 return entityProperties;
             }
 
-            var toUpdateNames = propertyNamesToUpdate.ToList();
-            var unknownPropertyNames = toUpdateNames.Where(pn => !entityProperties.Select(p => p.Name).Contains(pn)).ToList();
+            // Always map Version
+            propertyNames.Add(nameof(BaseEntity.Version));
+
+            // Throw if an unknown property is found
+            var unknownPropertyNames = propertyNames.Where(pn => !entityProperties.Select(p => p.Name).Contains(pn)).ToList();
             if (unknownPropertyNames.Any())
             {
                 throw new BusinessException($"Unknown property names: {string.Join(", ", unknownPropertyNames)}");
             }
 
-            return entityProperties.Where(p => toUpdateNames.Contains(p.Name));
+            return entityProperties.Where(p => propertyNames.Contains(p.Name));
         }
 
         private static IEnumerable<PropertyInfo> GetEntityProperties<TEntity>(bool includeBaseEntityProperties)
         {
-            var baseEntityProperties = typeof(BaseEntity).GetProperties();
             var entityProperties = typeof(TEntity).GetProperties();
 
             return includeBaseEntityProperties
                 ? entityProperties
-                : entityProperties.Where(pt => !baseEntityProperties.Any(pb => AreEqual(pb, pt)));
+                : entityProperties.Where(p => IsBaseEntityProperty(typeof(BaseEntity).GetProperties(), p) || MustInclude(p));
+        }
+
+        private static bool MustInclude(MemberInfo propertyInfo)
+        {
+            return AreEqual(propertyInfo, s_versionPropertyInfo);
+        }
+
+        private static bool IsBaseEntityProperty(IEnumerable<PropertyInfo> baseEntityProperties, MemberInfo pt)
+        {
+            return !baseEntityProperties.Any(pb => AreEqual(pb, pt));
         }
 
         private static bool AreEqual(MemberInfo p1, MemberInfo p2)

@@ -1,4 +1,4 @@
-﻿using Sppd.TeamTuner.Core.Domain.Entities;
+﻿using Sppd.TeamTuner.Core.Domain.Interfaces;
 
 namespace Sppd.TeamTuner.Authorization
 {
@@ -12,6 +12,6 @@ namespace Sppd.TeamTuner.Authorization
         /// </summary>
         /// <param name="user">The user for whom to create the token.</param>
         /// <returns>Token serialized as string.</returns>
-        string GetToken(TeamTunerUser user);
+        string GetToken(ITeamTunerUser user);
     }
 }

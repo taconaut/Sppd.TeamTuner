@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sppd.TeamTuner.DTOs
 {
-    public class UserUpdateDto
+    public class UserUpdateRequestDto : IVersionedDto
     {
         public Guid Id { get; set; }
 
@@ -18,5 +18,7 @@ namespace Sppd.TeamTuner.DTOs
         public string Description { get; set; }
 
         public IEnumerable<string> PropertiesToUpdate { get; set; }
+
+        public string Version { get; set; }
     }
 }

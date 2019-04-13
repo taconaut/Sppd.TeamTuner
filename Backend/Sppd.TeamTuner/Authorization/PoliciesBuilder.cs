@@ -3,6 +3,8 @@ using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
 
+using Sppd.TeamTuner.Core;
+
 namespace Sppd.TeamTuner.Authorization
 {
     internal static class PoliciesBuilder
@@ -14,11 +16,7 @@ namespace Sppd.TeamTuner.Authorization
         public static void AddPolicies(this AuthorizationOptions options)
         {
             options.AddPolicy(AuthorizationConstants.Policies.IS_ADMIN,
-                policy => policy.RequireAssertion(ctx =>
-                {
-                    var federationId = ctx.Resource as Guid?;
-                    return IsAdmin(ctx.User);
-                }));
+                policy => policy.RequireAssertion(ctx => IsAdmin(ctx.User)));
 
             options.AddPolicy(AuthorizationConstants.Policies.IS_OWNER,
                 policy => policy.RequireAssertion(ctx =>
@@ -49,7 +47,7 @@ namespace Sppd.TeamTuner.Authorization
 
         private static bool IsAdmin(ClaimsPrincipal user)
         {
-            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.USER_ID) && Equals(claim.Value, Core.CoreConstants.Auth.Roles.ADMIN));
+            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.USER_ID) && Equals(claim.Value, CoreConstants.Auth.Roles.ADMIN));
         }
 
         private static bool IsInTeam(ClaimsPrincipal user, Guid? teamId)

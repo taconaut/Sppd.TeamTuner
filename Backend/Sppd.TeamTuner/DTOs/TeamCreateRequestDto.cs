@@ -1,6 +1,6 @@
 ﻿namespace Sppd.TeamTuner.DTOs
 {
-    public class TeamCreateDto
+    public class TeamCreateRequestDto
     {
         public string Name { get; set; }
     }

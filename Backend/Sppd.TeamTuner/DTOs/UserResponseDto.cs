@@ -2,7 +2,7 @@
 
 namespace Sppd.TeamTuner.DTOs
 {
-    public class UserDto : DescriptiveDto
+    public class UserResponseDto : DescriptiveDto
     {
         public string SppdName { get; set; }
 

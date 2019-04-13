@@ -60,21 +60,21 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
         public async Task UsersController_CreateAuthenticateUpdateDeleteUserAsOwner_IsAuthorized()
         {
             // Arrange
-            var initialUserDto = new UserCreateDto
+            var initialUserDto = new UserCreateRequestDto
                                  {
                                      Name = "Mr. Slave",
                                      SppdName = "Garrison's bitch",
                                      Email = "slave@nukem.tom",
                                      PasswordMd5 = "SuperSecret".Md5Hash()
                                  };
-            var updateUserDto = new UserUpdateDto
+            var updateUserDto = new UserUpdateRequestDto
                                 {
                                     Name = "UnusedUsername",
                                     SppdName = "UnusedSppdName",
                                     Email = "garrisonsbitch@nukem.tom",
-                                    PropertiesToUpdate = new List<string> {nameof(UserUpdateDto.Email)}
+                                    PropertiesToUpdate = new List<string> {nameof(UserUpdateRequestDto.Email)}
                                 };
-            var loginDto = new UserLoginDto {Name = initialUserDto.Name, PasswordMd5 = initialUserDto.PasswordMd5};
+            var loginDto = new UserLoginRequestDto {Name = initialUserDto.Name, PasswordMd5 = initialUserDto.PasswordMd5};
 
             // userId and token will be set according to API method responses
             Guid userId;
@@ -84,12 +84,12 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
 
             // Register
             var registerResponse = await Client.PostAsync(s_registerRoute, GetStringContent(initialUserDto));
-            var registeredUserDto = JsonConvert.DeserializeObject<UserDto>(await registerResponse.Content.ReadAsStringAsync());
+            var registeredUserDto = JsonConvert.DeserializeObject<UserResponseDto>(await registerResponse.Content.ReadAsStringAsync());
             userId = registeredUserDto.Id;
 
             // Authenticate
             var loginResponse = await Client.PostAsync(s_loginRoute, GetStringContent(loginDto));
-            var authenticatedUserDto = JsonConvert.DeserializeObject<UserAuthenticateDto>(await loginResponse.Content.ReadAsStringAsync());
+            var authenticatedUserDto = JsonConvert.DeserializeObject<UserLoginResponseDto>(await loginResponse.Content.ReadAsStringAsync());
             token = authenticatedUserDto.Token;
 
             // Wait a bit to see the ModifiedOnUtc date chance
@@ -104,15 +104,14 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             HttpResponseMessage getDeletedUserResponse;
 
             var previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
-            UserDto updatedUserDto;
-
+            UserResponseDto updateUserResponseDto;
             try
             {
                 Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 updateResponse = await Client.PutAsync(s_updateRoute, GetStringContent(updateUserDto));
                 getUpdatedUserResponse = await Client.GetAsync(s_getByIdRoute.Replace(s_userIdPlaceholder, userId.ToString()));
-                updatedUserDto = JsonConvert.DeserializeObject<UserDto>(await getUpdatedUserResponse.Content.ReadAsStringAsync());
+                updateUserResponseDto = JsonConvert.DeserializeObject<UserResponseDto>(await getUpdatedUserResponse.Content.ReadAsStringAsync());
                 deleteResponse = await Client.DeleteAsync(s_deleteRoute.Replace(s_userIdPlaceholder, userId.ToString()));
                 getDeletedUserResponse = await Client.GetAsync(s_getByIdRoute.Replace(s_userIdPlaceholder, userId.ToString()));
             }
@@ -133,14 +132,14 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             Assert.Equal(HttpStatusCode.Forbidden, getDeletedUserResponse.StatusCode);
 
             // User has been correctly updated
-            Assert.Equal(updatedUserDto.Name, initialUserDto.Name);
-            Assert.Equal(updatedUserDto.SppdName, initialUserDto.SppdName);
-            Assert.Equal(updatedUserDto.Email, updateUserDto.Email);
-            Assert.Equal(updatedUserDto.Name, initialUserDto.Name);
-            Assert.Equal(updatedUserDto.SppdName, initialUserDto.SppdName);
-            Assert.Equal(updatedUserDto.Email, updateUserDto.Email);
-            Assert.True(updatedUserDto.ModifiedOnUtc > authenticatedUserDto.ModifiedOnUtc);
-            Assert.Equal(updatedUserDto.CreatedOnUtc, authenticatedUserDto.CreatedOnUtc);
+            Assert.Equal(updateUserResponseDto.Name, initialUserDto.Name);
+            Assert.Equal(updateUserResponseDto.SppdName, initialUserDto.SppdName);
+            Assert.Equal(updateUserResponseDto.Email, updateUserDto.Email);
+            Assert.Equal(updateUserResponseDto.Name, initialUserDto.Name);
+            Assert.Equal(updateUserResponseDto.SppdName, initialUserDto.SppdName);
+            Assert.Equal(updateUserResponseDto.Email, updateUserDto.Email);
+            Assert.True(updateUserResponseDto.ModifiedOnUtc > authenticatedUserDto.ModifiedOnUtc);
+            Assert.Equal(updateUserResponseDto.CreatedOnUtc, authenticatedUserDto.CreatedOnUtc);
         }
     }
 }

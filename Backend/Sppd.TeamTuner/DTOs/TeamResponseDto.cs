@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sppd.TeamTuner.DTOs
 {
-    internal class TeamDto : DescriptiveDto
+    internal class TeamResponseDto : DescriptiveDto
     {
         public Guid? FederationId { get; set; }
 

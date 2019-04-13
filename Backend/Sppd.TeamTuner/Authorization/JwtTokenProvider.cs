@@ -7,7 +7,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 using Sppd.TeamTuner.Core.Config;
-using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Interfaces;
 
 namespace Sppd.TeamTuner.Authorization
 {
@@ -20,7 +20,7 @@ namespace Sppd.TeamTuner.Authorization
             _authConfig = new Lazy<AuthConfig>(() => authConfigProvider.Config);
         }
 
-        public string GetToken(TeamTunerUser user)
+        public string GetToken(ITeamTunerUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_authConfig.Value.Secret);
@@ -37,7 +37,7 @@ namespace Sppd.TeamTuner.Authorization
             return tokenHandler.WriteToken(token);
         }
 
-        private static IEnumerable<Claim> BuildClaims(TeamTunerUser user)
+        private static IEnumerable<Claim> BuildClaims(ITeamTunerUser user)
         {
             yield return new Claim(AuthorizationConstants.ClaimTypes.USER_ID, user.Id.ToString());
             yield return new Claim(AuthorizationConstants.ClaimTypes.APPLICATION_ROLE, user.ApplicationRole);

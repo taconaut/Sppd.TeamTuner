@@ -126,7 +126,7 @@ namespace Sppd.TeamTuner.Tests.Integration
         }
 
         /// <summary>
-        /// Tests that an update fails if the <see cref="BaseEntity.Version"/> has been modified.
+        ///     Tests that an update fails if the <see cref="BaseEntity.Version" /> has been modified.
         /// </summary>
         [Fact]
         public async Task CannotUpdateWithDifferentVersionTest()
@@ -182,7 +182,7 @@ namespace Sppd.TeamTuner.Tests.Integration
         }
 
         /// <summary>
-        /// Tests that an update fails if the <see cref="BaseEntity.Version"/> has been modified.
+        ///     Tests that an update fails if the <see cref="BaseEntity.Version" /> has been modified.
         /// </summary>
         [Fact]
         public async Task CanUpdateWithSameVersionTest()

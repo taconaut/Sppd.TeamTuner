@@ -39,8 +39,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
 
         private async Task UpdateUser(Team entity)
         {
-            var user = _userProvider.CurrentUser as TeamTunerUser
-                       ?? await _teamTunerUserRepository.GetAsync(_userProvider.CurrentUser.Id);
+            var user = await _teamTunerUserRepository.GetAsync(_userProvider.CurrentUser.Id);
 
             if (user.TeamId.HasValue)
             {
@@ -50,6 +49,8 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             user.TeamId = entity.Id;
             user.TeamRole = CoreConstants.Auth.Roles.LEADER;
             _teamTunerUserRepository.Update(user);
+
+            _userProvider.CurrentUser = user;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Sppd.TeamTuner.Middlewares
                     break;
 
                 case ArgumentException e:
-                    code = HttpStatusCode.InternalServerError;
+                    code = HttpStatusCode.BadRequest;
                     message = $"Invalid argument for parameter {e.ParameterName}: {ex.Message}";
                     break;
 
@@ -64,7 +64,7 @@ namespace Sppd.TeamTuner.Middlewares
                     break;
 
                 case BusinessException _:
-                    code = HttpStatusCode.BadRequest;
+                    code = HttpStatusCode.InternalServerError;
                     message = $"A business error has occured: {ex.Message}";
                     break;
 

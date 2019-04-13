@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
 
@@ -22,22 +23,29 @@ namespace Sppd.TeamTuner.Controllers
         private readonly ITeamService _teamService;
         private readonly ITeamTunerUserService _userService;
         private readonly IAuthorizationService _authorizationService;
+        private readonly ITeamTunerUserProvider _userProvider;
+        private readonly ITokenProvider _tokenProvider;
         private readonly IMapper _mapper;
 
-        public TeamsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService, IMapper mapper)
+        public TeamsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService, ITeamTunerUserProvider userProvider,
+            ITokenProvider tokenProvider, IMapper mapper)
         {
             _teamService = teamService;
             _userService = userService;
             _authorizationService = authorizationService;
+            _userProvider = userProvider;
+            _tokenProvider = tokenProvider;
             _mapper = mapper;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] TeamCreateDto teamCreateDto)
+        public async Task<IActionResult> Create([FromBody] TeamCreateRequestDto teamCreateRequestDto)
         {
-            var teamToCreate = _mapper.Map<Team>(teamCreateDto);
+            var teamToCreate = _mapper.Map<Team>(teamCreateRequestDto);
             var teamCreated = _teamService.CreateAsync(teamToCreate);
-            return Ok(_mapper.Map<TeamDto>(await teamCreated));
+            var responseDto = _mapper.Map<TeamCreateResponseDto>(await teamCreated);
+            responseDto.Token = _tokenProvider.GetToken(_userProvider.CurrentUser);
+            return Ok();
         }
 
         [HttpGet("{teamId}")]
@@ -50,7 +58,7 @@ namespace Sppd.TeamTuner.Controllers
             }
 
             var team = _teamService.GetByIdAsync(teamId);
-            return Ok(_mapper.Map<TeamDto>(await team));
+            return Ok(_mapper.Map<TeamResponseDto>(await team));
         }
 
         [HttpGet]
@@ -63,7 +71,7 @@ namespace Sppd.TeamTuner.Controllers
             }
 
             var teams = _teamService.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<TeamDto>>(await teams));
+            return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(await teams));
         }
 
         [HttpGet("{teamId}/users")]
@@ -76,7 +84,7 @@ namespace Sppd.TeamTuner.Controllers
             }
 
             var users = _userService.GetByTeamIdAsync(teamId);
-            return Ok(_mapper.Map<IEnumerable<UserDto>>(await users));
+            return Ok(_mapper.Map<IEnumerable<UserResponseDto>>(await users));
         }
     }
 }

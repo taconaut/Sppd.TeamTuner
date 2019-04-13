@@ -33,21 +33,21 @@ namespace Sppd.TeamTuner.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequestDto userLoginRequestDto)
         {
-            var user = _userService.AuthenticateAsync(userLoginDto.Name, userLoginDto.PasswordMd5);
-            var userDto = _mapper.Map<UserAuthenticateDto>(await user);
+            var user = _userService.AuthenticateAsync(userLoginRequestDto.Name, userLoginRequestDto.PasswordMd5);
+            var userDto = _mapper.Map<UserLoginResponseDto>(await user);
             userDto.Token = _tokenProvider.GetToken(await user);
             return Ok(userDto);
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserCreateDto userCreateDto)
+        public async Task<IActionResult> Register([FromBody] UserCreateRequestDto userCreateRequestDto)
         {
-            var userToCreate = _mapper.Map<TeamTunerUser>(userCreateDto);
-            var createdUser = _userService.CreateAsync(userToCreate, userCreateDto.PasswordMd5);
-            return Ok(_mapper.Map<UserDto>(await createdUser));
+            var userToCreate = _mapper.Map<TeamTunerUser>(userCreateRequestDto);
+            var createdUser = _userService.CreateAsync(userToCreate, userCreateRequestDto.PasswordMd5);
+            return Ok(_mapper.Map<UserResponseDto>(await createdUser));
         }
 
         [HttpGet("{userId}")]
@@ -60,21 +60,21 @@ namespace Sppd.TeamTuner.Controllers
             }
 
             var user = _userService.GetByIdAsync(userId);
-            return Ok(_mapper.Map<UserDto>(await user));
+            return Ok(_mapper.Map<UserResponseDto>(await user));
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UserUpdateDto userDto)
+        public async Task<IActionResult> Update([FromBody] UserUpdateRequestDto userRequestDto)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, userDto.Id, AuthorizationConstants.Policies.IS_OWNER);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, userRequestDto.Id, AuthorizationConstants.Policies.IS_OWNER);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var user = _mapper.Map<TeamTunerUser>(userDto);
-            var updatedUser = _userService.UpdateAsync(user, userDto.PropertiesToUpdate);
-            return Ok(_mapper.Map<UserDto>(await updatedUser));
+            var user = _mapper.Map<TeamTunerUser>(userRequestDto);
+            var updatedUser = _userService.UpdateAsync(user, userRequestDto.PropertiesToUpdate);
+            return Ok(_mapper.Map<UserResponseDto>(await updatedUser));
         }
 
         [HttpDelete("{userId}")]
