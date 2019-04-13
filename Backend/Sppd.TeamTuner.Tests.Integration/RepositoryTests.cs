@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Shared;
@@ -15,24 +17,121 @@ namespace Sppd.TeamTuner.Tests.Integration
     public class RepositoryTests : RepositoryTestsBase
     {
         /// <summary>
-        ///     Tests that only navigation properties which have been explicitly requested from the repository will get loaded:
-        ///     1. Load a <see cref="Team" /> in its own scope without specifying to load <see cref="Team.Users" />.
-        ///     2. Load a <see cref="Team" /> in its own scope with specifying to load <see cref="Team.Users" />.
-        ///     3. Assert that <see cref="Team.Users" /> have only been loaded for 2.
+        ///     Tests that it is possible to save/delete/save the same <see cref="TeamTunerUser" /> if he has a different Id.
         /// </summary>
         [Fact]
-        public async Task NavigationPropertyLoadingTest()
+        public async Task CanCreateDeleteCreateUserWithDifferentIdButSamePropertiesTest()
+        {
+            // Arrange
+            var user = new TeamTunerUser
+                       {
+                           Email = "a@b.c",
+                           Description = "Description",
+                           Name = "Name",
+                           SppdName = "SppdName",
+                           PasswordHash = Encoding.UTF8.GetBytes("A"),
+                           PasswordSalt = Encoding.UTF8.GetBytes("A"),
+                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                       };
+
+            // Act
+
+            // Create user
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Add(user);
+                await unitOfWork.CommitAsync();
+            }
+
+            // Delete user
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                await userRepository.DeleteAsync(user.Id);
+                await unitOfWork.CommitAsync();
+            }
+
+            // Create user
+            user.Id = Guid.NewGuid();
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Add(user);
+                await unitOfWork.CommitAsync();
+            }
+
+            // Assert
+            // No assertions required as an exception would make the test fail
+        }
+
+        /// <summary>
+        ///     Tests that the a <see cref="TeamTunerUser" /> having the same unique properties but a different Id cannot be saved.
+        /// </summary>
+        [Fact]
+        public async Task CannotCreateSameUserTwiceTest()
+        {
+            // Arrange
+            var user = new TeamTunerUser
+                       {
+                           Email = "a2@b.c",
+                           Description = "Description2",
+                           Name = "Name2",
+                           SppdName = "SppdName2",
+                           PasswordHash = Encoding.UTF8.GetBytes("A"),
+                           PasswordSalt = Encoding.UTF8.GetBytes("A"),
+                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                       };
+
+            // Act
+
+            // Create user
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Add(user);
+                await unitOfWork.CommitAsync();
+            }
+
+            // Create user
+            user.Id = Guid.NewGuid();
+            Exception exception = null;
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+
+                userRepository.Add(user);
+                try
+                {
+                    await unitOfWork.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+            }
+
+            // Assert
+            Assert.NotNull(exception);
+        }
+
+        /// <summary>
+        ///     Tests that specified navigation properties do get loaded.
+        /// </summary>
+        [Fact]
+        public async Task DoesLoadSpecifiedNavigationPropertiesTest()
         {
             // Arrange
             var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW);
-
-            // Act
-            Team teamWithoutUsers;
-            using (var scope = ServiceProvider.CreateScope())
-            {
-                var teamRepository = scope.ServiceProvider.GetService<IRepository<Team>>();
-                teamWithoutUsers = await teamRepository.GetAsync(teamId);
-            }
 
             Team teamWithUsers;
             using (var scope = ServiceProvider.CreateScope())
@@ -42,18 +141,14 @@ namespace Sppd.TeamTuner.Tests.Integration
             }
 
             // Assert
-            Assert.False(teamWithoutUsers.Users.Any());
             Assert.True(teamWithUsers.Users.Any());
         }
 
         /// <summary>
-        ///     Tests that nested navigation properties get loaded when specified:
-        ///     1. Load a <see cref="Team" /> in its own scope with specifying to load 'Users.Federation'.
-        ///     2. Assert that <see cref="Team.Users" /> have only been loaded and that users have non-null
-        ///     <see cref="Federation" />.
+        ///     Tests that nested navigation properties get loaded when specified.
         /// </summary>
         [Fact]
-        public async Task NestedNavigationPropertyLoadingTest()
+        public async Task DoesLoadSpecifiedNestedNavigationPropertiesTest()
         {
             // Arrange
             var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW);
@@ -69,6 +164,27 @@ namespace Sppd.TeamTuner.Tests.Integration
             // Assert
             Assert.True(team.Users.Any());
             Assert.Contains(team.Users.Select(u => u.Federation), federation => federation != null);
+        }
+
+        /// <summary>
+        ///     Tests that unspecified navigation properties do not get loaded.
+        /// </summary>
+        [Fact]
+        public async Task DoesNotLoadUnspecifiedNavigationPropertiesTest()
+        {
+            // Arrange
+            var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW);
+
+            // Act
+            Team teamWithoutUsers;
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var teamRepository = scope.ServiceProvider.GetService<IRepository<Team>>();
+                teamWithoutUsers = await teamRepository.GetAsync(teamId);
+            }
+
+            // Assert
+            Assert.False(teamWithoutUsers.Users.Any());
         }
     }
 }

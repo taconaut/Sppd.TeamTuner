@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
 
@@ -40,7 +41,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 
             // Indexes and unique constraint
             builder.HasIndex(e => e.ExternalId)
-                   .IsUnique();
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
         }
 
         private static void ConfigureCardLevel(EntityTypeBuilder<CardLevel> builder)
@@ -72,11 +74,14 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 
             // Indexes and unique constraint
             builder.HasIndex(e => e.Name)
-                   .IsUnique();
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
             builder.HasIndex(e => e.SppdName)
-                   .IsUnique();
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
             builder.HasIndex(e => e.Email)
-                   .IsUnique();
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
         }
 
         private static void ConfigureTeam(EntityTypeBuilder<Team> builder)
