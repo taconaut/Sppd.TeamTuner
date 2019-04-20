@@ -240,7 +240,7 @@ namespace Sppd.TeamTuner.Tests.Integration
         public async Task DoesLoadSpecifiedNavigationPropertiesTest()
         {
             // Arrange
-            var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW);
+            var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID);
 
             Team teamWithUsers;
             using (var scope = ServiceProvider.CreateScope())
@@ -260,7 +260,7 @@ namespace Sppd.TeamTuner.Tests.Integration
         public async Task DoesLoadSpecifiedNestedNavigationPropertiesTest()
         {
             // Arrange
-            var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW);
+            var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID);
 
             // Act
             Team team;
@@ -282,7 +282,7 @@ namespace Sppd.TeamTuner.Tests.Integration
         public async Task DoesNotLoadUnspecifiedNavigationPropertiesTest()
         {
             // Arrange
-            var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW);
+            var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID);
 
             // Act
             Team teamWithoutUsers;

@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 
-using Microsoft.EntityFrameworkCore.Internal;
-
 using Moq;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
@@ -24,7 +22,7 @@ namespace Sppd.TeamTuner.Tests.Unit
             var validationErrors = card.Validate(validationContextMock.Object);
 
             // Assert
-            Assert.True(EnumerableExtensions.Any(validationErrors));
+            Assert.NotEmpty(validationErrors);
         }
 
         [Fact]
@@ -44,10 +42,10 @@ namespace Sppd.TeamTuner.Tests.Unit
             var rarityOkValidationErrors = rarityOk.Validate(validationContextMock.Object).ToList();
 
             // Assert
-            Assert.True(EnumerableExtensions.Any(rarityNokValidationErrors));
+            Assert.NotEmpty(rarityNokValidationErrors);
             Assert.Contains(nameof(Rarity.FriendlyLevel), rarityNokValidationErrors.Select(e => e.PropertyName));
 
-            Assert.False(EnumerableExtensions.Any(rarityOkValidationErrors));
+            Assert.Empty(rarityOkValidationErrors);
         }
     }
 }

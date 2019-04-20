@@ -48,17 +48,41 @@ namespace Sppd.TeamTuner.Controllers
             return Ok();
         }
 
-        [HttpGet("{teamId}")]
-        public async Task<IActionResult> GetByTeamId(Guid teamId)
+        [HttpPost("requestJoin")]
+        public async Task<IActionResult> RequestJoin([FromBody] TeamJoinRequestDto joinRequest)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.IS_IN_TEAM);
+            await _teamService.RequestJoinAsync(joinRequest.UserId, joinRequest.TeamId, joinRequest.Comment);
+            return Ok();
+        }
+
+        [HttpPut("acceptJoin/{joinRequestId}")]
+        public async Task<IActionResult> AcceptJoin(Guid joinRequestId)
+        {
+            var joinRequest = await _teamService.GetJoinRequestAsync(joinRequestId);
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, joinRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var team = _teamService.GetByIdAsync(teamId);
-            return Ok(_mapper.Map<TeamResponseDto>(await team));
+            await _teamService.AcceptJoinAsync(joinRequestId);
+            return Ok();
+        }
+
+        [HttpPut("refuseJoin/{joinRequestId}")]
+        public async Task<IActionResult> RefuseJoin(Guid joinRequestId)
+        {
+            var joinRequest = await _teamService.GetJoinRequestAsync(joinRequestId);
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, joinRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            await _teamService.RefuseJoinAsync(joinRequestId);
+            return Ok();
         }
 
         [HttpGet]
@@ -74,6 +98,19 @@ namespace Sppd.TeamTuner.Controllers
             return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(await teams));
         }
 
+        [HttpGet("{teamId}")]
+        public async Task<IActionResult> GetById(Guid teamId)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.IS_IN_TEAM);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var team = _teamService.GetByIdAsync(teamId);
+            return Ok(_mapper.Map<TeamResponseDto>(await team));
+        }
+
         [HttpGet("{teamId}/users")]
         public async Task<IActionResult> GetUsers(Guid teamId)
         {
@@ -85,6 +122,19 @@ namespace Sppd.TeamTuner.Controllers
 
             var users = _userService.GetByTeamIdAsync(teamId);
             return Ok(_mapper.Map<IEnumerable<UserResponseDto>>(await users));
+        }
+
+        [HttpGet("{teamId}/joinRequests")]
+        public async Task<IActionResult> GetJoinRequests(Guid teamId)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var joinRequests = _teamService.GetJoinRequestsAsync(teamId);
+            return Ok(_mapper.Map<IEnumerable<TeamJoinRequestResponseDto>>(await joinRequests));
         }
     }
 }

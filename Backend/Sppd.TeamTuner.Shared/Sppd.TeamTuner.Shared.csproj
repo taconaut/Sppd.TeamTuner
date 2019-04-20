@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
+  </ItemGroup>
+
 </Project>

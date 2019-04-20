@@ -62,6 +62,11 @@
                 public const int NAME = 50;
                 public const int FRIENDLY_NAME = 10;
             }
+
+            public struct TeamJoinRequest
+            {
+                public const int COMMENT = 500;
+            }
         }
 
         public struct ArrayLength

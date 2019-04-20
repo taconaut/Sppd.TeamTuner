@@ -213,7 +213,7 @@ namespace Sppd.TeamTuner
         {
             _logger.LogDebug("Start dynamic assembly loading");
 
-            var directoryCatalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, $"{Core.CoreConstants.Application.APP_DLL_PREFIX}*.dll");
+            var directoryCatalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, $"{CoreConstants.Application.APP_DLL_PREFIX}*.dll");
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToList();
             foreach (var assemblyFilePath in directoryCatalog.LoadedFiles)
             {

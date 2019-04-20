@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,15 +37,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
         private static readonly string s_deleteRoute = $"/Users/{s_userIdPlaceholder}";
         private static readonly string s_getByIdRoute = $"/Users/{s_userIdPlaceholder}";
 
-        private static readonly Encoding s_stringContentEncoding = Encoding.UTF8;
-        private static readonly string s_stringContentMediaType = "application/json";
-
         protected HttpClient Client { get; }
-
-        private static HttpContent GetStringContent<T>(T dto)
-        {
-            return new StringContent(JsonConvert.SerializeObject(dto), s_stringContentEncoding, s_stringContentMediaType);
-        }
 
         /// <summary>
         ///     Tests that following API calls work:<br />
@@ -57,7 +48,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
         ///     5. Try to access deleted user
         /// </summary>
         [Fact]
-        public async Task UsersController_CreateAuthenticateUpdateDeleteUserAsOwner_IsAuthorized()
+        public async Task CreateAuthenticateUpdateDeleteUserAsOwnerIsAuthorizedTest()
         {
             // Arrange
             var initialUserDto = new UserCreateRequestDto
@@ -83,12 +74,12 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             // Act
 
             // Register
-            var registerResponse = await Client.PostAsync(s_registerRoute, GetStringContent(initialUserDto));
+            var registerResponse = await Client.PostAsync(s_registerRoute, TestsHelper.GetStringContent(initialUserDto));
             var registeredUserDto = JsonConvert.DeserializeObject<UserResponseDto>(await registerResponse.Content.ReadAsStringAsync());
             userId = registeredUserDto.Id;
 
             // Authenticate
-            var loginResponse = await Client.PostAsync(s_loginRoute, GetStringContent(loginDto));
+            var loginResponse = await Client.PostAsync(s_loginRoute, TestsHelper.GetStringContent(loginDto));
             var authenticatedUserDto = JsonConvert.DeserializeObject<UserLoginResponseDto>(await loginResponse.Content.ReadAsStringAsync());
             token = authenticatedUserDto.Token;
 
@@ -109,7 +100,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             {
                 Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                updateResponse = await Client.PutAsync(s_updateRoute, GetStringContent(updateUserDto));
+                updateResponse = await Client.PutAsync(s_updateRoute, TestsHelper.GetStringContent(updateUserDto));
                 getUpdatedUserResponse = await Client.GetAsync(s_getByIdRoute.Replace(s_userIdPlaceholder, userId.ToString()));
                 updateUserResponseDto = JsonConvert.DeserializeObject<UserResponseDto>(await getUpdatedUserResponse.Content.ReadAsStringAsync());
                 deleteResponse = await Client.DeleteAsync(s_deleteRoute.Replace(s_userIdPlaceholder, userId.ToString()));

@@ -38,26 +38,49 @@ namespace Sppd.TeamTuner.Authorization
                     var federationId = ctx.Resource as Guid?;
                     return IsAdmin(ctx.User) || IsInFederation(ctx.User, federationId);
                 }));
+
+            options.AddPolicy(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS,
+                policy => policy.RequireAssertion(ctx =>
+                {
+                    var teamId = ctx.Resource as Guid?;
+                    return IsAdmin(ctx.User) || IsTeamLeader(ctx.User, teamId) || IsTeamCoLeader(ctx.User, teamId);
+                }));
         }
 
         private static bool IsOwner(ClaimsPrincipal user, Guid? userId)
         {
-            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.USER_ID) && Equals(claim.Value, userId?.ToString()));
+            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.USER_ID)
+                                          && Equals(claim.Value, userId?.ToString()));
         }
 
         private static bool IsAdmin(ClaimsPrincipal user)
         {
-            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.USER_ID) && Equals(claim.Value, CoreConstants.Auth.Roles.ADMIN));
+            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.USER_ID)
+                                          && Equals(claim.Value, CoreConstants.Auth.Roles.ADMIN));
         }
 
         private static bool IsInTeam(ClaimsPrincipal user, Guid? teamId)
         {
-            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.TEAM_ID) && Equals(claim.Value, teamId?.ToString()));
+            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.TEAM_ID)
+                                          && Equals(claim.Value, teamId?.ToString()));
         }
 
         private static bool IsInFederation(ClaimsPrincipal user, Guid? federationId)
         {
-            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.FEDERATION_ID) && Equals(claim.Value, federationId?.ToString()));
+            return user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.FEDERATION_ID)
+                                          && Equals(claim.Value, federationId?.ToString()));
+        }
+
+        private static bool IsTeamLeader(ClaimsPrincipal user, Guid? teamId)
+        {
+            return IsInTeam(user, teamId) && user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.TEAM_ROLE)
+                                                                    && Equals(claim.Value, CoreConstants.Auth.Roles.LEADER));
+        }
+
+        private static bool IsTeamCoLeader(ClaimsPrincipal user, Guid? teamId)
+        {
+            return IsInTeam(user, teamId) && user.HasClaim(claim => Equals(claim.Type, AuthorizationConstants.ClaimTypes.TEAM_ROLE)
+                                                                    && Equals(claim.Value, CoreConstants.Auth.Roles.CO_LEADER));
         }
     }
 }

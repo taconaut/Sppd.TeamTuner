@@ -16,7 +16,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             where TEntity : BaseEntity
         {
             // Do not load soft deleted entities
-            builder.HasQueryFilter(m => Microsoft.EntityFrameworkCore.EF.Property<bool>(m, DataAccessConstants.IS_DELETED_PROPERTY_NAME) == false);
+            builder.HasQueryFilter(m => !m.IsDeleted);
         }
 
         private static void ConfigureNamedEntity<TEntity>(EntityTypeBuilder<TEntity> builder)
@@ -66,7 +66,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             ConfigureDescriptiveEntity(builder);
 
             builder.HasMany(e => e.CardLevels)
-                   .WithOne(e => e.User);
+                   .WithOne(e => e.User)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             // Indexes and unique constraint
             builder.HasIndex(e => e.Name)
@@ -105,6 +106,18 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
                    .Ignore(e => e.Members)
                    .Ignore(e => e.Leader)
                    .Ignore(e => e.CoLeaders);
+        }
+
+        private static void ConfigureTeamJoinRequest(EntityTypeBuilder<TeamJoinRequest> builder)
+        {
+            ConfigureBaseEntity(builder);
+
+            builder.HasIndex(e => e.UserId)
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
+            builder.HasIndex(e => e.TeamId)
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
         }
     }
 }

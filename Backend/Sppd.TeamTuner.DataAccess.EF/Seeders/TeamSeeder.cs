@@ -22,19 +22,19 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
         {
             _teamRepository.Add(new Team
                                 {
-                                    Id = new Guid(TestingConstants.Team.HOLY_COW),
+                                    Id = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                     FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
                                     Name = "Holy Cow"
                                 });
             _teamRepository.Add(new Team
                                 {
-                                    Id = new Guid(TestingConstants.Team.HOLY_SHIT),
+                                    Id = new Guid(TestingConstants.Team.HOLY_SHIT_ID),
                                     FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
                                     Name = "Holy Shit"
                                 });
             _teamRepository.Add(new Team
                                 {
-                                    Id = new Guid(TestingConstants.Team.UNHOLY),
+                                    Id = new Guid(TestingConstants.Team.UNHOLY_ID),
                                     FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
                                     Name = "Unholy"
                                 });
