@@ -6,8 +6,8 @@ using Sppd.TeamTuner.Core.Domain.Entities;
 
 namespace Sppd.TeamTuner.Core.Repositories
 {
-    public interface ITeamJoinRequestRepository : IRepository<TeamJoinRequest>
+    public interface ITeamMembershipRequestRepository : IRepository<TeamMembershipRequest>
     {
-        Task<IEnumerable<TeamJoinRequest>> GetForTeam(Guid teamId);
+        Task<IEnumerable<TeamMembershipRequest>> GetForTeam(Guid teamId);
     }
 }

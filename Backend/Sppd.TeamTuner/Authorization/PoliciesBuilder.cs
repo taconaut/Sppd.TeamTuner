@@ -39,7 +39,7 @@ namespace Sppd.TeamTuner.Authorization
                     return IsAdmin(ctx.User) || IsInFederation(ctx.User, federationId);
                 }));
 
-            options.AddPolicy(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS,
+            options.AddPolicy(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS,
                 policy => policy.RequireAssertion(ctx =>
                 {
                     var teamId = ctx.Resource as Guid?;

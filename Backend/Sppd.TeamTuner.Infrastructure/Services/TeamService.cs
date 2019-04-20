@@ -15,17 +15,17 @@ namespace Sppd.TeamTuner.Infrastructure.Services
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IRepository<TeamTunerUser> _userRepository;
-        private readonly ITeamJoinRequestRepository _joinRequestRepository;
+        private readonly ITeamMembershipRequestRepository _membershipRequestRepository;
         private readonly IEmailService _emailService;
         private readonly ITeamTunerUserProvider _userProvider;
 
-        public TeamService(ITeamRepository teamRepository, IRepository<TeamTunerUser> userRepository, ITeamJoinRequestRepository joinRequestRepository,
+        public TeamService(ITeamRepository teamRepository, IRepository<TeamTunerUser> userRepository, ITeamMembershipRequestRepository membershipRequestRepository,
             IEmailService emailService, IUnitOfWork unitOfWork, ITeamTunerUserProvider userProvider)
             : base(teamRepository, unitOfWork)
         {
             _teamRepository = teamRepository;
             _userRepository = userRepository;
-            _joinRequestRepository = joinRequestRepository;
+            _membershipRequestRepository = membershipRequestRepository;
             _emailService = emailService;
             _userProvider = userProvider;
         }
@@ -41,10 +41,10 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             return await _teamRepository.GetAllAsync(federationId);
         }
 
-        public async Task RequestJoinAsync(Guid userId, Guid teamId, string comment)
+        public async Task RequestMembershipAsync(Guid userId, Guid teamId, string comment)
         {
-            var joinRequest = new TeamJoinRequest {UserId = userId, TeamId = teamId, Comment = comment};
-            _joinRequestRepository.Add(joinRequest);
+            var membershipRequest = new TeamMembershipRequest {UserId = userId, TeamId = teamId, Comment = comment};
+            _membershipRequestRepository.Add(membershipRequest);
             await UnitOfWork.CommitAsync();
 
             // TODO: implement mailing
@@ -52,9 +52,9 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             // await _emailService.SendJoinRequestNotificationAsync(teamId, joinRequestFull);
         }
 
-        public async Task AcceptJoinAsync(Guid joinRequestId)
+        public async Task AcceptMembershipAsync(Guid membershipRequestId)
         {
-            var joinRequest = await _joinRequestRepository.GetAsync(joinRequestId, new[] {nameof(TeamJoinRequest.User)});
+            var joinRequest = await _membershipRequestRepository.GetAsync(membershipRequestId, new[] {nameof(TeamMembershipRequest.User)});
 
             // Add user to team
             var user = joinRequest.User;
@@ -62,26 +62,26 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             user.TeamRole = CoreConstants.Auth.Roles.MEMBER;
 
             // Job done, delete the request
-            await _joinRequestRepository.DeleteAsync(joinRequestId);
+            await _membershipRequestRepository.DeleteAsync(membershipRequestId);
 
             await UnitOfWork.CommitAsync();
         }
 
-        public async Task RefuseJoinAsync(Guid joinRequestId)
+        public async Task RefuseMembershipAsync(Guid joinRequestId)
         {
             // The request has been refused, only delete the request
-            await _joinRequestRepository.DeleteAsync(joinRequestId);
+            await _membershipRequestRepository.DeleteAsync(joinRequestId);
             await UnitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<TeamJoinRequest>> GetJoinRequestsAsync(Guid teamId)
+        public async Task<IEnumerable<TeamMembershipRequest>> GetMembershipRequestsAsync(Guid teamId)
         {
-            return await _joinRequestRepository.GetForTeam(teamId);
+            return await _membershipRequestRepository.GetForTeam(teamId);
         }
 
-        public async Task<TeamJoinRequest> GetJoinRequestAsync(Guid joinRequestId)
+        public async Task<TeamMembershipRequest> GetMembershipRequestAsync(Guid membershipRequestId)
         {
-            return await _joinRequestRepository.GetAsync(joinRequestId);
+            return await _membershipRequestRepository.GetAsync(membershipRequestId);
         }
 
         private async Task UpdateUser(Guid teamId)

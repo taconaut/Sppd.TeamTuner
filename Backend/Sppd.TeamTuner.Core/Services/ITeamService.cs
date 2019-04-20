@@ -25,32 +25,33 @@ namespace Sppd.TeamTuner.Core.Services
         /// <param name="userId">The Id of the user.</param>
         /// <param name="teamId">The Id of the team to join.</param>
         /// <param name="comment">A comment from the user.</param>
-        Task RequestJoinAsync(Guid userId, Guid teamId, string comment);
+        Task RequestMembershipAsync(Guid userId, Guid teamId, string comment);
 
         /// <summary>
-        ///     Accepts the join request specified by <see cref="joinRequestId" />.
+        ///     Accepts the membership request specified by <see cref="membershipRequestId" />.
         /// </summary>
-        /// <param name="joinRequestId">The join request identifier.</param>
-        Task AcceptJoinAsync(Guid joinRequestId);
+        /// <param name="membershipRequestId">The membership request identifier.</param>
+        /// <returns></returns>
+        Task AcceptMembershipAsync(Guid membershipRequestId);
 
         /// <summary>
-        ///     Refuses the join request specified by <see cref="joinRequestId" />.
+        ///     Refuses the membership request specified by <see cref="membershipRequestId" />.
         /// </summary>
-        /// <param name="joinRequestId">The join request identifier.</param>
-        Task RefuseJoinAsync(Guid joinRequestId);
+        /// <param name="membershipRequestId">The membership request identifier.</param>
+        Task RefuseMembershipAsync(Guid membershipRequestId);
 
         /// <summary>
-        ///     Gets all open join requests for the team.
+        ///     Gets all open membership requests for the team.
         /// </summary>
         /// <param name="teamId">The team identifier.</param>
-        /// <returns>A list of join requests.</returns>
-        Task<IEnumerable<TeamJoinRequest>> GetJoinRequestsAsync(Guid teamId);
+        /// <returns>A list of membership requests.</returns>
+        Task<IEnumerable<TeamMembershipRequest>> GetMembershipRequestsAsync(Guid teamId);
 
         /// <summary>
-        ///     Gets the join request.
+        ///     Gets the membership request.
         /// </summary>
-        /// <param name="joinRequestId">The join request identifier.</param>
-        /// <returns>The join request.</returns>
-        Task<TeamJoinRequest> GetJoinRequestAsync(Guid joinRequestId);
+        /// <param name="membershipRequestId">The membership request identifier.</param>
+        /// <returns>The membership request.</returns>
+        Task<TeamMembershipRequest> GetMembershipRequestAsync(Guid membershipRequestId);
     }
 }

@@ -27,12 +27,12 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             _emailConfig = new Lazy<EmailConfig>(() => emailConfigProvider.Config);
         }
 
-        public async Task SendJoinRequestNotificationAsync(Guid teamId, TeamJoinRequest joinRequest)
+        public async Task SendJoinRequestNotificationAsync(Guid teamId, TeamMembershipRequest membershipRequest)
         {
             var teamUsers = await _userService.GetByTeamIdAsync(teamId);
             var usersToNotify = teamUsers.Where(u => u.TeamRole == CoreConstants.Auth.Roles.LEADER || u.TeamRole == CoreConstants.Auth.Roles.CO_LEADER);
 
-            var team = joinRequest.Team;
+            var team = membershipRequest.Team;
 
             var subject = $"A user requested to join {team.Name}";
             var body = "You can grand him access from here: 'TODO: add URL'";

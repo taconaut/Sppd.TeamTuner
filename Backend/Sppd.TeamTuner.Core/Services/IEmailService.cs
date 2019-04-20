@@ -7,6 +7,6 @@ namespace Sppd.TeamTuner.Core.Services
 {
     public interface IEmailService
     {
-        Task SendJoinRequestNotificationAsync(Guid teamId, TeamJoinRequest joinRequest);
+        Task SendJoinRequestNotificationAsync(Guid teamId, TeamMembershipRequest membershipRequest);
     }
 }

@@ -10,13 +10,13 @@ using Sppd.TeamTuner.Core.Repositories;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
 {
-    internal class TeamJoinRequestRepository : Repository<TeamJoinRequest>, ITeamJoinRequestRepository
+    internal class TeamMembershipRequestRepository : Repository<TeamMembershipRequest>, ITeamMembershipRequestRepository
     {
-        public TeamJoinRequestRepository(TeamTunerContext context) : base(context)
+        public TeamMembershipRequestRepository(TeamTunerContext context) : base(context)
         {
         }
 
-        public async Task<IEnumerable<TeamJoinRequest>> GetForTeam(Guid teamId)
+        public async Task<IEnumerable<TeamMembershipRequest>> GetForTeam(Guid teamId)
         {
             return await GetQueryableWithIncludes()
                          .Include(e => e.User)

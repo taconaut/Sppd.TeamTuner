@@ -108,7 +108,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
                    .Ignore(e => e.CoLeaders);
         }
 
-        private static void ConfigureTeamJoinRequest(EntityTypeBuilder<TeamJoinRequest> builder)
+        private static void ConfigureTeamJoinRequest(EntityTypeBuilder<TeamMembershipRequest> builder)
         {
             ConfigureBaseEntity(builder);
 

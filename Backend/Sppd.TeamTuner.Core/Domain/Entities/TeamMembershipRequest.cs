@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Sppd.TeamTuner.Core.Domain.Entities
 {
-    public class TeamJoinRequest : BaseEntity
+    public class TeamMembershipRequest : BaseEntity
     {
         public Team Team { get; set; }
 

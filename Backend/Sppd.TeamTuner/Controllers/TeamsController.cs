@@ -48,40 +48,42 @@ namespace Sppd.TeamTuner.Controllers
             return Ok();
         }
 
-        [HttpPut("requestJoin")]
-        public async Task<IActionResult> RequestJoin([FromBody] TeamJoinRequestDto joinRequest)
+        [HttpPut("membership/request")]
+        public async Task<IActionResult> RequestMembership([FromBody] TeamMembershipRequestDto membershipRequest)
         {
-            await _teamService.RequestJoinAsync(joinRequest.UserId, joinRequest.TeamId, joinRequest.Comment);
+            await _teamService.RequestMembershipAsync(membershipRequest.UserId, membershipRequest.TeamId, membershipRequest.Comment);
             return Ok();
         }
 
-        [HttpPost("acceptJoin/{joinRequestId}")]
-        public async Task<IActionResult> AcceptJoin(Guid joinRequestId)
+        [HttpPost("membership/accept/{membershipRequestId}")]
+        public async Task<IActionResult> AcceptMembershipRequest(Guid membershipRequestId)
         {
-            var joinRequest = await _teamService.GetJoinRequestAsync(joinRequestId);
+            var membershipRequest = await _teamService.GetMembershipRequestAsync(membershipRequestId);
 
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, joinRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS);
+            var authorizationResult =
+                await _authorizationService.AuthorizeAsync(User, membershipRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            await _teamService.AcceptJoinAsync(joinRequestId);
+            await _teamService.AcceptMembershipAsync(membershipRequestId);
             return Ok();
         }
 
-        [HttpPost("refuseJoin/{joinRequestId}")]
-        public async Task<IActionResult> RefuseJoin(Guid joinRequestId)
+        [HttpPost("membership/refuse/{membershipRequestId}")]
+        public async Task<IActionResult> RefuseMembershipRequest(Guid membershipRequestId)
         {
-            var joinRequest = await _teamService.GetJoinRequestAsync(joinRequestId);
+            var membershipRequest = await _teamService.GetMembershipRequestAsync(membershipRequestId);
 
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, joinRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS);
+            var authorizationResult =
+                await _authorizationService.AuthorizeAsync(User, membershipRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            await _teamService.RefuseJoinAsync(joinRequestId);
+            await _teamService.RefuseMembershipAsync(membershipRequestId);
             return Ok();
         }
 
@@ -124,17 +126,17 @@ namespace Sppd.TeamTuner.Controllers
             return Ok(_mapper.Map<IEnumerable<UserResponseDto>>(await users));
         }
 
-        [HttpGet("{teamId}/joinRequests")]
+        [HttpGet("{teamId}/membership/requests")]
         public async Task<IActionResult> GetJoinRequests(Guid teamId)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_JOIN_REQUESTS);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var joinRequests = _teamService.GetJoinRequestsAsync(teamId);
-            return Ok(_mapper.Map<IEnumerable<TeamJoinRequestResponseDto>>(await joinRequests));
+            var joinRequests = _teamService.GetMembershipRequestsAsync(teamId);
+            return Ok(_mapper.Map<IEnumerable<TeamMembershipRequestResponseDto>>(await joinRequests));
         }
     }
 }

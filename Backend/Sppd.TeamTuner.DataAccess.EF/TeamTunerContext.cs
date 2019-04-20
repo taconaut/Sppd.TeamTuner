@@ -72,7 +72,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             builder.Entity<TeamTunerUser>(ConfigureTeamTunerUser);
             builder.Entity<Team>(ConfigureTeam);
             builder.Entity<Federation>(ConfigureFederation);
-            builder.Entity<TeamJoinRequest>(ConfigureTeamJoinRequest);
+            builder.Entity<TeamMembershipRequest>(ConfigureTeamJoinRequest);
         }
 
         private static async Task<TResult> ExecuteAndHandleExceptions<TResult>(Task<TResult> task)

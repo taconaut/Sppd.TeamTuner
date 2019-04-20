@@ -18,7 +18,7 @@
             public const string IS_OWNER = "IsOwner";
             public const string IS_IN_TEAM = "IsInTeam";
             public const string IS_IN_FEDERATION = "IsInFederation";
-            public const string CAN_ACCEPT_TEAM_JOIN_REQUESTS = "CanAcceptTeamJoinRequests";
+            public const string CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS = "CanAcceptTeamJoinRequests";
         }
     }
 }
