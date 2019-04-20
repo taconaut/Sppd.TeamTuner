@@ -38,7 +38,7 @@ namespace Sppd.TeamTuner.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("create")]
+        [HttpPut("create")]
         public async Task<IActionResult> Create([FromBody] TeamCreateRequestDto teamCreateRequestDto)
         {
             var teamToCreate = _mapper.Map<Team>(teamCreateRequestDto);
@@ -48,14 +48,14 @@ namespace Sppd.TeamTuner.Controllers
             return Ok();
         }
 
-        [HttpPost("requestJoin")]
+        [HttpPut("requestJoin")]
         public async Task<IActionResult> RequestJoin([FromBody] TeamJoinRequestDto joinRequest)
         {
             await _teamService.RequestJoinAsync(joinRequest.UserId, joinRequest.TeamId, joinRequest.Comment);
             return Ok();
         }
 
-        [HttpPut("acceptJoin/{joinRequestId}")]
+        [HttpPost("acceptJoin/{joinRequestId}")]
         public async Task<IActionResult> AcceptJoin(Guid joinRequestId)
         {
             var joinRequest = await _teamService.GetJoinRequestAsync(joinRequestId);
@@ -70,7 +70,7 @@ namespace Sppd.TeamTuner.Controllers
             return Ok();
         }
 
-        [HttpPut("refuseJoin/{joinRequestId}")]
+        [HttpPost("refuseJoin/{joinRequestId}")]
         public async Task<IActionResult> RefuseJoin(Guid joinRequestId)
         {
             var joinRequest = await _teamService.GetJoinRequestAsync(joinRequestId);

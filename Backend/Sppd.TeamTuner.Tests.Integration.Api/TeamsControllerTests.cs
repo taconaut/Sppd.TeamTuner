@@ -72,7 +72,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authenticatedUserDto.Token);
 
             // Create the join request
-            var joinRequestResponse = await Client.PostAsync(s_requestJoinRoute, TestsHelper.GetStringContent(joinRequestDto));
+            var joinRequestResponse = await Client.PutAsync(s_requestJoinRoute, TestsHelper.GetStringContent(joinRequestDto));
 
             // Log in as team co-leader
             var coLeaderLoginResponse = await Client.PostAsync(s_loginRoute, TestsHelper.GetStringContent(holyCowCoLeaderLoginDto));
@@ -87,7 +87,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
 
             // Accept join request as co-leader
             var joinRequestId = joinRequests.Single().Id;
-            var acceptJoinRequestResponse = await Client.PutAsync(s_acceptJoinRequestRoute.Replace(s_teamJoinRequestIdPlaceholder, joinRequestId.ToString()), null);
+            var acceptJoinRequestResponse = await Client.PostAsync(s_acceptJoinRequestRoute.Replace(s_teamJoinRequestIdPlaceholder, joinRequestId.ToString()), null);
 
             // Get team join requests after having accepted the only one; it should be empty
             var getEmptyJoinRequestsResponse = await Client.GetAsync(s_getTeamHolyCowJoinRequestsRoute.Replace(s_teamIdPlaceholder, TestingConstants.Team.HOLY_COW_ID));

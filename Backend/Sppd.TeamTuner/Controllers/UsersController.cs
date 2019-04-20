@@ -32,6 +32,15 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPut("register")]
+        public async Task<IActionResult> Register([FromBody] UserCreateRequestDto userCreateRequestDto)
+        {
+            var userToCreate = _mapper.Map<TeamTunerUser>(userCreateRequestDto);
+            var createdUser = _userService.CreateAsync(userToCreate, userCreateRequestDto.PasswordMd5);
+            return Ok(_mapper.Map<UserResponseDto>(await createdUser));
+        }
+
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequestDto userLoginRequestDto)
         {
@@ -41,29 +50,7 @@ namespace Sppd.TeamTuner.Controllers
             return Ok(userDto);
         }
 
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserCreateRequestDto userCreateRequestDto)
-        {
-            var userToCreate = _mapper.Map<TeamTunerUser>(userCreateRequestDto);
-            var createdUser = _userService.CreateAsync(userToCreate, userCreateRequestDto.PasswordMd5);
-            return Ok(_mapper.Map<UserResponseDto>(await createdUser));
-        }
-
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetByUserId(Guid userId)
-        {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, userId, AuthorizationConstants.Policies.IS_OWNER);
-            if (!authorizationResult.Succeeded)
-            {
-                return Forbid();
-            }
-
-            var user = _userService.GetByIdAsync(userId);
-            return Ok(_mapper.Map<UserResponseDto>(await user));
-        }
-
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> Update([FromBody] UserUpdateRequestDto userRequestDto)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, userRequestDto.Id, AuthorizationConstants.Policies.IS_OWNER);
@@ -88,6 +75,19 @@ namespace Sppd.TeamTuner.Controllers
 
             await _userService.DeleteAsync(userId);
             return Ok();
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetByUserId(Guid userId)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, userId, AuthorizationConstants.Policies.IS_OWNER);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var user = _userService.GetByIdAsync(userId);
+            return Ok(_mapper.Map<UserResponseDto>(await user));
         }
     }
 }

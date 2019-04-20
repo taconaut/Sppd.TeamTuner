@@ -74,7 +74,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             // Act
 
             // Register
-            var registerResponse = await Client.PostAsync(s_registerRoute, TestsHelper.GetStringContent(initialUserDto));
+            var registerResponse = await Client.PutAsync(s_registerRoute, TestsHelper.GetStringContent(initialUserDto));
             var registeredUserDto = JsonConvert.DeserializeObject<UserResponseDto>(await registerResponse.Content.ReadAsStringAsync());
             userId = registeredUserDto.Id;
 
@@ -100,7 +100,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             {
                 Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                updateResponse = await Client.PutAsync(s_updateRoute, TestsHelper.GetStringContent(updateUserDto));
+                updateResponse = await Client.PostAsync(s_updateRoute, TestsHelper.GetStringContent(updateUserDto));
                 getUpdatedUserResponse = await Client.GetAsync(s_getByIdRoute.Replace(s_userIdPlaceholder, userId.ToString()));
                 updateUserResponseDto = JsonConvert.DeserializeObject<UserResponseDto>(await getUpdatedUserResponse.Content.ReadAsStringAsync());
                 deleteResponse = await Client.DeleteAsync(s_deleteRoute.Replace(s_userIdPlaceholder, userId.ToString()));
