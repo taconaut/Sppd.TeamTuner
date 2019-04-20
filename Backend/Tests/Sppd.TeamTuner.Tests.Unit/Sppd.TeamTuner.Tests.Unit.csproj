@@ -17,10 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
-    <ProjectReference Include="..\Sppd.TeamTuner.DataAccess.EF\Sppd.TeamTuner.Infrastructure.DataAccess.EF.csproj" />
-    <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure\Sppd.TeamTuner.Infrastructure.csproj" />
-    <ProjectReference Include="..\Sppd.TeamTuner.Shared\Sppd.TeamTuner.Shared.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner.DataAccess.EF\Sppd.TeamTuner.Infrastructure.DataAccess.EF.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure\Sppd.TeamTuner.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner.Shared\Sppd.TeamTuner.Shared.csproj" />
   </ItemGroup>
 
 </Project>
