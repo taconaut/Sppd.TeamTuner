@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using Sppd.TeamTuner.DTOs;
-using Sppd.TeamTuner.Shared;
+using Sppd.TeamTuner.Common;
 
 using Xunit;
 

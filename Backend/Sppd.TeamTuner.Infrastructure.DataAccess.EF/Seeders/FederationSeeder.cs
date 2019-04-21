@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Repositories;
-using Sppd.TeamTuner.Shared;
+using Sppd.TeamTuner.Common;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {

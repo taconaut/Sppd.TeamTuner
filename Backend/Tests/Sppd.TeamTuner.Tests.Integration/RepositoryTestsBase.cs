@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Config;
+using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Infrastructure.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
@@ -17,7 +18,7 @@ namespace Sppd.TeamTuner.Tests.Integration
     /// <summary>
     ///     Base class for repository tests which configures the services required for the tests.
     /// </summary>
-    public abstract class RepositoryTestsBase
+    public abstract class RepositoryTestsBase : IDisposable
     {
         /// <summary>
         ///     Gets or sets the service provider.
@@ -40,6 +41,11 @@ namespace Sppd.TeamTuner.Tests.Integration
 
             // Configure
             ConfigureServices(startupRegistrators);
+        }
+
+        public void Dispose()
+        {
+            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
         }
 
         private static IConfiguration BuildConfiguration()

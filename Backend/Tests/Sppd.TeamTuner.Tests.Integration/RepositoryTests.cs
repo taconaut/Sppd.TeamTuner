@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Sppd.TeamTuner.Common;
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Repositories;
-using Sppd.TeamTuner.Shared;
 
 using Xunit;
 

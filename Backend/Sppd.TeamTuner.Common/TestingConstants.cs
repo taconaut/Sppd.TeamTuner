@@ -1,4 +1,4 @@
-﻿namespace Sppd.TeamTuner.Shared
+﻿namespace Sppd.TeamTuner.Common
 {
     /// <summary>
     ///     Contains constants used for seeding as well as for testing

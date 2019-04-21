@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,16 +12,13 @@ using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
-// Allows testing elements marked as internal in the specified namespace
-[assembly: InternalsVisibleTo("Sppd.TeamTuner.Tests.Integration.Common")]
-
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 {
     /// <summary>
     ///     <see cref="DbContext" /> for the application.
     /// </summary>
     /// <seealso cref="DbContext" />
-    internal partial class TeamTunerContext : DbContext
+    internal partial class TeamTunerContext : DbContext, IDatabaseService
     {
         private readonly Lazy<DatabaseConfig> _databaseConfig;
         private readonly Lazy<IValidationService> _validationService;
@@ -35,6 +31,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             _validationService = validationService;
             _databaseConfig = new Lazy<DatabaseConfig>(() => databaseConfigProvider.Config);
             _entityMetadataProviders = entityMetadataProviders;
+        }
+
+        public void DeleteDatabase()
+        {
+            Database.EnsureDeleted();
         }
 
         public override int SaveChanges()

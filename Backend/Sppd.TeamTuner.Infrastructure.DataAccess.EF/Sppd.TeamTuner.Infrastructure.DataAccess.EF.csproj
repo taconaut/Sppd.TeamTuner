@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sppd.TeamTuner.Common\Sppd.TeamTuner.Common.csproj" />
     <ProjectReference Include="..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
-    <ProjectReference Include="..\Sppd.TeamTuner.Shared\Sppd.TeamTuner.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

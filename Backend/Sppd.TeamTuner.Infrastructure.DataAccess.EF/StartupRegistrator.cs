@@ -19,6 +19,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 {
     public class StartupRegistrator : IStartupRegistrator
     {
+        private const string ID_PLACEHOLDER = "{id}";
+
         public int Priority => 100;
 
         public void Register(IServiceCollection services)
@@ -26,37 +28,40 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             var databaseConfig = services.BuildServiceProvider().GetConfig<DatabaseConfig>();
 
             // DB context
-            services.AddDbContext<TeamTunerContext>(options => options.UseSqlServer(databaseConfig.ConnectionString));
+            var dbId = Guid.NewGuid().ToString("n").Substring(0, 8);
+            databaseConfig.ConnectionString = databaseConfig.ConnectionString.Replace(ID_PLACEHOLDER, dbId);
+            services.AddDbContext<TeamTunerContext>(options => options.UseSqlServer(databaseConfig.ConnectionString))
+                    .AddScoped<IDatabaseService, TeamTunerContext>();
 
             // Repositories
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<ITeamTunerUserRepository, TeamTunerUserRepository>();
-            services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<ITeamMembershipRequestRepository, TeamMembershipRequestRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>))
+                    .AddScoped<ITeamTunerUserRepository, TeamTunerUserRepository>()
+                    .AddScoped<ITeamRepository, TeamRepository>()
+                    .AddScoped<ITeamMembershipRequestRepository, TeamMembershipRequestRepository>();
 
             // Meta data providers
             services.AddScoped<IEntityMetadataProvider, BaseEntityMetadataProvider>();
 
             // Validation
-            services.AddScoped<IValidationService, ValidationService>();
-            services.AddScoped<IValidationContext, ValidationContext>();
+            services.AddScoped<IValidationService, ValidationService>()
+                    .AddScoped<IValidationContext, ValidationContext>();
 
             // Unit of work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Only register seeders if they are going to be used
-            if (databaseConfig.SeedMode.MustSeedRequired())
+            if (databaseConfig.AutoMigrate && databaseConfig.SeedMode.MustSeedRequired())
             {
-                services.AddScoped<IDbSeeder, RarityDbSeeder>();
-                services.AddScoped<IDbSeeder, CardThemeDbSeeder>();
-                services.AddScoped<IDbSeeder, CardDbSeeder>();
-                services.AddScoped<IDbSeeder, CardTypeDbSeeder>();
+                services.AddScoped<IDbSeeder, RarityDbSeeder>()
+                        .AddScoped<IDbSeeder, CardThemeDbSeeder>()
+                        .AddScoped<IDbSeeder, CardDbSeeder>()
+                        .AddScoped<IDbSeeder, CardTypeDbSeeder>();
 
                 if (databaseConfig.SeedMode == SeedMode.Test)
                 {
-                    services.AddScoped<IDbSeeder, TeamSeeder>();
-                    services.AddScoped<IDbSeeder, FederationSeeder>();
-                    services.AddScoped<IDbSeeder, TeamTunerUserSeeder>();
+                    services.AddScoped<IDbSeeder, TeamSeeder>()
+                            .AddScoped<IDbSeeder, FederationSeeder>()
+                            .AddScoped<IDbSeeder, TeamTunerUserSeeder>();
                 }
             }
         }
