@@ -41,7 +41,7 @@ namespace Sppd.TeamTuner.Core.Services
         ///     of <see cref="BaseEntity" /> will be updated.
         /// </param>
         /// <returns>The updated entity</returns>
-        Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames);
+        Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames = null);
 
         /// <summary>
         ///     Deletes the entity and commits changes.

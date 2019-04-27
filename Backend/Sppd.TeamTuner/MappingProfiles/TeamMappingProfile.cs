@@ -17,7 +17,7 @@ namespace Sppd.TeamTuner.MappingProfiles
 
             // DTO -> Entity
             CreateMap<TeamCreateRequestDto, Team>();
-            CreateDtoToEntityMap<TeamResponseDto>();
+            CreateDtoToEntityMap<TeamUpdateRequestDto>();
         }
     }
 }

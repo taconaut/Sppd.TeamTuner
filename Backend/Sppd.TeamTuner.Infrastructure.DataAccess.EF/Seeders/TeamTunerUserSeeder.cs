@@ -70,7 +70,22 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.TERRANCE_AND_PHILLIP_ID),
-                                                                 Level = 44
+                                                                 Level = 6
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.POISON_ID),
+                                                                 Level = 5
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                             CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
+                                                             Level = 5
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.AWESOMO_ID),
+                                                                 Level = 4
                                                              }
                                                          }
                                         }, TestingConstants.User.HOLY_COW_TEAM_LEADER_PASSWORD_MD5);
@@ -83,8 +98,31 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             ApplicationRole = CoreConstants.Auth.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Auth.Roles.CO_LEADER,
-                                            FederationId = new Guid(TestingConstants.Federation.HOLY_ID)
-                                        }, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_PASSWORD_MD5);
+                                            FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
+                                            CardLevels = new[]
+                                                         {
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.TERRANCE_AND_PHILLIP_ID),
+                                                                 Level = 3
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.POISON_ID),
+                                                                 Level = 1
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
+                                                                 Level = 6
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.AWESOMO_ID),
+                                                                 Level = 3
+                                                             }
+                                                         }
+            }, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_PASSWORD_MD5);
             await _userService.AddAsync(new TeamTunerUser
                                         {
                                             Id = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_MEMBER_ID),
@@ -94,8 +132,31 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             ApplicationRole = CoreConstants.Auth.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Auth.Roles.MEMBER,
-                                            FederationId = new Guid(TestingConstants.Federation.HOLY_ID)
-                                        }, TestingConstants.User.HOLY_COW_TEAM_MEMBER_PASSWORD_MD5);
+                                            FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
+                                            CardLevels = new[]
+                                                         {
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.TERRANCE_AND_PHILLIP_ID),
+                                                                 Level = 6
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.POISON_ID),
+                                                                 Level = 4
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
+                                                                 Level = 1
+                                                             },
+                                                             new CardLevel
+                                                             {
+                                                                 CardId = Guid.Parse(TestingConstants.Card.AWESOMO_ID),
+                                                                 Level = 1
+                                                             }
+                                                         }
+            }, TestingConstants.User.HOLY_COW_TEAM_MEMBER_PASSWORD_MD5);
 
             // Federation Holy users
             await _userService.AddAsync(new TeamTunerUser
@@ -109,7 +170,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             TeamRole = CoreConstants.Auth.Roles.MEMBER,
                                             FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
                                             FederationRole = CoreConstants.Auth.Roles.LEADER
-                                        }, TestingConstants.User.HOLY_FEDERATION_LEADER_PASSWORD_MD5);
+            }, TestingConstants.User.HOLY_FEDERATION_LEADER_PASSWORD_MD5);
             await _userService.AddAsync(new TeamTunerUser
                                         {
                                             Id = Guid.Parse(TestingConstants.User.HOLY_FEDERATION_CO_LEADER_ID),

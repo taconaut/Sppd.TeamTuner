@@ -84,7 +84,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new ConcurrentUpdateException("The entity has been modified since you last retrieved it");
+                throw new ConcurrentEntityUpdateException("The entity has been modified since you last retrieved it");
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new EntityUpdateException("Failed to update entities", ex);
             }
 
             return task.Result;

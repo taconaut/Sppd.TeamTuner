@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-using Sppd.TeamTuner.DTOs;
 using Sppd.TeamTuner.Common;
+using Sppd.TeamTuner.DTOs;
 
 using Xunit;
 
@@ -25,11 +25,11 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
         private static readonly string s_teamIdPlaceholder = "{teamId}";
         private static readonly string s_teamMembershipRequestIdPlaceholder = "{teamMembershipRequestId}";
 
-        private static readonly string s_loginRoute = "/Users/login";
-        private static readonly string s_requestMembershipRoute = "/Teams/membership/request";
-        private static readonly string s_getTeamHolyCowMembershipRequestsRoute = $"/Teams/{s_teamIdPlaceholder}/membership/requests";
-        private static readonly string s_getTeamHolyCowUsersRoute = $"/Teams/{s_teamIdPlaceholder}/users";
-        private static readonly string s_acceptMembershipRequestRoute = $"/Teams/membership/accept/{s_teamMembershipRequestIdPlaceholder}";
+        private static readonly string s_authorizeRoute = "/users/authorize";
+        private static readonly string s_membershipRequestsRoute = "/team-membership-requests";
+        private static readonly string s_getTeamHolyCowMembershipRequestsRoute = $"/teams/{s_teamIdPlaceholder}/membership-requests";
+        private static readonly string s_getTeamHolyCowUsersRoute = $"/teams/{s_teamIdPlaceholder}/users";
+        private static readonly string s_acceptMembershipRequestRoute = $"/team-membership-requests/{s_teamMembershipRequestIdPlaceholder}/accept";
 
         protected HttpClient Client { get; }
 
@@ -51,12 +51,12 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
                                            TeamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID),
                                            UserId = Guid.Parse(TestingConstants.User.HOLY_FEDERATION_MEMBER_ID)
                                        };
-            var userLoginDto = new UserLoginRequestDto
+            var userLoginDto = new AuthorizationRequestDto
                                {
                                    Name = TestingConstants.User.HOLY_FEDERATION_MEMBER_NAME,
                                    PasswordMd5 = TestingConstants.User.HOLY_FEDERATION_MEMBER_PASSWORD_MD5
                                };
-            var holyCowCoLeaderLoginDto = new UserLoginRequestDto
+            var holyCowCoLeaderLoginDto = new AuthorizationRequestDto
                                           {
                                               Name = TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_NAME,
                                               PasswordMd5 = TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_PASSWORD_MD5
@@ -65,18 +65,18 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             // Act
 
             // Log in as user wanting to join the team
-            var userLoginResponse = await Client.PostAsync(s_loginRoute, TestsHelper.GetStringContent(userLoginDto));
-            var authenticatedUserDto = JsonConvert.DeserializeObject<UserLoginResponseDto>(await userLoginResponse.Content.ReadAsStringAsync());
+            var userLoginResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(userLoginDto));
+            var authenticatedUserDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await userLoginResponse.Content.ReadAsStringAsync());
 
             // Authorize co-leader
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authenticatedUserDto.Token);
 
             // Create the membership request
-            var membershipRequestResponse = await Client.PutAsync(s_requestMembershipRoute, TestsHelper.GetStringContent(membershipRequestDto));
+            var membershipRequestResponse = await Client.PostAsync(s_membershipRequestsRoute, TestsHelper.GetStringContent(membershipRequestDto));
 
             // Log in as team co-leader
-            var coLeaderLoginResponse = await Client.PostAsync(s_loginRoute, TestsHelper.GetStringContent(holyCowCoLeaderLoginDto));
-            var authenticatedCoLeaderDto = JsonConvert.DeserializeObject<UserLoginResponseDto>(await coLeaderLoginResponse.Content.ReadAsStringAsync());
+            var coLeaderLoginResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(holyCowCoLeaderLoginDto));
+            var authenticatedCoLeaderDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await coLeaderLoginResponse.Content.ReadAsStringAsync());
 
             // Authorize co-leader
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authenticatedCoLeaderDto.Token);

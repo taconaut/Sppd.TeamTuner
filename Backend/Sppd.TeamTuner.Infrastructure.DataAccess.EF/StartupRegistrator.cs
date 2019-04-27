@@ -37,7 +37,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>))
                     .AddScoped<ITeamTunerUserRepository, TeamTunerUserRepository>()
                     .AddScoped<ITeamRepository, TeamRepository>()
-                    .AddScoped<ITeamMembershipRequestRepository, TeamMembershipRequestRepository>();
+                    .AddScoped<ITeamMembershipRequestRepository, TeamMembershipRequestRepository>()
+                    .AddScoped<ICardLevelRepository, CardLevelRepository>();
 
             // Meta data providers
             services.AddScoped<IEntityMetadataProvider, BaseEntityMetadataProvider>();

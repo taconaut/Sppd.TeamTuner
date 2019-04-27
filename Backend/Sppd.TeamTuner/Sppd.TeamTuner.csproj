@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>aspnet-Sppd.TeamTuner-95DE83D5-80BE-4712-A48D-5D090750F78E</UserSecretsId>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
+    <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure.DataAccess.EF\Sppd.TeamTuner.Infrastructure.DataAccess.EF.csproj" />
     <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure\Sppd.TeamTuner.Infrastructure.csproj" />
   </ItemGroup>
 

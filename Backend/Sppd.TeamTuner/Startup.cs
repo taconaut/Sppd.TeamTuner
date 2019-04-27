@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -132,6 +133,12 @@ namespace Sppd.TeamTuner
                 services.AddSwaggerGen(options =>
                 {
                     options.SwaggerDoc("v1", new Info {Title = "Sppd.TeamTuner", Version = "v1"});
+
+                    // Set the path to the XML file containing comments for the Swagger JSON and UI.
+                    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    options.IncludeXmlComments(xmlPath);
+
                     // Below two options are being set to allow specifying the bearer token in SwaggerUI. This allows to authenticate using SwaggerUI.
                     options.AddSecurityDefinition("oauth2", new ApiKeyScheme
                                                             {

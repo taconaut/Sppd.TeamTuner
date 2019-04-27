@@ -3,9 +3,9 @@ using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.MappingProfiles
 {
-    internal class TeamJoinRequestMappingProfile : BaseMappingProfile<TeamMembershipRequest>
+    internal class TeamMembershipRequestMappingProfile : BaseMappingProfile<TeamMembershipRequest>
     {
-        public TeamJoinRequestMappingProfile()
+        public TeamMembershipRequestMappingProfile()
         {
             CreateMap<TeamMembershipRequest, TeamMembershipRequestResponseDto>()
                 .ForMember(dst => dst.Name, exp => exp.MapFrom(src => src.User.Name))

@@ -19,11 +19,19 @@ namespace Sppd.TeamTuner.Middlewares
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ErrorHandlingMiddleware" /> class.
+        /// </summary>
+        /// <param name="next">The next delegate to call.</param>
         public ErrorHandlingMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
+        /// <summary>
+        ///     Invokes the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
         public async Task Invoke(HttpContext context)
         {
             try
@@ -58,9 +66,14 @@ namespace Sppd.TeamTuner.Middlewares
                     message = $"Invalid argument for parameter {e.ParameterName}: {ex.Message}";
                     break;
 
-                case ConcurrentUpdateException _:
+                case ConcurrentEntityUpdateException _:
                     code = HttpStatusCode.Conflict;
                     message = "The entity cannot be saved because it has been modified since you last retrieved it";
+                    break;
+
+                case EntityUpdateException _:
+                    code = HttpStatusCode.BadRequest;
+                    message = "The entity could not be saved";
                     break;
 
                 case BusinessException _:

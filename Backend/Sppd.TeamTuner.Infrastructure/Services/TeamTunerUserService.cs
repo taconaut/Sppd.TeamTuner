@@ -10,6 +10,7 @@ using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
+using Sppd.TeamTuner.Core.Utils.Extensions;
 
 using ArgumentException = Sppd.TeamTuner.Core.Exceptions.ArgumentException;
 
@@ -18,11 +19,13 @@ namespace Sppd.TeamTuner.Infrastructure.Services
     public class TeamTunerUserService : ServiceBase<TeamTunerUser>, ITeamTunerUserService
     {
         private readonly ITeamTunerUserRepository _teamTunerUserRepository;
+        private readonly ICardLevelRepository _cardLevelRepository;
 
-        public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, IUnitOfWork unitOfWork)
+        public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, ICardLevelRepository cardLevelRepository, IUnitOfWork unitOfWork)
             : base(teamTunerUserRepository, unitOfWork)
         {
             _teamTunerUserRepository = teamTunerUserRepository;
+            _cardLevelRepository = cardLevelRepository;
         }
 
         public async Task<TeamTunerUser> AuthenticateAsync(string name, string passwordMd5)
@@ -62,6 +65,32 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         public Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)
         {
             return _teamTunerUserRepository.GetByTeamIdAsync(teamId);
+        }
+
+        public async Task<IEnumerable<CardLevel>> GetCardLevelsAsync(Guid userId)
+        {
+            var user = await _teamTunerUserRepository.GetAsync(userId, new[] {nameof(TeamTunerUser.CardLevels)});
+            return user.CardLevels;
+        }
+
+        public async Task<CardLevel> SetCardLevelAsync(CardLevel cardLevel)
+        {
+            CardLevel cardLevelToUpdate;
+            try
+            {
+                cardLevelToUpdate = await _cardLevelRepository.GetAsync(cardLevel.UserId, cardLevel.CardId);
+            }
+            catch (EntityNotFoundException)
+            {
+                cardLevelToUpdate = new CardLevel();
+                _cardLevelRepository.Add(cardLevelToUpdate);
+            }
+
+            cardLevelToUpdate.MapProperties(cardLevel);
+
+            await UnitOfWork.CommitAsync();
+
+            return cardLevelToUpdate;
         }
 
         public async Task AddAsync(TeamTunerUser user, string passwordMd5)

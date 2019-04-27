@@ -22,8 +22,9 @@ namespace Sppd.TeamTuner.Tests.Unit
             var teamTunerRepositoryMock = new Mock<ITeamTunerUserRepository>();
             teamTunerRepositoryMock.Setup(r => r.GetAsync(_testUser.Id, It.IsAny<IEnumerable<string>>()))
                                    .ReturnsAsync(_testUser);
+            var cardLevelRepositoryMock = new Mock<ICardLevelRepository>();
 
-            _userService = new TeamTunerUserService(teamTunerRepositoryMock.Object, unitOfWorkMock.Object);
+            _userService = new TeamTunerUserService(teamTunerRepositoryMock.Object, cardLevelRepositoryMock.Object, unitOfWorkMock.Object);
         }
 
         private readonly TeamTunerUser _testUser;

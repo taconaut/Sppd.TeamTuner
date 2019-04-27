@@ -31,11 +31,11 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
 
         private static readonly string s_userIdPlaceholder = "{userId}";
 
-        private static readonly string s_registerRoute = "/Users/register";
-        private static readonly string s_loginRoute = "/Users/login";
-        private static readonly string s_updateRoute = "/Users";
-        private static readonly string s_deleteRoute = $"/Users/{s_userIdPlaceholder}";
-        private static readonly string s_getByIdRoute = $"/Users/{s_userIdPlaceholder}";
+        private static readonly string s_registerRoute = "/users";
+        private static readonly string s_authorizeRoute = "/users/authorize";
+        private static readonly string s_updateRoute = "/users";
+        private static readonly string s_deleteRoute = $"/users/{s_userIdPlaceholder}";
+        private static readonly string s_getByIdRoute = $"/users/{s_userIdPlaceholder}";
 
         protected HttpClient Client { get; }
 
@@ -65,7 +65,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
                                     Email = "garrisonsbitch@nukem.tom",
                                     PropertiesToUpdate = new List<string> {nameof(UserUpdateRequestDto.Email)}
                                 };
-            var loginDto = new UserLoginRequestDto {Name = initialUserDto.Name, PasswordMd5 = initialUserDto.PasswordMd5};
+            var authorizeDto = new AuthorizationRequestDto {Name = initialUserDto.Name, PasswordMd5 = initialUserDto.PasswordMd5};
 
             // userId and token will be set according to API method responses
             Guid userId;
@@ -74,14 +74,14 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             // Act
 
             // Register
-            var registerResponse = await Client.PutAsync(s_registerRoute, TestsHelper.GetStringContent(initialUserDto));
+            var registerResponse = await Client.PostAsync(s_registerRoute, TestsHelper.GetStringContent(initialUserDto));
             var registeredUserDto = JsonConvert.DeserializeObject<UserResponseDto>(await registerResponse.Content.ReadAsStringAsync());
             userId = registeredUserDto.Id;
 
             // Authenticate
-            var loginResponse = await Client.PostAsync(s_loginRoute, TestsHelper.GetStringContent(loginDto));
-            var authenticatedUserDto = JsonConvert.DeserializeObject<UserLoginResponseDto>(await loginResponse.Content.ReadAsStringAsync());
-            token = authenticatedUserDto.Token;
+            var authorizeResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeDto));
+            var authorizedUserDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await authorizeResponse.Content.ReadAsStringAsync());
+            token = authorizedUserDto.Token;
 
             // Wait a bit to see the ModifiedOnUtc date chance
             Thread.Sleep(TimeSpan.FromSeconds(2));
@@ -100,7 +100,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             {
                 Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                updateResponse = await Client.PostAsync(s_updateRoute, TestsHelper.GetStringContent(updateUserDto));
+                updateResponse = await Client.PutAsync(s_updateRoute, TestsHelper.GetStringContent(updateUserDto));
                 getUpdatedUserResponse = await Client.GetAsync(s_getByIdRoute.Replace(s_userIdPlaceholder, userId.ToString()));
                 updateUserResponseDto = JsonConvert.DeserializeObject<UserResponseDto>(await getUpdatedUserResponse.Content.ReadAsStringAsync());
                 deleteResponse = await Client.DeleteAsync(s_deleteRoute.Replace(s_userIdPlaceholder, userId.ToString()));
@@ -115,7 +115,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
 
             // Call responses
             Assert.True(registerResponse.IsSuccessStatusCode);
-            Assert.True(loginResponse.IsSuccessStatusCode);
+            Assert.True(authorizeResponse.IsSuccessStatusCode);
             Assert.True(updateResponse.IsSuccessStatusCode);
             Assert.True(getUpdatedUserResponse.IsSuccessStatusCode);
             Assert.True(deleteResponse.IsSuccessStatusCode);
@@ -129,8 +129,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             Assert.Equal(updateUserResponseDto.Name, initialUserDto.Name);
             Assert.Equal(updateUserResponseDto.SppdName, initialUserDto.SppdName);
             Assert.Equal(updateUserResponseDto.Email, updateUserDto.Email);
-            Assert.True(updateUserResponseDto.ModifiedOnUtc > authenticatedUserDto.ModifiedOnUtc);
-            Assert.Equal(updateUserResponseDto.CreatedOnUtc, authenticatedUserDto.CreatedOnUtc);
+            Assert.True(updateUserResponseDto.ModifiedOnUtc > authorizedUserDto.ModifiedOnUtc);
+            Assert.Equal(updateUserResponseDto.CreatedOnUtc, authorizedUserDto.CreatedOnUtc);
         }
     }
 }

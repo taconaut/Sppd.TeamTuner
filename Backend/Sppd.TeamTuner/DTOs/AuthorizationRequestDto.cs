@@ -1,6 +1,6 @@
 ﻿namespace Sppd.TeamTuner.DTOs
 {
-    public class UserLoginRequestDto
+    public class AuthorizationRequestDto
     {
         public string Name { get; set; }
 

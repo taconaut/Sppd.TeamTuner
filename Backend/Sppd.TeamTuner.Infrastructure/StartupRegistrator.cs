@@ -26,6 +26,7 @@ namespace Sppd.TeamTuner.Infrastructure
             services.AddScoped<ITeamTunerUserService, TeamTunerUserService>();
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ICardService, CardService>();
 
             // Providers
             services.AddScoped<ITeamTunerUserProvider, TeamTunerUserProvider>();

@@ -34,6 +34,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                            PasswordSalt = Encoding.UTF8.GetBytes("A"),
                            ApplicationRole = CoreConstants.Auth.Roles.USER
                        };
+            Exception exception = null;
 
             // Act
 
@@ -44,7 +45,15 @@ namespace Sppd.TeamTuner.Tests.Integration
                 var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
                 userRepository.Add(user);
-                await unitOfWork.CommitAsync();
+
+                try
+                {
+                    await unitOfWork.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
             }
 
             // Delete user
@@ -54,7 +63,15 @@ namespace Sppd.TeamTuner.Tests.Integration
                 var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
                 await userRepository.DeleteAsync(user.Id);
-                await unitOfWork.CommitAsync();
+
+                try
+                {
+                    await unitOfWork.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
             }
 
             // Create user
@@ -65,11 +82,19 @@ namespace Sppd.TeamTuner.Tests.Integration
                 var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
                 userRepository.Add(user);
-                await unitOfWork.CommitAsync();
+
+                try
+                {
+                    await unitOfWork.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
             }
 
             // Assert
-            // No assertions required as an exception would make the test fail
+            Assert.Null(exception);
         }
 
         /// <summary>
@@ -104,7 +129,7 @@ namespace Sppd.TeamTuner.Tests.Integration
 
             // Create user
             user.Id = Guid.NewGuid();
-            Exception exception = null;
+            EntityUpdateException exception = null;
             using (var scope = ServiceProvider.CreateScope())
             {
                 var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
@@ -115,7 +140,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                 {
                     await unitOfWork.CommitAsync();
                 }
-                catch (Exception ex)
+                catch (EntityUpdateException ex)
                 {
                     exception = ex;
                 }
@@ -143,6 +168,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                            ApplicationRole = CoreConstants.Auth.Roles.USER
                        };
             var updatedEmail = "tutu@tata.com";
+
             // Act
 
             // Create user
@@ -160,7 +186,7 @@ namespace Sppd.TeamTuner.Tests.Integration
             user.Version[0]++;
 
             // Update user
-            ConcurrentUpdateException exception = null;
+            ConcurrentEntityUpdateException exception = null;
             using (var scope = ServiceProvider.CreateScope())
             {
                 var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
@@ -171,7 +197,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                 {
                     await unitOfWork.CommitAsync();
                 }
-                catch (ConcurrentUpdateException ex)
+                catch (ConcurrentEntityUpdateException ex)
                 {
                     exception = ex;
                 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -13,44 +15,63 @@ using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.Controllers
 {
+    /// <summary>
+    ///     Exposes an API to manage users.
+    /// </summary>
+    /// <seealso cref="ControllerBase" />
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("users")]
     public class UsersController : ControllerBase
     {
         private readonly ITeamTunerUserService _userService;
+        private readonly ICardService _cardService;
         private readonly ITokenProvider _tokenProvider;
         private readonly IAuthorizationService _authorizationService;
         private readonly IMapper _mapper;
 
-        public UsersController(ITeamTunerUserService userService, ITokenProvider tokenProvider, IAuthorizationService authorizationService, IMapper mapper)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="UsersController" /> class.
+        /// </summary>
+        /// <param name="userService">The user service.</param>
+        /// <param name="cardService">The card service.</param>
+        /// <param name="tokenProvider">The token provider.</param>
+        /// <param name="authorizationService">The authorization service.</param>
+        /// <param name="mapper">The mapper.</param>
+        public UsersController(ITeamTunerUserService userService, ICardService cardService, ITokenProvider tokenProvider, IAuthorizationService authorizationService,
+            IMapper mapper)
         {
             _userService = userService;
+            _cardService = cardService;
             _tokenProvider = tokenProvider;
             _authorizationService = authorizationService;
             _mapper = mapper;
         }
 
+        /// <summary>
+        ///     Creates a new user
+        /// </summary>
+        /// <remarks>
+        ///     As stated by its name, the client has to send the MD5 hash of the password (length=36). This MD5 hash will be
+        ///     stored as salted hash in the DB.
+        /// </remarks>
         [AllowAnonymous]
-        [HttpPut("register")]
+        [HttpPost]
         public async Task<IActionResult> Register([FromBody] UserCreateRequestDto userCreateRequestDto)
         {
             var userToCreate = _mapper.Map<TeamTunerUser>(userCreateRequestDto);
-            var createdUser = _userService.CreateAsync(userToCreate, userCreateRequestDto.PasswordMd5);
-            return Ok(_mapper.Map<UserResponseDto>(await createdUser));
+            var createdUser = await _userService.CreateAsync(userToCreate, userCreateRequestDto.PasswordMd5);
+            return Ok(_mapper.Map<UserResponseDto>(createdUser));
         }
 
-        [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequestDto userLoginRequestDto)
-        {
-            var user = _userService.AuthenticateAsync(userLoginRequestDto.Name, userLoginRequestDto.PasswordMd5);
-            var userDto = _mapper.Map<UserLoginResponseDto>(await user);
-            userDto.Token = _tokenProvider.GetToken(await user);
-            return Ok(userDto);
-        }
-
-        [HttpPost]
+        /// <summary>
+        ///     Updates the user
+        /// </summary>
+        /// <remarks>
+        ///     If the PropertiesToUpdate have been specified, only these will be updated; otherwise, all properties will be
+        ///     updated.
+        /// </remarks>
+        [HttpPut]
         public async Task<IActionResult> Update([FromBody] UserUpdateRequestDto userRequestDto)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, userRequestDto.Id, AuthorizationConstants.Policies.IS_OWNER);
@@ -60,34 +81,112 @@ namespace Sppd.TeamTuner.Controllers
             }
 
             var user = _mapper.Map<TeamTunerUser>(userRequestDto);
-            var updatedUser = _userService.UpdateAsync(user, userRequestDto.PropertiesToUpdate);
-            return Ok(_mapper.Map<UserResponseDto>(await updatedUser));
+            var updatedUser = await _userService.UpdateAsync(user, userRequestDto.PropertiesToUpdate);
+            return Ok(_mapper.Map<UserResponseDto>(updatedUser));
         }
 
-        [HttpDelete("{userId}")]
-        public async Task<IActionResult> Delete(Guid userId)
+        /// <summary>
+        ///     Authorizes the user
+        /// </summary>
+        /// <remarks>
+        ///     The response contains a token which has to be included as bearer token in the HTTP authorization header for
+        ///     subsequent calls to API methods requiring authentication.
+        /// </remarks>
+        [AllowAnonymous]
+        [HttpPost("authorize")]
+        public async Task<IActionResult> Authorize([FromBody] AuthorizationRequestDto authorizationRequestDto)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, userId, AuthorizationConstants.Policies.IS_OWNER);
+            var user = await _userService.AuthenticateAsync(authorizationRequestDto.Name, authorizationRequestDto.PasswordMd5);
+            var userDto = _mapper.Map<UserAuthorizationResponseDto>(user);
+            userDto.Token = _tokenProvider.GetToken(user);
+            return Ok(userDto);
+        }
+
+        /// <summary>
+        ///     Deletes the user
+        /// </summary>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            await _userService.DeleteAsync(userId);
+            await _userService.DeleteAsync(id);
             return Ok();
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetByUserId(Guid userId)
+        /// <summary>
+        ///     Gets all users
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, userId, AuthorizationConstants.Policies.IS_OWNER);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, null, AuthorizationConstants.Policies.IS_ADMIN);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var user = _userService.GetByIdAsync(userId);
-            return Ok(_mapper.Map<UserResponseDto>(await user));
+            var users = await _userService.GetAllAsync();
+            return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(users));
+        }
+
+        /// <summary>
+        ///     Gets the user
+        /// </summary>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByUserId(Guid id)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var user = await _userService.GetByIdAsync(id);
+            return Ok(_mapper.Map<UserResponseDto>(user));
+        }
+
+        /// <summary>
+        ///     Gets all card levels having been set for the user
+        /// </summary>
+        [HttpGet("{id}/card-levels")]
+        public async Task<IActionResult> GetCardLevels(Guid id)
+        {
+            // TODO: secure
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var cardLevels = await _userService.GetCardLevelsAsync(id);
+            return Ok(_mapper.Map<IEnumerable<CardLevelResponseDto>>(cardLevels));
+        }
+
+        /// <summary>
+        ///     Gets all existing cards and includes the level for the user if it has been set
+        /// </summary>
+        [HttpGet("{id}/cards")]
+        public async Task<IActionResult> GetCardsWithUserLevels(Guid id)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var cardsWithUserLevels = await _cardService.GetForUserAsync(id);
+            var userCardDtos = _mapper.Map<IEnumerable<UserCardResponseDto>>(cardsWithUserLevels.Select(kv => kv.Key)).ToList();
+            foreach (var (cardDto, level) in cardsWithUserLevels)
+            {
+                userCardDtos.Single(d => cardDto.Id == d.CardId).Level = level;
+            }
+
+            return Ok(userCardDtos);
         }
     }
 }

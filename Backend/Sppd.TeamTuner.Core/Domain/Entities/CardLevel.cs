@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+
+using Sppd.TeamTuner.Core.Domain.Validation;
+using Sppd.TeamTuner.Core.Validation;
 
 namespace Sppd.TeamTuner.Core.Domain.Entities
 {
@@ -17,5 +21,13 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
         public Guid UserId { get; set; }
 
         public int Level { get; set; }
+
+        public override IEnumerable<EntityValidationError> Validate(IValidationContext context)
+        {
+            if (Level < 1 || Level > 7)
+            {
+                yield return new EntityValidationError("Must be greater than 0 and smaller than 8", nameof(Level));
+            }
+        }
     }
 }

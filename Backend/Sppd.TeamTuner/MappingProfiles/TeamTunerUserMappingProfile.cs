@@ -10,12 +10,13 @@ namespace Sppd.TeamTuner.MappingProfiles
         {
             // Entity -> DTO
             CreateEntityToDtoMap<UserResponseDto>();
-            CreateEntityToDtoMap<UserLoginResponseDto>();
+            CreateEntityToDtoMap<UserAuthorizationResponseDto>();
 
             // DTO -> Entity
             CreateMap<UserCreateRequestDto, TeamTunerUser>()
                 .ForMember(dest => dest.ApplicationRole, opt => opt.MapFrom(src => CoreConstants.Auth.Roles.USER));
-            CreateMap<UserLoginRequestDto, TeamTunerUser>();
+            CreateMap<AuthorizationRequestDto, TeamTunerUser>();
+            CreateMap<UserUpdateRequestDto, TeamTunerUser>();
 
             CreateDtoToEntityMap<UserResponseDto>();
             CreateDtoToEntityMap<UserUpdateRequestDto>();

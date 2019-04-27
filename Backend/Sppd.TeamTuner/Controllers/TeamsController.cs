@@ -15,9 +15,13 @@ using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.Controllers
 {
+    /// <summary>
+    ///     Exposes an API to manage teams.
+    /// </summary>
+    /// <seealso cref="ControllerBase" />
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("teams")]
     public class TeamsController : ControllerBase
     {
         private readonly ITeamService _teamService;
@@ -27,6 +31,15 @@ namespace Sppd.TeamTuner.Controllers
         private readonly ITokenProvider _tokenProvider;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="TeamsController" /> class.
+        /// </summary>
+        /// <param name="teamService">The team service.</param>
+        /// <param name="userService">The user service.</param>
+        /// <param name="authorizationService">The authorization service.</param>
+        /// <param name="userProvider">The user provider.</param>
+        /// <param name="tokenProvider">The token provider.</param>
+        /// <param name="mapper">The mapper.</param>
         public TeamsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService, ITeamTunerUserProvider userProvider,
             ITokenProvider tokenProvider, IMapper mapper)
         {
@@ -38,55 +51,49 @@ namespace Sppd.TeamTuner.Controllers
             _mapper = mapper;
         }
 
-        [HttpPut("create")]
+        /// <summary>
+        ///     Creates a new team
+        /// </summary>
+        /// <param name="teamCreateRequestDto">The team create request dto.</param>
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] TeamCreateRequestDto teamCreateRequestDto)
         {
             var teamToCreate = _mapper.Map<Team>(teamCreateRequestDto);
-            var teamCreated = _teamService.CreateAsync(teamToCreate);
-            var responseDto = _mapper.Map<TeamCreateResponseDto>(await teamCreated);
+            var teamCreated = await _teamService.CreateAsync(teamToCreate);
+            var responseDto = _mapper.Map<TeamCreateResponseDto>(teamCreated);
             responseDto.Token = _tokenProvider.GetToken(_userProvider.CurrentUser);
             return Ok();
         }
 
-        [HttpPut("membership/request")]
-        public async Task<IActionResult> RequestMembership([FromBody] TeamMembershipRequestDto membershipRequest)
+        /// <summary>
+        ///     Updates the team
+        /// </summary>
+        /// <param name="teamUpdateRequestDto">The team update request dto.</param>
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] TeamUpdateRequestDto teamUpdateRequestDto)
         {
-            await _teamService.RequestMembershipAsync(membershipRequest.UserId, membershipRequest.TeamId, membershipRequest.Comment);
+            // TODO: authorize
+
+            var team = _mapper.Map<Team>(teamUpdateRequestDto);
+            var teamCreated = await _teamService.UpdateAsync(team, teamUpdateRequestDto.PropertiesToUpdate);
+            return Ok(_mapper.Map<TeamCreateResponseDto>(teamCreated));
+        }
+
+        /// <summary>
+        ///     Deletes the team
+        /// </summary>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            // TODO: authorize
+
+            await _teamService.DeleteAsync(id);
             return Ok();
         }
 
-        [HttpPost("membership/accept/{membershipRequestId}")]
-        public async Task<IActionResult> AcceptMembershipRequest(Guid membershipRequestId)
-        {
-            var membershipRequest = await _teamService.GetMembershipRequestAsync(membershipRequestId);
-
-            var authorizationResult =
-                await _authorizationService.AuthorizeAsync(User, membershipRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
-            if (!authorizationResult.Succeeded)
-            {
-                return Forbid();
-            }
-
-            await _teamService.AcceptMembershipAsync(membershipRequestId);
-            return Ok();
-        }
-
-        [HttpPost("membership/refuse/{membershipRequestId}")]
-        public async Task<IActionResult> RefuseMembershipRequest(Guid membershipRequestId)
-        {
-            var membershipRequest = await _teamService.GetMembershipRequestAsync(membershipRequestId);
-
-            var authorizationResult =
-                await _authorizationService.AuthorizeAsync(User, membershipRequest.TeamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
-            if (!authorizationResult.Succeeded)
-            {
-                return Forbid();
-            }
-
-            await _teamService.RefuseMembershipAsync(membershipRequestId);
-            return Ok();
-        }
-
+        /// <summary>
+        ///     Gets all teams
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -96,47 +103,59 @@ namespace Sppd.TeamTuner.Controllers
                 return Forbid();
             }
 
-            var teams = _teamService.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(await teams));
+            var teams = await _teamService.GetAllAsync();
+            return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(teams));
         }
 
-        [HttpGet("{teamId}")]
-        public async Task<IActionResult> GetById(Guid teamId)
+        /// <summary>
+        ///     Gets the team
+        /// </summary>
+        /// <param name="id">The team identifier.</param>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.IS_IN_TEAM);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_IN_TEAM);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var team = _teamService.GetByIdAsync(teamId);
-            return Ok(_mapper.Map<TeamResponseDto>(await team));
+            var team = await _teamService.GetByIdAsync(id);
+            return Ok(_mapper.Map<TeamResponseDto>(team));
         }
 
-        [HttpGet("{teamId}/users")]
-        public async Task<IActionResult> GetUsers(Guid teamId)
+        /// <summary>
+        ///     Gets the team users
+        /// </summary>
+        /// <param name="id">The team identifier.</param>
+        [HttpGet("{id}/users")]
+        public async Task<IActionResult> GetUsers(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.IS_IN_TEAM);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_IN_TEAM);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var users = _userService.GetByTeamIdAsync(teamId);
-            return Ok(_mapper.Map<IEnumerable<UserResponseDto>>(await users));
+            var users = await _userService.GetByTeamIdAsync(id);
+            return Ok(_mapper.Map<IEnumerable<UserResponseDto>>(users));
         }
 
-        [HttpGet("{teamId}/membership/requests")]
-        public async Task<IActionResult> GetJoinRequests(Guid teamId)
+        /// <summary>
+        ///     Gets the membership requests.
+        /// </summary>
+        /// <param name="id">The team identifier.</param>
+        [HttpGet("{id}/membership-requests")]
+        public async Task<IActionResult> GetMembershipRequests(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, teamId, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var joinRequests = _teamService.GetMembershipRequestsAsync(teamId);
-            return Ok(_mapper.Map<IEnumerable<TeamMembershipRequestResponseDto>>(await joinRequests));
+            var joinRequests = await _teamService.GetMembershipRequestsAsync(id);
+            return Ok(_mapper.Map<IEnumerable<TeamMembershipRequestResponseDto>>(joinRequests));
         }
     }
 }

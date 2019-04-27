@@ -44,6 +44,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
         private static void ConfigureCardLevel(EntityTypeBuilder<CardLevel> builder)
         {
             ConfigureBaseEntity(builder);
+
+            builder.HasIndex(nameof(CardLevel.UserId), nameof(CardLevel.CardId))
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
         }
 
         private static void ConfigureCardTheme(EntityTypeBuilder<Theme> builder)
