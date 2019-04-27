@@ -5,6 +5,7 @@
     <UserSecretsId>aspnet-Sppd.TeamTuner-95DE83D5-80BE-4712-A48D-5D090750F78E</UserSecretsId>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
 
