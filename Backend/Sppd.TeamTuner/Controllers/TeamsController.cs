@@ -72,7 +72,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] TeamUpdateRequestDto teamUpdateRequestDto)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_TEAM, null);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_TEAM, teamUpdateRequestDto.Id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -89,7 +89,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_TEAM, null);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_TEAM, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
