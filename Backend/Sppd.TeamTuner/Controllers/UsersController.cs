@@ -75,7 +75,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UserUpdateRequestDto userRequestDto)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, userRequestDto.Id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, userRequestDto.Id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -109,7 +109,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_USER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -141,7 +141,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserId(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -158,7 +158,7 @@ namespace Sppd.TeamTuner.Controllers
         public async Task<IActionResult> GetCardLevels(Guid id)
         {
             // TODO: secure
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -174,7 +174,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/cards")]
         public async Task<IActionResult> GetCardsWithUserLevels(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();

@@ -42,7 +42,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPut]
         public async Task<IActionResult> SetCardLevel([FromBody] SetCardLevelRequestDto cardLevelDto)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, cardLevelDto.UserId);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, cardLevelDto.UserId);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();

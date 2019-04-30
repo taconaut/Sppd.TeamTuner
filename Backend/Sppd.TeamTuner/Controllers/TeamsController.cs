@@ -71,7 +71,11 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] TeamUpdateRequestDto teamUpdateRequestDto)
         {
-            // TODO: authorize
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_TEAM, null);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
 
             var team = _mapper.Map<Team>(teamUpdateRequestDto);
             var teamCreated = await _teamService.UpdateAsync(team, teamUpdateRequestDto.PropertiesToUpdate);
@@ -84,7 +88,11 @@ namespace Sppd.TeamTuner.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            // TODO: authorize
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_TEAM, null);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
 
             await _teamService.DeleteAsync(id);
             return Ok();
@@ -113,7 +121,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_IN_TEAM, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -130,7 +138,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/users")]
         public async Task<IActionResult> GetUsers(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_IN_TEAM, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
