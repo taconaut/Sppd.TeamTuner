@@ -39,28 +39,7 @@ namespace Sppd.TeamTuner.Authorization
 
         private static IEnumerable<Claim> BuildClaims(ITeamTunerUser user)
         {
-            yield return new Claim(AuthorizationConstants.ClaimTypes.USER_ID, user.Id.ToString());
-            yield return new Claim(AuthorizationConstants.ClaimTypes.APPLICATION_ROLE, user.ApplicationRole);
-
-            if (user.TeamId.HasValue)
-            {
-                yield return new Claim(AuthorizationConstants.ClaimTypes.TEAM_ID, user.TeamId.ToString());
-                yield return new Claim(AuthorizationConstants.ClaimTypes.TEAM_ROLE, user.TeamRole);
-            }
-
-            if (user.FederationId.HasValue)
-            {
-                yield return new Claim(AuthorizationConstants.ClaimTypes.FEDERATION_ID, user.FederationId.ToString());
-                if (!string.IsNullOrEmpty(user.FederationRole))
-                {
-                    yield return new Claim(AuthorizationConstants.ClaimTypes.FEDERATION_ROLE, user.FederationRole);
-                }
-            }
-            else if (user.Team?.FederationId != null)
-            {
-                // Only set the Id but not the role: The user is implicitly part of the federation through his team, but has no explicit rights on it
-                yield return new Claim(AuthorizationConstants.ClaimTypes.FEDERATION_ID, user.Team.FederationId.ToString());
-            }
+            yield return new Claim(ClaimTypes.Name, user.Id.ToString());
         }
     }
 }

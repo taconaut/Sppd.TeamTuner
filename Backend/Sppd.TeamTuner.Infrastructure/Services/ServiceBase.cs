@@ -31,14 +31,14 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             UnitOfWork = unitOfWork;
         }
 
-        public virtual Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual Task<IEnumerable<TEntity>> GetAllAsync(IEnumerable<string> propertiesToInclude = null)
         {
-            return Repository.GetAllAsync();
+            return Repository.GetAllAsync(propertiesToInclude);
         }
 
-        public virtual Task<TEntity> GetByIdAsync(Guid entityId)
+        public virtual Task<TEntity> GetByIdAsync(Guid entityId, IEnumerable<string> propertiesToInclude = null)
         {
-            return Repository.GetAsync(entityId);
+            return Repository.GetAsync(entityId, propertiesToInclude);
         }
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)

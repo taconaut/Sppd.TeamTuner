@@ -18,15 +18,14 @@ namespace Sppd.TeamTuner.Controllers
     /// <summary>
     ///     Exposes an API to manage teams.
     /// </summary>
-    /// <seealso cref="ControllerBase" />
+    /// <seealso cref="AuthorizationController" />
     [Authorize]
     [ApiController]
     [Route("teams")]
-    public class TeamsController : ControllerBase
+    public class TeamsController : AuthorizationController
     {
         private readonly ITeamService _teamService;
         private readonly ITeamTunerUserService _userService;
-        private readonly IAuthorizationService _authorizationService;
         private readonly ITeamTunerUserProvider _userProvider;
         private readonly ITokenProvider _tokenProvider;
         private readonly IMapper _mapper;
@@ -42,10 +41,10 @@ namespace Sppd.TeamTuner.Controllers
         /// <param name="mapper">The mapper.</param>
         public TeamsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService, ITeamTunerUserProvider userProvider,
             ITokenProvider tokenProvider, IMapper mapper)
+            : base(userProvider, authorizationService)
         {
             _teamService = teamService;
             _userService = userService;
-            _authorizationService = authorizationService;
             _userProvider = userProvider;
             _tokenProvider = tokenProvider;
             _mapper = mapper;
@@ -97,7 +96,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, null, AuthorizationConstants.Policies.IS_ADMIN);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_ADMIN, null);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -114,7 +113,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_IN_TEAM);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_IN_TEAM, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -131,7 +130,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/users")]
         public async Task<IActionResult> GetUsers(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_IN_TEAM);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_IN_TEAM, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -148,7 +147,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/membership-requests")]
         public async Task<IActionResult> GetMembershipRequests(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();

@@ -7,6 +7,7 @@ using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain.Interfaces;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
+using Sppd.TeamTuner.Core.Utils.Extensions;
 using Sppd.TeamTuner.Core.Validation;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Extensions;

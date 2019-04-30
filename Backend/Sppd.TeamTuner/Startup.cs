@@ -4,6 +4,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -89,7 +90,7 @@ namespace Sppd.TeamTuner
         {
             _logger.LogDebug("Start configuring application");
 
-            var generalConfig = GetConfig<GeneralConfig>(app.ApplicationServices);
+            var generalConfig = app.ApplicationServices.GetConfig<GeneralConfig>();
 
             if (env.IsDevelopment())
             {
@@ -126,7 +127,7 @@ namespace Sppd.TeamTuner
 
         private static void RegisterSwagger(IServiceCollection services)
         {
-            var generalConfig = GetConfig<GeneralConfig>(services.BuildServiceProvider());
+            var generalConfig = services.BuildServiceProvider().GetConfig<GeneralConfig>();
             if (generalConfig.EnableSwaggerUI)
             {
                 // Make SwaggerUI available
@@ -158,7 +159,7 @@ namespace Sppd.TeamTuner
         /// <param name="services">The services.</param>
         private static void RegisterAuthentication(IServiceCollection services)
         {
-            var authConfig = GetConfig<AuthConfig>(services.BuildServiceProvider());
+            var authConfig = services.BuildServiceProvider().GetConfig<AuthConfig>();
             var key = Encoding.ASCII.GetBytes(authConfig.Secret);
             services.AddAuthentication(x =>
                     {
@@ -171,13 +172,18 @@ namespace Sppd.TeamTuner
                                    {
                                        OnTokenValidated = context =>
                                        {
-                                           var userService = context.HttpContext.RequestServices.GetRequiredService<ITeamTunerUserService>();
-                                           var userId = Guid.Parse(context.Principal.Claims.Single(c => c.Type == AuthorizationConstants.ClaimTypes.USER_ID).Value);
+                                           var userService = context.HttpContext.RequestServices.GetService<ITeamTunerUserService>();
+                                           var userId = Guid.Parse(context.Principal.Claims.Single(c => c.Type == ClaimTypes.Name).Value);
 
                                            TeamTunerUser user;
                                            try
                                            {
-                                               var userTask = userService.GetByIdAsync(userId);
+                                               var userTask = userService.GetByIdAsync(userId, new[]
+                                                                                               {
+                                                                                                   // Include all properties required to authorize access
+                                                                                                   nameof(TeamTunerUser.Team),
+                                                                                                   string.Join(".", nameof(TeamTunerUser.Federation), nameof(Federation.Teams))
+                                                                                               });
                                                userTask.Wait();
                                                user = userTask.Result;
                                            }
@@ -189,7 +195,7 @@ namespace Sppd.TeamTuner
                                            }
 
                                            // Prepare the user provider so it can provide the currently logged in user though DI
-                                           var userProvider = context.HttpContext.RequestServices.GetRequiredService<ITeamTunerUserProvider>();
+                                           var userProvider = context.HttpContext.RequestServices.GetService<ITeamTunerUserProvider>();
                                            userProvider.CurrentUser = user;
 
                                            return Task.CompletedTask;
@@ -281,15 +287,6 @@ namespace Sppd.TeamTuner
             {
                 yield return (T) Activator.CreateInstance(typeToInstantiate);
             }
-        }
-
-        /// <summary>
-        ///     Gets the general configuration.
-        /// </summary>
-        private static TConfig GetConfig<TConfig>(IServiceProvider serviceProvider)
-            where TConfig : class, IConfig, new()
-        {
-            return serviceProvider.GetService<IConfigProvider<TConfig>>().Config;
         }
     }
 }

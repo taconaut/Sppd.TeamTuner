@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
 
@@ -18,16 +19,15 @@ namespace Sppd.TeamTuner.Controllers
     /// <summary>
     ///     Exposes an API to manage users.
     /// </summary>
-    /// <seealso cref="ControllerBase" />
+    /// <seealso cref="AuthorizationController" />
     [Authorize]
     [ApiController]
     [Route("users")]
-    public class UsersController : ControllerBase
+    public class UsersController : AuthorizationController
     {
         private readonly ITeamTunerUserService _userService;
         private readonly ICardService _cardService;
         private readonly ITokenProvider _tokenProvider;
-        private readonly IAuthorizationService _authorizationService;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -37,14 +37,15 @@ namespace Sppd.TeamTuner.Controllers
         /// <param name="cardService">The card service.</param>
         /// <param name="tokenProvider">The token provider.</param>
         /// <param name="authorizationService">The authorization service.</param>
+        /// <param name="userProvider">The token provider.</param>
         /// <param name="mapper">The mapper.</param>
         public UsersController(ITeamTunerUserService userService, ICardService cardService, ITokenProvider tokenProvider, IAuthorizationService authorizationService,
-            IMapper mapper)
+            ITeamTunerUserProvider userProvider, IMapper mapper)
+            : base(userProvider, authorizationService)
         {
             _userService = userService;
             _cardService = cardService;
             _tokenProvider = tokenProvider;
-            _authorizationService = authorizationService;
             _mapper = mapper;
         }
 
@@ -74,7 +75,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UserUpdateRequestDto userRequestDto)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, userRequestDto.Id, AuthorizationConstants.Policies.IS_OWNER);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, userRequestDto.Id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -108,7 +109,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -124,7 +125,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, null, AuthorizationConstants.Policies.IS_ADMIN);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_ADMIN, null);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -140,7 +141,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserId(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -157,7 +158,7 @@ namespace Sppd.TeamTuner.Controllers
         public async Task<IActionResult> GetCardLevels(Guid id)
         {
             // TODO: secure
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -173,7 +174,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/cards")]
         public async Task<IActionResult> GetCardsWithUserLevels(Guid id)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, AuthorizationConstants.Policies.IS_OWNER);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.IS_OWNER, id);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();

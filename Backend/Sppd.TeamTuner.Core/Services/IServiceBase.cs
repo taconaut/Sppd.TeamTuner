@@ -15,15 +15,27 @@ namespace Sppd.TeamTuner.Core.Services
         /// <summary>
         ///     Gets all entities.
         /// </summary>
-        /// <returns>All entities.</returns>
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        /// <param name="propertiesToInclude">
+        ///     The properties to include. If none have been specified, no navigation properties will
+        ///     be loaded.
+        /// </param>
+        /// <returns>
+        ///     All entities.
+        /// </returns>
+        Task<IEnumerable<TEntity>> GetAllAsync(IEnumerable<string> propertiesToInclude = null);
 
         /// <summary>
         ///     Gets the entity with the specified <see cref="entityId" />
         /// </summary>
         /// <param name="entityId">The entity identifier.</param>
-        /// <returns>The entity if it could be found; otherwise null</returns>
-        Task<TEntity> GetByIdAsync(Guid entityId);
+        /// <param name="propertiesToInclude">
+        ///     The properties to include. If none have been specified, no navigation properties will
+        ///     be loaded.
+        /// </param>
+        /// <returns>
+        ///     The entity if it could be found; otherwise null
+        /// </returns>
+        Task<TEntity> GetByIdAsync(Guid entityId, IEnumerable<string> propertiesToInclude = null);
 
         /// <summary>
         ///     Creates an entity and commits changes.

@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain;
 using Sppd.TeamTuner.Core.Providers;
+using Sppd.TeamTuner.Core.Utils.Extensions;
 using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders;
@@ -71,12 +71,6 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Extensions
             }
 
             logger.LogInformation("Database has been initialized");
-        }
-
-        public static TConfig GetConfig<TConfig>(this IServiceProvider serviceProvider)
-            where TConfig : class, IConfig, new()
-        {
-            return serviceProvider.GetService<IConfigProvider<TConfig>>().Config;
         }
     }
 }
