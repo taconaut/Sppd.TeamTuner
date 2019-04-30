@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -6,7 +7,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
 
@@ -28,11 +28,11 @@ namespace Sppd.TeamTuner.Controllers
         ///     Initializes a new instance of the <see cref="CardsController" /> class.
         /// </summary>
         /// <param name="cardService">The card service.</param>
-        /// <param name="userProvider">The user provider.</param>
         /// <param name="authorizationService">The authorization service.</param>
+        /// <param name="serviceProvider">The service provider.</param>
         /// <param name="mapper">The mapper.</param>
-        public CardsController(ICardService cardService, ITeamTunerUserProvider userProvider, IAuthorizationService authorizationService, IMapper mapper)
-            : base(userProvider, authorizationService)
+        public CardsController(ICardService cardService, IAuthorizationService authorizationService, IServiceProvider serviceProvider, IMapper mapper)
+            : base(serviceProvider, authorizationService)
         {
             _cardService = cardService;
             _mapper = mapper;

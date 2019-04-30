@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
-using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
 
@@ -21,19 +20,17 @@ namespace Sppd.TeamTuner.Controllers
     public class TeamMembershipRequestsController : AuthorizationController
     {
         private readonly ITeamService _teamService;
-        private readonly IAuthorizationService _authorizationService;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TeamMembershipRequestsController" /> class.
         /// </summary>
         /// <param name="teamService">The team service.</param>
-        /// <param name="userProvider">The user provider.</param>
         /// <param name="authorizationService">The authorization service.</param>
-        public TeamMembershipRequestsController(ITeamService teamService, ITeamTunerUserProvider userProvider, IAuthorizationService authorizationService)
-            : base(userProvider, authorizationService)
+        /// <param name="serviceProvider">The service provider.</param>
+        public TeamMembershipRequestsController(ITeamService teamService, IAuthorizationService authorizationService, IServiceProvider serviceProvider)
+            : base(serviceProvider, authorizationService)
         {
             _teamService = teamService;
-            _authorizationService = authorizationService;
         }
 
         /// <summary>

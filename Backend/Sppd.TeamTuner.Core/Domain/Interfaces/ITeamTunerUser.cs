@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Enumerations;
 
 namespace Sppd.TeamTuner.Core.Domain.Interfaces
 {
@@ -34,5 +35,10 @@ namespace Sppd.TeamTuner.Core.Domain.Interfaces
         Federation Federation { get; }
 
         string FederationRole { get; }
+
+        /// <summary>
+        ///     Determines who will be able to see the user profile.
+        /// </summary>
+        UserProfileVisibility ProfileVisibility { get; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Sppd.TeamTuner.Core.Domain.Enumerations;
+
 namespace Sppd.TeamTuner.DTOs
 {
     public class UserResponseDto : DescriptiveDto
@@ -17,5 +19,7 @@ namespace Sppd.TeamTuner.DTOs
         public Guid? FederationId { get; set; }
 
         public string FederationRole { get; set; }
+
+        public UserProfileVisibility ProfileVisibility { get; set; }
     }
 }

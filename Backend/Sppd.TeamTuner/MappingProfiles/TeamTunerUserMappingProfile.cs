@@ -14,7 +14,7 @@ namespace Sppd.TeamTuner.MappingProfiles
 
             // DTO -> Entity
             CreateMap<UserCreateRequestDto, TeamTunerUser>()
-                .ForMember(dest => dest.ApplicationRole, opt => opt.MapFrom(src => CoreConstants.Auth.Roles.USER));
+                .ForMember(dest => dest.ApplicationRole, opt => opt.MapFrom(src => CoreConstants.Authorization.Roles.USER));
             CreateMap<AuthorizationRequestDto, TeamTunerUser>();
             CreateMap<UserUpdateRequestDto, TeamTunerUser>();
 

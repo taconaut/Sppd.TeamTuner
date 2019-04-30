@@ -30,7 +30,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         public async Task SendJoinRequestNotificationAsync(Guid teamId, TeamMembershipRequest membershipRequest)
         {
             var teamUsers = await _userService.GetByTeamIdAsync(teamId);
-            var usersToNotify = teamUsers.Where(u => u.TeamRole == CoreConstants.Auth.Roles.LEADER || u.TeamRole == CoreConstants.Auth.Roles.CO_LEADER);
+            var usersToNotify = teamUsers.Where(u => u.TeamRole == CoreConstants.Authorization.Roles.LEADER || u.TeamRole == CoreConstants.Authorization.Roles.CO_LEADER);
 
             var team = membershipRequest.Team;
 

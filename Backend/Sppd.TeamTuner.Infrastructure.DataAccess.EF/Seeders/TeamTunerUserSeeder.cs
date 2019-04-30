@@ -2,12 +2,13 @@
 using System.Text;
 using System.Threading.Tasks;
 
+using Sppd.TeamTuner.Common;
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Enumerations;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
-using Sppd.TeamTuner.Common;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {
@@ -37,7 +38,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                 {
                                     Id = systemUser.Id,
                                     Email = systemUser.Email,
-                                    ApplicationRole = CoreConstants.Auth.Roles.SYSTEM,
+                                    ApplicationRole = CoreConstants.Authorization.Roles.SYSTEM,
                                     PasswordHash = Encoding.ASCII.GetBytes("A"),
                                     PasswordSalt = Encoding.ASCII.GetBytes("A"),
                                     Name = systemUser.Name,
@@ -51,7 +52,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.ADMIN_NAME,
                                             SppdName = "App-Admin",
                                             Email = "admin@sppdteamtuner.com",
-                                            ApplicationRole = CoreConstants.Auth.Roles.ADMIN
+                                            ApplicationRole = CoreConstants.Authorization.Roles.ADMIN
                                         }, TestingConstants.User.ADMIN_PASSWORD_MD5);
 
             // Team Holy Cow users
@@ -61,10 +62,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_COW_TEAM_LEADER_NAME,
                                             SppdName = "Team-HolyCow-Leader",
                                             Email = "holyCowLeader@sppdteamtuner.com",
-                                            ApplicationRole = CoreConstants.Auth.Roles.USER,
+                                            ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
-                                            TeamRole = CoreConstants.Auth.Roles.LEADER,
+                                            TeamRole = CoreConstants.Authorization.Roles.LEADER,
                                             FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
+                                            ProfileVisibility = UserProfileVisibility.User,
                                             CardLevels = new[]
                                                          {
                                                              new CardLevel
@@ -79,8 +81,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                                              },
                                                              new CardLevel
                                                              {
-                                                             CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
-                                                             Level = 5
+                                                                 CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
+                                                                 Level = 5
                                                              },
                                                              new CardLevel
                                                              {
@@ -95,10 +97,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_NAME,
                                             SppdName = "Team-HolyCow-CoLeader",
                                             Email = "holyCowCoLeader@sppdteamtuner.com",
-                                            ApplicationRole = CoreConstants.Auth.Roles.USER,
+                                            ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
-                                            TeamRole = CoreConstants.Auth.Roles.CO_LEADER,
+                                            TeamRole = CoreConstants.Authorization.Roles.CO_LEADER,
                                             FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
+                                            ProfileVisibility = UserProfileVisibility.Team,
                                             CardLevels = new[]
                                                          {
                                                              new CardLevel
@@ -122,17 +125,18 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                                                  Level = 3
                                                              }
                                                          }
-            }, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_PASSWORD_MD5);
+                                        }, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_PASSWORD_MD5);
             await _userService.AddAsync(new TeamTunerUser
                                         {
                                             Id = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_MEMBER_ID),
                                             Name = TestingConstants.User.HOLY_COW_TEAM_MEMBER_NAME,
                                             SppdName = "Team-HolyCow-Member",
                                             Email = "holyCowMember@sppdteamtuner.com",
-                                            ApplicationRole = CoreConstants.Auth.Roles.USER,
+                                            ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
-                                            TeamRole = CoreConstants.Auth.Roles.MEMBER,
+                                            TeamRole = CoreConstants.Authorization.Roles.MEMBER,
                                             FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
+                                            ProfileVisibility = UserProfileVisibility.Federation,
                                             CardLevels = new[]
                                                          {
                                                              new CardLevel
@@ -156,7 +160,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                                                  Level = 1
                                                              }
                                                          }
-            }, TestingConstants.User.HOLY_COW_TEAM_MEMBER_PASSWORD_MD5);
+                                        }, TestingConstants.User.HOLY_COW_TEAM_MEMBER_PASSWORD_MD5);
 
             // Federation Holy users
             await _userService.AddAsync(new TeamTunerUser
@@ -165,23 +169,23 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_FEDERATION_LEADER_NAME,
                                             SppdName = "Federation-Holy-Leader",
                                             Email = "holyLeader@sppdteamtuner.com",
-                                            ApplicationRole = CoreConstants.Auth.Roles.USER,
+                                            ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
-                                            TeamRole = CoreConstants.Auth.Roles.MEMBER,
+                                            TeamRole = CoreConstants.Authorization.Roles.MEMBER,
                                             FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
-                                            FederationRole = CoreConstants.Auth.Roles.LEADER
-            }, TestingConstants.User.HOLY_FEDERATION_LEADER_PASSWORD_MD5);
+                                            FederationRole = CoreConstants.Authorization.Roles.LEADER
+                                        }, TestingConstants.User.HOLY_FEDERATION_LEADER_PASSWORD_MD5);
             await _userService.AddAsync(new TeamTunerUser
                                         {
                                             Id = Guid.Parse(TestingConstants.User.HOLY_FEDERATION_CO_LEADER_ID),
                                             Name = TestingConstants.User.HOLY_FEDERATION_CO_LEADER_NAME,
                                             SppdName = "Federation-Holy-CoLeader",
                                             Email = "holyCoLeader@sppdteamtuner.com",
-                                            ApplicationRole = CoreConstants.Auth.Roles.USER,
+                                            ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
-                                            TeamRole = CoreConstants.Auth.Roles.MEMBER,
+                                            TeamRole = CoreConstants.Authorization.Roles.MEMBER,
                                             FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
-                                            FederationRole = CoreConstants.Auth.Roles.CO_LEADER
+                                            FederationRole = CoreConstants.Authorization.Roles.CO_LEADER
                                         }, TestingConstants.User.HOLY_FEDERATION_CO_LEADER_PASSWORD_MD5);
             await _userService.AddAsync(new TeamTunerUser
                                         {
@@ -189,11 +193,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_FEDERATION_MEMBER_NAME,
                                             SppdName = "Federation-Holy-Member",
                                             Email = "holyMember@sppdteamtuner.com",
-                                            ApplicationRole = CoreConstants.Auth.Roles.USER,
+                                            ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
-                                            TeamRole = CoreConstants.Auth.Roles.MEMBER,
+                                            TeamRole = CoreConstants.Authorization.Roles.MEMBER,
                                             FederationId = new Guid(TestingConstants.Federation.HOLY_ID),
-                                            FederationRole = CoreConstants.Auth.Roles.MEMBER
+                                            FederationRole = CoreConstants.Authorization.Roles.MEMBER
                                         }, TestingConstants.User.HOLY_FEDERATION_MEMBER_PASSWORD_MD5);
         }
     }

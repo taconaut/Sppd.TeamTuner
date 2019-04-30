@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
 using Sppd.TeamTuner.Core.Domain.Entities;
-using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
 
@@ -37,11 +36,11 @@ namespace Sppd.TeamTuner.Controllers
         /// <param name="cardService">The card service.</param>
         /// <param name="tokenProvider">The token provider.</param>
         /// <param name="authorizationService">The authorization service.</param>
-        /// <param name="userProvider">The token provider.</param>
+        /// <param name="serviceProvider">The service provider.</param>
         /// <param name="mapper">The mapper.</param>
         public UsersController(ITeamTunerUserService userService, ICardService cardService, ITokenProvider tokenProvider, IAuthorizationService authorizationService,
-            ITeamTunerUserProvider userProvider, IMapper mapper)
-            : base(userProvider, authorizationService)
+            IServiceProvider serviceProvider, IMapper mapper)
+            : base(serviceProvider, authorizationService)
         {
             _userService = userService;
             _cardService = cardService;

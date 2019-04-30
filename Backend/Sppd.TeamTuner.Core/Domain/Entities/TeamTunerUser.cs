@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+using Sppd.TeamTuner.Core.Domain.Enumerations;
 using Sppd.TeamTuner.Core.Domain.Interfaces;
 using Sppd.TeamTuner.Core.Domain.Validation;
 using Sppd.TeamTuner.Core.Utils.Extensions;
@@ -17,6 +18,8 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
     public sealed class TeamTunerUser : DescriptiveEntity, ITeamTunerUser
     {
         public IEnumerable<CardLevel> CardLevels { get; set; }
+
+        public UserProfileVisibility ProfileVisibility { get; set; }
 
         [Required, StringLength(CoreConstants.StringLength.TeamTunerUser.SPPD_NAME)]
         public string SppdName { get; set; }

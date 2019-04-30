@@ -38,10 +38,11 @@ namespace Sppd.TeamTuner.Controllers
         /// <param name="authorizationService">The authorization service.</param>
         /// <param name="userProvider">The user provider.</param>
         /// <param name="tokenProvider">The token provider.</param>
+        /// <param name="serviceProvider">The service provider.</param>
         /// <param name="mapper">The mapper.</param>
         public TeamsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService, ITeamTunerUserProvider userProvider,
-            ITokenProvider tokenProvider, IMapper mapper)
-            : base(userProvider, authorizationService)
+            ITokenProvider tokenProvider, IServiceProvider serviceProvider, IMapper mapper)
+            : base(serviceProvider, authorizationService)
         {
             _teamService = teamService;
             _userService = userService;

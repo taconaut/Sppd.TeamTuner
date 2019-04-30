@@ -1,4 +1,6 @@
-﻿namespace Sppd.TeamTuner.DTOs
+﻿using Sppd.TeamTuner.Core.Domain.Enumerations;
+
+namespace Sppd.TeamTuner.DTOs
 {
     public class UserUpdateRequestDto : UpdateRequestDto
     {
@@ -11,5 +13,7 @@
         public byte[] Avatar { get; set; }
 
         public string Description { get; set; }
+
+        public UserProfileVisibility ProfileVisibility { get; set; }
     }
 }

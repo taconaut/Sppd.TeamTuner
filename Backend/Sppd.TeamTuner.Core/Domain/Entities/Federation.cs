@@ -25,16 +25,16 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
         /// <summary>
         ///     The federation members.
         /// </summary>
-        public IEnumerable<TeamTunerUser> Members => Users.Where(u => Equals(u.TeamRole, CoreConstants.Auth.Roles.MEMBER));
+        public IEnumerable<TeamTunerUser> Members => Users.Where(u => Equals(u.TeamRole, CoreConstants.Authorization.Roles.MEMBER));
 
         /// <summary>
         ///     The federation co-leaders.
         /// </summary>
-        public IEnumerable<TeamTunerUser> CoLeaders => Users.Where(u => Equals(u.FederationRole, CoreConstants.Auth.Roles.CO_LEADER));
+        public IEnumerable<TeamTunerUser> CoLeaders => Users.Where(u => Equals(u.FederationRole, CoreConstants.Authorization.Roles.CO_LEADER));
 
         /// <summary>
         ///     The federation leader.
         /// </summary>
-        public TeamTunerUser Leader => Users.SingleOrDefault(u => Equals(u.FederationRole, CoreConstants.Auth.Roles.LEADER));
+        public TeamTunerUser Leader => Users.SingleOrDefault(u => Equals(u.FederationRole, CoreConstants.Authorization.Roles.LEADER));
     }
 }

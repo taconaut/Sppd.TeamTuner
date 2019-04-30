@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Enumerations;
 using Sppd.TeamTuner.Core.Domain.Interfaces;
 
 namespace Sppd.TeamTuner.Core.Domain
@@ -23,7 +24,7 @@ namespace Sppd.TeamTuner.Core.Domain
 
         public string Email => "dummy@mail.com";
 
-        public string ApplicationRole => CoreConstants.Auth.Roles.ADMIN;
+        public string ApplicationRole => CoreConstants.Authorization.Roles.ADMIN;
 
         public Guid? TeamId => null;
 
@@ -36,5 +37,7 @@ namespace Sppd.TeamTuner.Core.Domain
         public Federation Federation => null;
 
         public string FederationRole => null;
+
+        public UserProfileVisibility ProfileVisibility => UserProfileVisibility.User;
     }
 }

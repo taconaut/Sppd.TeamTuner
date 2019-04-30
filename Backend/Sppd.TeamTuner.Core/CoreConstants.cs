@@ -23,7 +23,7 @@
             public const string APP_DLL_PREFIX = "Sppd.TeamTuner";
         }
 
-        public struct Auth
+        public struct Authorization
         {
             public struct Roles
             {

@@ -59,7 +59,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             // Add user to team
             var user = joinRequest.User;
             user.TeamId = joinRequest.TeamId;
-            user.TeamRole = CoreConstants.Auth.Roles.MEMBER;
+            user.TeamRole = CoreConstants.Authorization.Roles.MEMBER;
 
             // Job done, delete the request
             await _membershipRequestRepository.DeleteAsync(membershipRequestId);
@@ -94,7 +94,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             }
 
             user.TeamId = teamId;
-            user.TeamRole = CoreConstants.Auth.Roles.LEADER;
+            user.TeamRole = CoreConstants.Authorization.Roles.LEADER;
             _userRepository.Update(user);
 
             _userProvider.CurrentUser = user;

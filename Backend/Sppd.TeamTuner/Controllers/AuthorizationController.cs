@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
-using Sppd.TeamTuner.Core.Domain.Interfaces;
-using Sppd.TeamTuner.Core.Providers;
 
 namespace Sppd.TeamTuner.Controllers
 {
@@ -16,13 +14,13 @@ namespace Sppd.TeamTuner.Controllers
     /// <seealso cref="ControllerBase" />
     public abstract class AuthorizationController : ControllerBase
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly IAuthorizationService _authorizationService;
-        private readonly Lazy<ITeamTunerUser> _currentUser;
 
-        protected AuthorizationController(ITeamTunerUserProvider userProvider, IAuthorizationService authorizationService)
+        protected AuthorizationController(IServiceProvider serviceProvider, IAuthorizationService authorizationService)
         {
+            _serviceProvider = serviceProvider;
             _authorizationService = authorizationService;
-            _currentUser = new Lazy<ITeamTunerUser>(() => userProvider.CurrentUser);
         }
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace Sppd.TeamTuner.Controllers
 
         private AuthorizationRequest GetAuthorizationRequest(object parameter)
         {
-            return new AuthorizationRequest(_currentUser.Value, parameter);
+            return new AuthorizationRequest(_serviceProvider, parameter);
         }
     }
 }

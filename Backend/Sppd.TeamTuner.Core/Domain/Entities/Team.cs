@@ -31,16 +31,16 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
         /// <summary>
         ///     The team members.
         /// </summary>
-        public IEnumerable<TeamTunerUser> Members => Users.Where(u => Equals(u.TeamRole, CoreConstants.Auth.Roles.MEMBER));
+        public IEnumerable<TeamTunerUser> Members => Users.Where(u => Equals(u.TeamRole, CoreConstants.Authorization.Roles.MEMBER));
 
         /// <summary>
         ///     The team co-leaders.
         /// </summary>
-        public IEnumerable<TeamTunerUser> CoLeaders => Users.Where(u => Equals(u.TeamRole, CoreConstants.Auth.Roles.CO_LEADER));
+        public IEnumerable<TeamTunerUser> CoLeaders => Users.Where(u => Equals(u.TeamRole, CoreConstants.Authorization.Roles.CO_LEADER));
 
         /// <summary>
         ///     The team leader.
         /// </summary>
-        public TeamTunerUser Leader => Users.SingleOrDefault(u => Equals(u.TeamRole, CoreConstants.Auth.Roles.LEADER));
+        public TeamTunerUser Leader => Users.SingleOrDefault(u => Equals(u.TeamRole, CoreConstants.Authorization.Roles.LEADER));
     }
 }

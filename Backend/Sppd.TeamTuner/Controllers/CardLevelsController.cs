@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using AutoMapper;
 
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
 using Sppd.TeamTuner.Core.Domain.Entities;
-using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
 
@@ -26,11 +26,11 @@ namespace Sppd.TeamTuner.Controllers
         ///     Initializes a new instance of the <see cref="CardLevelsController" /> class.
         /// </summary>
         /// <param name="userService">The user service.</param>
-        /// <param name="userProvider">The user provider.</param>
         /// <param name="authorizationService">The authorization service.</param>
+        /// <param name="serviceProvider">The service provider.</param>
         /// <param name="mapper">The mapper.</param>
-        public CardLevelsController(ITeamTunerUserService userService, ITeamTunerUserProvider userProvider, IAuthorizationService authorizationService, IMapper mapper)
-            : base(userProvider, authorizationService)
+        public CardLevelsController(ITeamTunerUserService userService, IAuthorizationService authorizationService, IServiceProvider serviceProvider, IMapper mapper)
+            : base(serviceProvider, authorizationService)
         {
             _userService = userService;
             _mapper = mapper;

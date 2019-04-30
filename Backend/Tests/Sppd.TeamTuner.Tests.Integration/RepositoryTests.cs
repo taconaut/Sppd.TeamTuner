@@ -32,7 +32,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                            SppdName = "SppdName",
                            PasswordHash = Encoding.UTF8.GetBytes("A"),
                            PasswordSalt = Encoding.UTF8.GetBytes("A"),
-                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                           ApplicationRole = CoreConstants.Authorization.Roles.USER
                        };
             Exception exception = null;
 
@@ -112,7 +112,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                            SppdName = "SppdName2",
                            PasswordHash = Encoding.UTF8.GetBytes("A"),
                            PasswordSalt = Encoding.UTF8.GetBytes("A"),
-                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                           ApplicationRole = CoreConstants.Authorization.Roles.USER
                        };
 
             // Act
@@ -165,7 +165,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                            SppdName = "SppdName3",
                            PasswordHash = Encoding.UTF8.GetBytes("A"),
                            PasswordSalt = Encoding.UTF8.GetBytes("A"),
-                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                           ApplicationRole = CoreConstants.Authorization.Roles.USER
                        };
             var updatedEmail = "tutu@tata.com";
 
@@ -222,7 +222,7 @@ namespace Sppd.TeamTuner.Tests.Integration
                            SppdName = "SppdName3",
                            PasswordHash = Encoding.UTF8.GetBytes("A"),
                            PasswordSalt = Encoding.UTF8.GetBytes("A"),
-                           ApplicationRole = CoreConstants.Auth.Roles.USER
+                           ApplicationRole = CoreConstants.Authorization.Roles.USER
                        };
             var updatedEmail = "tutu@tata.com";
             // Act

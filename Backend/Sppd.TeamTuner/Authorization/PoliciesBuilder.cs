@@ -3,7 +3,10 @@
 using Microsoft.AspNetCore.Authorization;
 
 using Sppd.TeamTuner.Core;
+using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Enumerations;
 using Sppd.TeamTuner.Core.Domain.Interfaces;
+using Sppd.TeamTuner.Core.Repositories;
 
 namespace Sppd.TeamTuner.Authorization
 {
@@ -31,8 +34,8 @@ namespace Sppd.TeamTuner.Authorization
                     var authorizationRequest = (AuthorizationRequest) ctx.Resource;
                     var user = authorizationRequest.CurrentUser;
                     var userId = authorizationRequest.Resource as Guid?;
-                    // TODO: extend rights
-                    return IsAdmin(user) || IsCurrentUser(user, userId);
+                    var userRepository = new Lazy<IRepository<TeamTunerUser>>(() => authorizationRequest.RepositoryResolver.ResolveFor<TeamTunerUser>());
+                    return IsAdmin(user) || IsCurrentUser(user, userId) || IsProfileVisible(user, userId, userRepository);
                 }));
             options.AddPolicy(AuthorizationConstants.Policies.CAN_UPDATE_USER,
                 policy => policy.RequireAssertion(ctx =>
@@ -115,47 +118,75 @@ namespace Sppd.TeamTuner.Authorization
         }
 
         // Application
-        private static bool IsAdmin(ITeamTunerUser user)
+        private static bool IsAdmin(ITeamTunerUser currentUser)
         {
-            return Equals(CoreConstants.Auth.Roles.ADMIN, user.ApplicationRole);
+            return Equals(CoreConstants.Authorization.Roles.ADMIN, currentUser.ApplicationRole);
         }
 
         // User
-        private static bool IsCurrentUser(ITeamTunerUser user, Guid? userId)
+        private static bool IsCurrentUser(ITeamTunerUser currentUser, Guid? userId)
         {
-            return Equals(user.Id, userId);
+            return Equals(currentUser.Id, userId);
+        }
+
+        private static bool IsProfileVisible(ITeamTunerUser currentUser, Guid? userId, Lazy<IRepository<TeamTunerUser>> userRepository)
+        {
+            if (!userId.HasValue)
+            {
+                return false;
+            }
+
+            var getUserTask = userRepository.Value.GetAsync(userId.Value);
+            getUserTask.Wait();
+            var user = getUserTask.Result;
+
+            switch (user.ProfileVisibility)
+            {
+                case UserProfileVisibility.Team:
+                    return Equals(currentUser.TeamId, user.TeamId);
+
+                case UserProfileVisibility.Federation:
+                    return Equals(currentUser.FederationId, user.FederationId);
+
+                default:
+                    return false;
+            }
         }
 
         // Team
-        private static bool IsInTeam(ITeamTunerUser user, Guid? teamId)
+        private static bool IsInTeam(ITeamTunerUser currentUser, Guid? teamId)
         {
-            return Equals(user.TeamId, teamId);
+            return Equals(currentUser.TeamId, teamId);
         }
 
-        private static bool IsTeamLeader(ITeamTunerUser user, Guid? teamId)
+        private static bool IsTeamLeader(ITeamTunerUser currentUser, Guid? teamId)
         {
-            return IsInTeam(user, teamId) && Equals(CoreConstants.Auth.Roles.LEADER, user.TeamRole);
+            return IsInTeam(currentUser, teamId)
+                   && Equals(CoreConstants.Authorization.Roles.LEADER, currentUser.TeamRole);
         }
 
-        private static bool IsTeamCoLeader(ITeamTunerUser user, Guid? teamId)
+        private static bool IsTeamCoLeader(ITeamTunerUser currentUser, Guid? teamId)
         {
-            return IsInTeam(user, teamId) && Equals(CoreConstants.Auth.Roles.CO_LEADER, user.TeamRole);
+            return IsInTeam(currentUser, teamId)
+                   && Equals(CoreConstants.Authorization.Roles.CO_LEADER, currentUser.TeamRole);
         }
 
         // Federation
-        private static bool IsInFederation(ITeamTunerUser user, Guid? federationId)
+        private static bool IsInFederation(ITeamTunerUser currentUser, Guid? federationId)
         {
-            return Equals(user.FederationId, federationId);
+            return Equals(currentUser.FederationId, federationId);
         }
 
-        private static bool IsFederationLeader(ITeamTunerUser user, Guid? federationId)
+        private static bool IsFederationLeader(ITeamTunerUser currentUser, Guid? federationId)
         {
-            return IsInFederation(user, federationId) && Equals(CoreConstants.Auth.Roles.LEADER, user.FederationRole);
+            return IsInFederation(currentUser, federationId)
+                   && Equals(CoreConstants.Authorization.Roles.LEADER, currentUser.FederationRole);
         }
 
-        private static bool IsFederationCoLeader(ITeamTunerUser user, Guid? federationId)
+        private static bool IsFederationCoLeader(ITeamTunerUser currentUser, Guid? federationId)
         {
-            return IsInFederation(user, federationId) && Equals(CoreConstants.Auth.Roles.CO_LEADER, user.FederationRole);
+            return IsInFederation(currentUser, federationId)
+                   && Equals(CoreConstants.Authorization.Roles.CO_LEADER, currentUser.FederationRole);
         }
     }
 }
