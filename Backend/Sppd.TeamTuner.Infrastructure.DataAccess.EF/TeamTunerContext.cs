@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
-using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Domain.Interfaces;
 using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Services;
-using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 {
@@ -18,18 +16,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
     ///     <see cref="DbContext" /> for the application.
     /// </summary>
     /// <seealso cref="DbContext" />
-    internal partial class TeamTunerContext : DbContext, IDatabaseService
+    public partial class TeamTunerContext : DbContext, IDatabaseService
     {
-        private readonly Lazy<DatabaseConfig> _databaseConfig;
         private readonly Lazy<IValidationService> _validationService;
         private readonly IEnumerable<Lazy<IEntityMetadataProvider>> _entityMetadataProviders;
 
-        public TeamTunerContext(DbContextOptions options, Lazy<IValidationService> validationService, IConfigProvider<DatabaseConfig> databaseConfigProvider,
-            IEnumerable<Lazy<IEntityMetadataProvider>> entityMetadataProviders)
+        public TeamTunerContext(DbContextOptions options, Lazy<IValidationService> validationService, IEnumerable<Lazy<IEntityMetadataProvider>> entityMetadataProviders)
             : base(options)
         {
             _validationService = validationService;
-            _databaseConfig = new Lazy<DatabaseConfig>(() => databaseConfigProvider.Config);
             _entityMetadataProviders = entityMetadataProviders;
         }
 

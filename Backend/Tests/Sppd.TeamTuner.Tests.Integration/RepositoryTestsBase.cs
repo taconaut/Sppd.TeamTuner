@@ -29,8 +29,16 @@ namespace Sppd.TeamTuner.Tests.Integration
         {
             // Instantiate StartupRegistrators registering required services
             var dataAccessStartupRegistrator = new StartupRegistrator();
+            var msSqlStartupRegistrator = new Infrastructure.DataAccess.EF.MsSql.StartupRegistrator();
+            var sqliteStartupRegistrator = new Infrastructure.DataAccess.EF.Sqlite.StartupRegistrator();
             var infrastructureStartupRegistrator = new Infrastructure.StartupRegistrator();
-            var startupRegistrators = new IStartupRegistrator[] {infrastructureStartupRegistrator, dataAccessStartupRegistrator};
+            var startupRegistrators = new IStartupRegistrator[]
+                                      {
+                                          infrastructureStartupRegistrator,
+                                          msSqlStartupRegistrator,
+                                          sqliteStartupRegistrator,
+                                          dataAccessStartupRegistrator
+                                      };
 
             // Register services
             var services = new ServiceCollection();
@@ -45,7 +53,7 @@ namespace Sppd.TeamTuner.Tests.Integration
 
         public void Dispose()
         {
-            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
+            //ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
         }
 
         private static IConfiguration BuildConfiguration()

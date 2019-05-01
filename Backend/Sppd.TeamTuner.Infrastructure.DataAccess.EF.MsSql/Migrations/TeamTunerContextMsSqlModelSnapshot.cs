@@ -3,21 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql;
 
-namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
+namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 {
-    [DbContext(typeof(TeamTunerContext))]
-    [Migration("20190408110255_Initial")]
-    partial class Initial
+    [DbContext(typeof(TeamTunerContextMsSql))]
+    partial class TeamTunerContextMsSqlModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -44,8 +42,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -57,10 +54,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("TypeId");
 
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
                     b.HasKey("Id");
 
                     b.HasIndex("ExternalId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.HasIndex("RarityId");
 
@@ -92,16 +94,21 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<Guid>("UserId");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
 
                     b.HasIndex("CardId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "CardId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("CardLevel");
                 });
@@ -123,12 +130,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
 
@@ -157,12 +167,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
 
@@ -188,12 +201,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
 
@@ -224,18 +240,64 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
 
                     b.HasIndex("FederationId");
 
                     b.ToTable("Team");
+                });
+
+            modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamMembershipRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500);
+
+                    b.Property<Guid>("CreatedById");
+
+                    b.Property<DateTime>("CreatedOnUtc");
+
+                    b.Property<Guid?>("DeletedById");
+
+                    b.Property<DateTime?>("DeletedOnUtc");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<Guid>("ModifiedById");
+
+                    b.Property<DateTime>("ModifiedOnUtc");
+
+                    b.Property<Guid>("TeamId");
+
+                    b.Property<Guid>("UserId");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.ToTable("TeamMembershipRequest");
                 });
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUser", b =>
@@ -273,8 +335,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -288,6 +349,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                         .IsRequired()
                         .HasMaxLength(128);
 
+                    b.Property<int>("ProfileVisibility");
+
                     b.Property<string>("SppdName")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -297,18 +360,25 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     b.Property<string>("TeamRole")
                         .HasMaxLength(20);
 
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.HasIndex("FederationId");
 
                     b.HasIndex("Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.HasIndex("SppdName")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.HasIndex("TeamId");
 
@@ -332,12 +402,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.Property<Guid>("ModifiedById");
 
-                    b.Property<DateTime>("ModifiedOnUtc")
-                        .IsConcurrencyToken();
+                    b.Property<DateTime>("ModifiedOnUtc");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
 
@@ -380,6 +453,19 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.Federation", "Federation")
                         .WithMany("Teams")
                         .HasForeignKey("FederationId");
+                });
+
+            modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamMembershipRequest", b =>
+                {
+                    b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUser", b =>

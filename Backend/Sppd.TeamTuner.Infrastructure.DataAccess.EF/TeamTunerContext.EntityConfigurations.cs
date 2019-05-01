@@ -5,12 +5,11 @@ using Sppd.TeamTuner.Core.Domain.Entities;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 {
-    /// <inheritdoc />
     /// <summary>
     ///     Partial class specifying the entity configurations
     /// </summary>
     /// <seealso cref="T:Microsoft.EntityFrameworkCore.DbContext" />
-    internal partial class TeamTunerContext
+    public partial class TeamTunerContext
     {
         private static void ConfigureBaseEntity<TEntity>(EntityTypeBuilder<TEntity> builder)
             where TEntity : BaseEntity

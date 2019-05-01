@@ -38,6 +38,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Sppd.TeamTuner.Common\Sppd.TeamTuner.Common.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure.DataAccess.EF\Sppd.TeamTuner.Infrastructure.DataAccess.EF.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure\Sppd.TeamTuner.Infrastructure.csproj" />
   </ItemGroup>

@@ -6,8 +6,13 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config
     ///     Defines configuration properties related to the database
     /// </summary>
     /// <seealso cref="IConfig" />
-    internal class DatabaseConfig : IConfig
+    public class DatabaseConfig : IConfig
     {
+        /// <summary>
+        ///     DB provider to use.
+        /// </summary>
+        public string Provider { get; set; } = "MsSql";
+
         /// <summary>
         ///     ConnectionString used for database connection.
         /// </summary>

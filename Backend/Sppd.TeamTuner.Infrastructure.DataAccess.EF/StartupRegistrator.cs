@@ -1,6 +1,5 @@
 ﻿using System;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using Sppd.TeamTuner.Core;
@@ -20,19 +19,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 {
     public class StartupRegistrator : IStartupRegistrator
     {
-        private const string ID_PLACEHOLDER = "{id}";
-
         public int Priority => 100;
 
         public void Register(IServiceCollection services)
         {
             var databaseConfig = services.BuildServiceProvider().GetConfig<DatabaseConfig>();
-
-            // DB context
-            var dbId = Guid.NewGuid().ToString("n").Substring(0, 8);
-            databaseConfig.ConnectionString = databaseConfig.ConnectionString.Replace(ID_PLACEHOLDER, dbId);
-            services.AddDbContext<TeamTunerContext>(options => options.UseSqlServer(databaseConfig.ConnectionString))
-                    .AddScoped<IDatabaseService, TeamTunerContext>();
 
             // Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>))

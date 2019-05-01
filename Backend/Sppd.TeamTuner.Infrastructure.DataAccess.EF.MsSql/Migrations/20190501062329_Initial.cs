@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
+namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 {
     public partial class Initial : Migration
     {
@@ -19,6 +19,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -38,6 +39,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Avatar = table.Column<byte[]>(nullable: true),
                     Description = table.Column<string>(maxLength: 2000, nullable: true)
@@ -59,6 +61,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     FriendlyLevel = table.Column<int>(nullable: false)
                 },
@@ -79,6 +82,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -98,6 +102,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Avatar = table.Column<byte[]>(nullable: true),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
@@ -126,6 +131,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     FriendlyName = table.Column<string>(maxLength: 10, nullable: false),
                     ExternalId = table.Column<int>(nullable: false),
@@ -168,9 +174,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Avatar = table.Column<byte[]>(nullable: true),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
+                    ProfileVisibility = table.Column<int>(nullable: false),
                     SppdName = table.Column<string>(maxLength: 50, nullable: false),
                     PasswordHash = table.Column<byte[]>(maxLength: 64, nullable: false),
                     PasswordSalt = table.Column<byte[]>(maxLength: 128, nullable: false),
@@ -210,6 +218,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOnUtc = table.Column<DateTime>(nullable: true),
                     DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     CardId = table.Column<Guid>(nullable: false),
                     UserId = table.Column<Guid>(nullable: false),
                     Level = table.Column<int>(nullable: false)
@@ -231,11 +240,46 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TeamMembershipRequest",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(nullable: false),
+                    CreatedById = table.Column<Guid>(nullable: false),
+                    ModifiedOnUtc = table.Column<DateTime>(nullable: false),
+                    ModifiedById = table.Column<Guid>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOnUtc = table.Column<DateTime>(nullable: true),
+                    DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    TeamId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false),
+                    Comment = table.Column<string>(maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamMembershipRequest", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TeamMembershipRequest_Team_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Team",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeamMembershipRequest_TeamTunerUser_UserId",
+                        column: x => x.UserId,
+                        principalTable: "TeamTunerUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Card_ExternalId",
                 table: "Card",
                 column: "ExternalId",
-                unique: true);
+                unique: true,
+                filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Card_RarityId",
@@ -258,9 +302,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                 column: "CardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardLevel_UserId",
+                name: "IX_CardLevel_UserId_CardId",
                 table: "CardLevel",
-                column: "UserId");
+                columns: new[] { "UserId", "CardId" },
+                unique: true,
+                filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Team_FederationId",
@@ -268,10 +314,25 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                 column: "FederationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TeamMembershipRequest_TeamId",
+                table: "TeamMembershipRequest",
+                column: "TeamId",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamMembershipRequest_UserId",
+                table: "TeamMembershipRequest",
+                column: "UserId",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TeamTunerUser_Email",
                 table: "TeamTunerUser",
                 column: "Email",
-                unique: true);
+                unique: true,
+                filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamTunerUser_FederationId",
@@ -282,13 +343,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                 name: "IX_TeamTunerUser_Name",
                 table: "TeamTunerUser",
                 column: "Name",
-                unique: true);
+                unique: true,
+                filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamTunerUser_SppdName",
                 table: "TeamTunerUser",
                 column: "SppdName",
-                unique: true);
+                unique: true,
+                filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamTunerUser_TeamId",
@@ -300,6 +363,9 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
         {
             migrationBuilder.DropTable(
                 name: "CardLevel");
+
+            migrationBuilder.DropTable(
+                name: "TeamMembershipRequest");
 
             migrationBuilder.DropTable(
                 name: "Card");

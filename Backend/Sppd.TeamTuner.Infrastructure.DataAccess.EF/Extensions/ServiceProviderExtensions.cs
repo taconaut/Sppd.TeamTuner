@@ -32,7 +32,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Extensions
                 var userProvider = scope.ServiceProvider.GetService<ITeamTunerUserProvider>();
                 userProvider.CurrentUser = new SystemUser();
 
-                var context = scope.ServiceProvider.GetRequiredService<TeamTunerContext>();
+                var context = scope.ServiceProvider.GetService<TeamTunerContext>();
 
                 if (databaseConfig.DeleteOnStartup)
                 {

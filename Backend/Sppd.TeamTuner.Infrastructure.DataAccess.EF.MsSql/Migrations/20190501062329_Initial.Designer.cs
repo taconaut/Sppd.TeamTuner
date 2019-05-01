@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql;
 
-namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
+namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 {
-    [DbContext(typeof(TeamTunerContext))]
-    [Migration("20190420130358_Membership")]
-    partial class Membership
+    [DbContext(typeof(TeamTunerContextMsSql))]
+    [Migration("20190501062329_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -108,7 +108,9 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "CardId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("CardLevel");
                 });
@@ -348,6 +350,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
                         .HasMaxLength(128);
+
+                    b.Property<int>("ProfileVisibility");
 
                     b.Property<string>("SppdName")
                         .IsRequired()
