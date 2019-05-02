@@ -53,7 +53,7 @@ namespace Sppd.TeamTuner.Tests.Integration
 
         public void Dispose()
         {
-            //ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
+            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
         }
 
         private static IConfiguration BuildConfiguration()

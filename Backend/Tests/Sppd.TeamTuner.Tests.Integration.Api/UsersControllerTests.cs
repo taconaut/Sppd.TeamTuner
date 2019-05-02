@@ -14,6 +14,9 @@ using Sppd.TeamTuner.DTOs;
 
 using Xunit;
 
+// Disable concurrent test execution until a solution to delete the DB has been found
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 // ReSharper disable JoinDeclarationAndInitializer
 
 namespace Sppd.TeamTuner.Tests.Integration.Api
