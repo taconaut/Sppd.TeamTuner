@@ -29,8 +29,8 @@ namespace Sppd.TeamTuner.Tests.Integration
         {
             // Instantiate StartupRegistrators registering required services
             var dataAccessStartupRegistrator = new StartupRegistrator();
-            var msSqlStartupRegistrator = new Infrastructure.DataAccess.EF.MsSql.StartupRegistrator();
-            var sqliteStartupRegistrator = new Infrastructure.DataAccess.EF.Sqlite.StartupRegistrator();
+            var msSqlStartupRegistrator = new Infrastructure.DataAccess.EF.MsSql.StartupShutdownRegistrator();
+            var sqliteStartupRegistrator = new Infrastructure.DataAccess.EF.Sqlite.StartupShutdownRegistrator();
             var infrastructureStartupRegistrator = new Infrastructure.StartupRegistrator();
             var startupRegistrators = new IStartupRegistrator[]
                                       {

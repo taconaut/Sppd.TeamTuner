@@ -4,16 +4,35 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using Sppd.TeamTuner.Core;
+using Sppd.TeamTuner.Core.Config;
+using Sppd.TeamTuner.Core.Domain.Enumerations;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Core.Utils.Extensions;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql
 {
-    public class StartupRegistrator : IStartupRegistrator
+    public class StartupShutdownRegistrator : IStartupRegistrator, IShutdownRegistrator
     {
         private const string PROVIDER_NAME = "MsSql";
         private const string ID_PLACEHOLDER = "{id}";
+
+        private IServiceProvider _serviceProvider;
+
+        public void OnBeforeShutdown()
+        {
+            var databaseConfig = _serviceProvider.GetConfig<DatabaseConfig>();
+            if (!PROVIDER_NAME.Equals(databaseConfig.Provider, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
+            var generalConfig = _serviceProvider.GetConfig<GeneralConfig>();
+            if (generalConfig.ExecutionMode == ExecutionMode.Test)
+            {
+                _serviceProvider.GetService<IDatabaseService>().DeleteDatabase();
+            }
+        }
 
         public int Priority => 90;
 
@@ -35,6 +54,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql
 
         public void Configure(IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
         }
     }
 }

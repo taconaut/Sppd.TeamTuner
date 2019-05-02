@@ -86,7 +86,8 @@ namespace Sppd.TeamTuner
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The hosting environment.</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        /// <param name="appLifetime">The application lifetime.</param>
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
         {
             _logger.LogDebug("Start configuring application");
 
@@ -122,7 +123,18 @@ namespace Sppd.TeamTuner
 
             ConfigureServicesOnStartupRegistries(app.ApplicationServices);
 
+            appLifetime.ApplicationStopping.Register(OnBeforeShutdown);
+
             _logger.LogInformation("Application is ready");
+        }
+
+        private void OnBeforeShutdown()
+        {
+            _logger.LogInformation("Application is shutting down");
+            foreach (var shutdownRegistrator in GetInstances<IShutdownRegistrator>())
+            {
+                shutdownRegistrator.OnBeforeShutdown();
+            }
         }
 
         private static void RegisterSwagger(IServiceCollection services)
