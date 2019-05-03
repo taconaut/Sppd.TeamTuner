@@ -1,21 +1,21 @@
-#addin "Cake.Graph"
 //////////////////////////////////////////////////////////////////////
-// ARGUMENTS
+// Arguments
 //////////////////////////////////////////////////////////////////////
 
 var target = Argument("target", "Build");
 var configuration = Argument("configuration", "Release");
 
 //////////////////////////////////////////////////////////////////////
-// PREPARATION
+// Preparation
 //////////////////////////////////////////////////////////////////////
 
 var buildDir = Directory("./Backend/Sppd.TeamTuner/bin") + Directory(configuration);
 var artifacts = MakeAbsolute(Directory("./artifacts"));
 var solution = "./Backend/Sppd.TeamTuner.sln";
+var teamTunerProject = "./Backend/Sppd.TeamTuner/Sppd.TeamTuner.csproj";
 
 //////////////////////////////////////////////////////////////////////
-// TASKS
+// Tasks
 //////////////////////////////////////////////////////////////////////
 
 Task("Clean")
@@ -44,6 +44,31 @@ Task("Build")
         };
 	 
       DotNetCoreBuild(solution, settings);
+});
+
+//////////////////////////////////////////////////////////////////////
+////// Packaging
+//////////////////////////////////////////////////////////////////////
+
+Task("Package-Backend")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    var settings = new DotNetCorePublishSettings
+    {
+        Configuration = configuration,
+        OutputDirectory = $"{artifacts}/Backend",
+        NoBuild = true
+    };
+
+    DotNetCorePublish(teamTunerProject, settings);
+});
+
+Task("Zip-Package")
+    .IsDependentOn("Package-Backend")
+    .Does(() =>
+{
+    Zip(artifacts, $"{artifacts}/Sppd.TeameTuner.zip");
 });
 
 //////////////////////////////////////////////////////////////////////
