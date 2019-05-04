@@ -230,13 +230,19 @@ namespace Sppd.TeamTuner
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToList();
             foreach (var assemblyFilePath in directoryCatalog.LoadedFiles)
             {
-                var cleanAssemblyFilePath = FileHelper.GetCleanFilePath(assemblyFilePath);
-                var isAssemblyRegistered = loadedAssemblies.Any(a => string.Equals(a.GetFilePath(), cleanAssemblyFilePath, StringComparison.InvariantCultureIgnoreCase));
+                var isAssemblyRegistered = loadedAssemblies.Any(a => string.Equals(a.GetFilePath(), assemblyFilePath, StringComparison.InvariantCultureIgnoreCase));
                 if (!isAssemblyRegistered)
                 {
-                    // Load the application assembly if it hasn't already been loaded
-                    Assembly.Load(assemblyFilePath);
-                    _logger.LogInformation($"Dynamically loaded assembly '{assemblyFilePath}'");
+                    try
+                    {
+                        // Load the application assembly if it hasn't already been loaded
+                        Assembly.Load(assemblyFilePath);
+                        _logger.LogInformation($"Dynamically loaded assembly '{assemblyFilePath}'");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Failed to load assembly '{assemblyFilePath}' ");
+                    }
                 }
             }
 
