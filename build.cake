@@ -37,13 +37,13 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
 {
-    var settings = new DotNetCoreBuildSettings
-        {
+    DotNetCoreBuild(
+        solution,
+        new DotNetCoreBuildSettings{
             NoRestore = true,
             Configuration = configuration
-        };
-	 
-      DotNetCoreBuild(solution, settings);
+        }
+    );
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -54,14 +54,15 @@ Task("Package-Backend")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    var settings = new DotNetCorePublishSettings
-    {
-        Configuration = configuration,
-        OutputDirectory = $"{artifacts}/Backend",
-        NoBuild = true
-    };
-
-    DotNetCorePublish(teamTunerProject, settings);
+    DotNetCorePublish(
+        teamTunerProject,
+        new DotNetCorePublishSettings{
+            NoBuild = true,
+            NoRestore = true,
+            Configuration = configuration,
+            OutputDirectory = $"{artifacts}/Backend"
+        }
+    );
 });
 
 Task("Zip-Package")
