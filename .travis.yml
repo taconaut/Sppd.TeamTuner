@@ -1,0 +1,8 @@
+language: csharp
+solution: ./Backend/Sppd.TeamTuner.sln
+mono: latest
+dist: xenial
+dotnet: 2.2
+
+script:
+- ./build.sh --target Run-All-Tests
