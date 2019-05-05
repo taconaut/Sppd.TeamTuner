@@ -38,8 +38,8 @@ Task("Clean")
 {    
     CleanDirectory(artifacts);
     CleanDirectory(testCoverageResults);
-    CleanDirectories("./**/obj/*.*");
-    CleanDirectories($"./**/bin/{configuration}/*.*");
+    CleanDirectories("./**/obj/{configuration}");
+    CleanDirectories($"./**/bin/{configuration}");
 });
 
 Task("Restore-NuGet-Packages")
