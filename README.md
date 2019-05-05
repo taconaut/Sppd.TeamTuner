@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.com/taconaut/Sppd.TeamTuner.svg?branch=master)](https://travis-ci.com/taconaut/Sppd.TeamTuner) [![codecov](https://codecov.io/gh/taconaut/Sppd.TeamTuner/branch/master/graph/badge.svg)](https://codecov.io/gh/taconaut/Sppd.TeamTuner)
