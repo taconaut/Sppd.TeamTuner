@@ -182,6 +182,10 @@ Task("Upload-Coverage")
     Codecov($"{testCoverageResults}/{apiTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
 });
 
+Task("Run-Upload-All-Tests")
+    .IsDependentOn("Run-All-Tests")
+    .IsDependentOn("Upload-Coverage");
+
 //////////////////////////////////////////////////////////////////////
 // Execution
 //////////////////////////////////////////////////////////////////////

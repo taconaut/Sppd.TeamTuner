@@ -5,5 +5,4 @@ dist: xenial
 dotnet: 2.2
 
 script:
-- ./build.sh --target Run-All-Tests
-- ./build.sh --target Upload-Coverage --Verbosity Diagnostic
+- ./build.sh --target Run-Upload-All-Tests
