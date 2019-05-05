@@ -1,4 +1,10 @@
 //////////////////////////////////////////////////////////////////////
+// Add-ins
+//////////////////////////////////////////////////////////////////////
+
+#addin nuget:?package=Cake.Coverlet&version=2.2.1
+
+//////////////////////////////////////////////////////////////////////
 // Arguments
 //////////////////////////////////////////////////////////////////////
 
@@ -11,6 +17,7 @@ var configuration = Argument("configuration", "Release");
 
 var buildDir = Directory("./Backend/Sppd.TeamTuner/bin") + Directory(configuration);
 var artifacts = MakeAbsolute(Directory("./artifacts"));
+var testCoverageResults = MakeAbsolute(Directory("./coverage-results"));
 var solution = "./Backend/Sppd.TeamTuner.sln";
 var teamTunerProject = "./Backend/Sppd.TeamTuner/Sppd.TeamTuner.csproj";
 
@@ -22,6 +29,7 @@ Task("Clean")
     .Does(() =>
 {    
     CleanDirectory(artifacts);
+    CleanDirectory(testCoverageResults);
     CleanDirectories("./**/obj/*.*");
     CleanDirectories($"./**/bin/{configuration}/*.*");
 });
@@ -85,9 +93,15 @@ Task("Run-Unit-Tests")
     DotNetCoreTest(
         testProject.FullPath,
         new DotNetCoreTestSettings{
-            NoBuild = true,
-            NoRestore = true,
+            // NoBuild = true,
+            // NoRestore = true,
             Configuration = configuration
+        },
+        new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = CoverletOutputFormat.opencover,
+            CoverletOutputDirectory = testCoverageResults,
+            CoverletOutputName = $"results-unit.xml"
         }
     );
 });
@@ -101,9 +115,15 @@ Task("Run-Integration-Tests")
     DotNetCoreTest(
         testProject.FullPath,
         new DotNetCoreTestSettings{
-            NoBuild = true,
-            NoRestore = true,
+            // NoBuild = true,
+            // NoRestore = true,
             Configuration = configuration
+        },
+        new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = CoverletOutputFormat.opencover,
+            CoverletOutputDirectory = testCoverageResults,
+            CoverletOutputName = $"results-integration.xml"
         }
     );
 });
@@ -117,9 +137,15 @@ Task("Run-API-Tests")
     DotNetCoreTest(
         testProject.FullPath,
         new DotNetCoreTestSettings{
-            NoBuild = true,
-            NoRestore = true,
+            // NoBuild = true,
+            // NoRestore = true,
             Configuration = configuration
+        },
+        new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = CoverletOutputFormat.opencover,
+            CoverletOutputDirectory = testCoverageResults,
+            CoverletOutputName = $"results-api.xml"
         }
     );
 });
