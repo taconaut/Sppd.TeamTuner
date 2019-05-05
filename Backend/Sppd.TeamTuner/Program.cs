@@ -34,7 +34,6 @@ namespace Sppd.TeamTuner
                           .ConfigureLogging((hostingContext, logging) =>
                           {
                               logging.AddLog4Net(Path.Combine(CoreConstants.Config.CONFIG_FOLDER, CoreConstants.Config.LOG4NET_CONFIG_FILE_NAME));
-                              logging.SetMinimumLevel(LogLevel.Trace);
                           })
                           .UseStartup<Startup>();
         }
