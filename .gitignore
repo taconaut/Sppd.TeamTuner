@@ -261,3 +261,4 @@ pub/
 .eshopdocker_*
 \.vscode/
 /Backend/src/SppdDocs/Logs
+/coverage-results

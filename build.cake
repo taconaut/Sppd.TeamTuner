@@ -1,8 +1,11 @@
 //////////////////////////////////////////////////////////////////////
-// Add-ins
+// Tools & Add-ins
 //////////////////////////////////////////////////////////////////////
 
+#tool nuget:?package=Codecov&version=1.4.0
+
 #addin nuget:?package=Cake.Coverlet&version=2.2.1
+#addin nuget:?package=Cake.Codecov&version=0.6.0
 
 //////////////////////////////////////////////////////////////////////
 // Arguments
@@ -17,9 +20,14 @@ var configuration = Argument("configuration", "Release");
 
 var buildDir = Directory("./Backend/Sppd.TeamTuner/bin") + Directory(configuration);
 var artifacts = MakeAbsolute(Directory("./artifacts"));
-var testCoverageResults = MakeAbsolute(Directory("./coverage-results"));
 var solution = "./Backend/Sppd.TeamTuner.sln";
 var teamTunerProject = "./Backend/Sppd.TeamTuner/Sppd.TeamTuner.csproj";
+
+// Tests
+var testCoverageResults = MakeAbsolute(Directory("./coverage-results"));
+var unitTestResultsFileName = "coverage-results-unit.opencover.xml";
+var integrationTestResultsFileName = "coverage-results-integration.opencover.xml";
+var apiTestResultsFileName = "coverage-results-api.opencover.xml";
 
 //////////////////////////////////////////////////////////////////////
 // Tasks
@@ -93,15 +101,17 @@ Task("Run-Unit-Tests")
     DotNetCoreTest(
         testProject.FullPath,
         new DotNetCoreTestSettings{
-            // NoBuild = true,
-            // NoRestore = true,
+            NoBuild = true,
+            NoRestore = true,
             Configuration = configuration
         },
         new CoverletSettings {
             CollectCoverage = true,
             CoverletOutputFormat = CoverletOutputFormat.opencover,
             CoverletOutputDirectory = testCoverageResults,
-            CoverletOutputName = $"results-unit.xml"
+            CoverletOutputName = $"coverage-results-unit.opencover.xml",
+            Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
+            Include = new List<string>{"[Sppd.TeamTuner.*]*"}
         }
     );
 });
@@ -115,15 +125,17 @@ Task("Run-Integration-Tests")
     DotNetCoreTest(
         testProject.FullPath,
         new DotNetCoreTestSettings{
-            // NoBuild = true,
-            // NoRestore = true,
+            NoBuild = true,
+            NoRestore = true,
             Configuration = configuration
         },
         new CoverletSettings {
             CollectCoverage = true,
             CoverletOutputFormat = CoverletOutputFormat.opencover,
             CoverletOutputDirectory = testCoverageResults,
-            CoverletOutputName = $"results-integration.xml"
+            CoverletOutputName = $"coverage-results-integration.opencover.xml",
+            Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
+            Include = new List<string>{"[Sppd.TeamTuner.*]*"}
         }
     );
 });
@@ -137,15 +149,17 @@ Task("Run-API-Tests")
     DotNetCoreTest(
         testProject.FullPath,
         new DotNetCoreTestSettings{
-            // NoBuild = true,
-            // NoRestore = true,
+            NoBuild = true,
+            NoRestore = true,
             Configuration = configuration
         },
         new CoverletSettings {
             CollectCoverage = true,
             CoverletOutputFormat = CoverletOutputFormat.opencover,
             CoverletOutputDirectory = testCoverageResults,
-            CoverletOutputName = $"results-api.xml"
+            CoverletOutputName = "coverage-results-api.opencover.xml",
+            Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
+            Include = new List<string>{"[Sppd.TeamTuner.*]*"}
         }
     );
 });
@@ -155,6 +169,18 @@ Task("Run-All-Tests")
     .IsDependentOn("Run-Unit-Tests")
     .IsDependentOn("Run-Integration-Tests")
     .IsDependentOn("Run-API-Tests");
+
+//////////////////////////////////////////////////////////////////////
+// Codecov
+//////////////////////////////////////////////////////////////////////
+
+Task("Upload-Coverage")
+    .Does(() =>
+{
+    Codecov($"{testCoverageResults}/{unitTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
+    Codecov($"{testCoverageResults}/{integrationTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
+    Codecov($"{testCoverageResults}/{apiTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
+});
 
 //////////////////////////////////////////////////////////////////////
 // Execution
