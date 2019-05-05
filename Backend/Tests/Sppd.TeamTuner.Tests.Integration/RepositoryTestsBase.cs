@@ -67,11 +67,7 @@ namespace Sppd.TeamTuner.Tests.Integration
         private static void RegisterServices(IServiceCollection services, IEnumerable<IStartupRegistrator> startupRegistrators)
         {
             // Logging
-            services.AddLogging(logging =>
-            {
-                logging.AddLog4Net(Path.Combine(CoreConstants.Config.CONFIG_FOLDER, CoreConstants.Config.LOG4NET_CONFIG_FILE_NAME));
-                logging.SetMinimumLevel(LogLevel.Trace);
-            });
+            services.AddLogging(logging => { logging.AddLog4Net(Path.Combine(CoreConstants.Config.CONFIG_FOLDER, CoreConstants.Config.LOG4NET_CONFIG_FILE_NAME)); });
 
             // Configuration
             services.AddSingleton(typeof(IConfigProvider<>), typeof(ConfigProvider<>));
