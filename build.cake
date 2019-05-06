@@ -111,7 +111,7 @@ Task("Run-Unit-Tests")
             CoverletOutputDirectory = testCoverageResults,
             CoverletOutputName = $"coverage-results-unit.opencover.xml",
             Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
-            Include = new List<string>{"[Sppd.TeamTuner.*]*"}
+            Include = new List<string>{"[Sppd.TeamTuner*]*"}
         }
     );
 });
@@ -135,7 +135,7 @@ Task("Run-Integration-Tests")
             CoverletOutputDirectory = testCoverageResults,
             CoverletOutputName = $"coverage-results-integration.opencover.xml",
             Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
-            Include = new List<string>{"[Sppd.TeamTuner.*]*"}
+            Include = new List<string>{"[Sppd.TeamTuner*]*"}
         }
     );
 });
@@ -159,7 +159,7 @@ Task("Run-API-Tests")
             CoverletOutputDirectory = testCoverageResults,
             CoverletOutputName = "coverage-results-api.opencover.xml",
             Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
-            Include = new List<string>{"[Sppd.TeamTuner.*]*"}
+            Include = new List<string>{"[Sppd.TeamTuner*]*"}
         }
     );
 });

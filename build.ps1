@@ -42,6 +42,7 @@ https://cakebuild.net
 [CmdletBinding()]
 Param(
     [string]$Script = "build.cake",
+	[ValidateSet("Clean", "Restore-NuGet-Packages", "Build", "Package-Backend", "Zip-Package", "Run-Unit-Tests", "Run-Integration-Tests", "Run-API-Tests", "Run-All-Tests", "Upload-Coverage", "Run-Upload-All-Tests")]
     [string]$Target,
     [string]$Configuration,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
