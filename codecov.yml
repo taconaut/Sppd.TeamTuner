@@ -1,0 +1,2 @@
+ignore:
+ - Backend/**/*ModelSnapshot.cs
