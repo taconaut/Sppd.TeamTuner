@@ -40,9 +40,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Common", "Sppd.TeamTuner.Common\Sppd.TeamTuner.Common.csproj", "{EE6B295C-0B6B-4A12-B147-CBB824FCC5D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql", "Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.csproj", "{37746EA6-BB6F-4857-B5BB-1ACB9A65EC25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql", "Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.csproj", "{37746EA6-BB6F-4857-B5BB-1ACB9A65EC25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite", "Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.csproj", "{93D69A04-20E5-463B-B3A1-9E2EE518FC7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite", "Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.csproj", "{93D69A04-20E5-463B-B3A1-9E2EE518FC7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory", "Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory\Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory.csproj", "{C3C4E6CD-242B-4B2F-9FB5-5CFC5B1A6762}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +92,10 @@ Global
 		{93D69A04-20E5-463B-B3A1-9E2EE518FC7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93D69A04-20E5-463B-B3A1-9E2EE518FC7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93D69A04-20E5-463B-B3A1-9E2EE518FC7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3C4E6CD-242B-4B2F-9FB5-5CFC5B1A6762}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3C4E6CD-242B-4B2F-9FB5-5CFC5B1A6762}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3C4E6CD-242B-4B2F-9FB5-5CFC5B1A6762}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3C4E6CD-242B-4B2F-9FB5-5CFC5B1A6762}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

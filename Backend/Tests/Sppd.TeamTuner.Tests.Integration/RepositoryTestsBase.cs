@@ -12,6 +12,7 @@ using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Infrastructure.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
 namespace Sppd.TeamTuner.Tests.Integration
 {
@@ -23,7 +24,12 @@ namespace Sppd.TeamTuner.Tests.Integration
         /// <summary>
         ///     Gets or sets the service provider.
         /// </summary>
-        protected IServiceProvider ServiceProvider { get; set; }
+        protected IServiceProvider ServiceProvider { get; }
+
+        /// <summary>
+        ///     Gets the database configuration.
+        /// </summary>
+        protected DatabaseConfig DatabaseConfig => ServiceProvider.GetService<IConfigProvider<DatabaseConfig>>().Config;
 
         protected RepositoryTestsBase()
         {
@@ -31,12 +37,14 @@ namespace Sppd.TeamTuner.Tests.Integration
             var dataAccessStartupRegistrator = new StartupRegistrator();
             var msSqlStartupRegistrator = new Infrastructure.DataAccess.EF.MsSql.StartupRegistrator();
             var sqliteStartupRegistrator = new Infrastructure.DataAccess.EF.Sqlite.StartupRegistrator();
+            var inMemoryStartupRegistrator = new Infrastructure.DataAccess.EF.InMemory.StartupRegistrator();
             var infrastructureStartupRegistrator = new Infrastructure.StartupRegistrator();
             var startupRegistrators = new IStartupRegistrator[]
                                       {
                                           infrastructureStartupRegistrator,
                                           msSqlStartupRegistrator,
                                           sqliteStartupRegistrator,
+                                          inMemoryStartupRegistrator,
                                           dataAccessStartupRegistrator
                                       };
 

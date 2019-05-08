@@ -39,31 +39,41 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Extensions
                     context.Database.EnsureDeleted();
                 }
 
-                var isNewDatabase = !context.Database.GetService<IRelationalDatabaseCreator>().Exists();
-
-                var pendingMigration = context.Database.GetPendingMigrations().ToList();
-                if (pendingMigration.Any())
+                bool seedData;
+                if (databaseConfig.Initialize)
                 {
-                    context.Database.Migrate();
-                    logger.LogInformation($"Pending migrations have been applied: {string.Join(", ", pendingMigration)}");
+                    seedData = !context.Database.GetService<IRelationalDatabaseCreator>().Exists();
+
+                    var pendingMigration = context.Database.GetPendingMigrations().ToList();
+                    if (pendingMigration.Any())
+                    {
+                        context.Database.Migrate();
+                        logger.LogInformation($"Pending migrations have been applied: {string.Join(", ", pendingMigration)}");
+                    }
+                    else
+                    {
+                        logger.LogDebug("Database is already up to date.");
+                    }
                 }
                 else
                 {
-                    logger.LogDebug("Database is already up to date.");
+                    // Assume true (only known case is InMemory database provider)
+                    seedData = true;
                 }
 
-                if (isNewDatabase)
+                if (seedData)
                 {
-                    logger.LogDebug($"New database created. Seed data for SeedMode={databaseConfig.SeedMode}");
+                    logger.LogDebug($"Seed data for SeedMode={databaseConfig.SeedMode}");
 
                     var seedTasks = new List<Task>();
-                    foreach (var seeder in scope.ServiceProvider.GetServices<IDbSeeder>().OrderBy(seeder => seeder.Priority))
+                    var seeders = scope.ServiceProvider.GetServices<IDbSeeder>().OrderBy(seeder => seeder.Priority).ToList();
+                    foreach (var seeder in seeders)
                     {
                         seedTasks.Add(seeder.SeedAsync());
-                        logger.LogDebug($"Seeded {seeder.GetType().Name}");
                     }
 
                     Task.WaitAll(seedTasks.ToArray());
+                    logger.LogInformation($"Finished seeding {string.Join(", ", seeders.Select(s => s.GetType().Name))}");
 
                     // The changes are usually being saved by a unit of work. Here, while starting the application, we will do it on the context itself.
                     context.SaveChangesAsync().Wait();

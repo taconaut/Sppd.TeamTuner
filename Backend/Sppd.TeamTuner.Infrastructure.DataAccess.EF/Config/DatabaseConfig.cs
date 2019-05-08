@@ -24,6 +24,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config
         public bool AutoMigrate { get; set; }
 
         /// <summary>
+        /// If set true, the database will be initialized (the database will be migrated)
+        /// </summary>
+        public bool Initialize { get; set; } = true;
+
+        /// <summary>
         ///     If set to true, the database will be automatically migrated when required.
         /// </summary>
         public SeedMode SeedMode { get; set; }
