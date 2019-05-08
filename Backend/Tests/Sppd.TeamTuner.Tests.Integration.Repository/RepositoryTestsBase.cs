@@ -12,7 +12,6 @@ using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Infrastructure.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
-using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
 namespace Sppd.TeamTuner.Tests.Integration.Repository
 {
@@ -24,14 +23,25 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         /// <summary>
         ///     Gets or sets the service provider.
         /// </summary>
-        protected IServiceProvider ServiceProvider { get; }
+        protected IServiceProvider ServiceProvider { get; set; }
+
+        public void Dispose()
+        {
+            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
+        }
 
         /// <summary>
-        ///     Gets the database configuration.
+        ///     Sets the configuration by copying Config/appsettings-{provider}.json to Config/appsettings.json
         /// </summary>
-        protected DatabaseConfig DatabaseConfig => ServiceProvider.GetService<IConfigProvider<DatabaseConfig>>().Config;
+        /// <param name="provider">The provider.</param>
+        protected void SetConfiguration(string provider)
+        {
+            var configurationSource = $"Config/appsettings-{provider}.json";
+            var configurationDest = "Config/appsettings.json";
+            File.Copy(configurationSource, configurationDest, true);
+        }
 
-        protected RepositoryTestsBase()
+        protected void Initialize()
         {
             // Instantiate StartupRegistrators registering required services
             var dataAccessStartupRegistrator = new StartupRegistrator();
@@ -57,11 +67,6 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
 
             // Configure
             ConfigureServices(startupRegistrators);
-        }
-
-        public void Dispose()
-        {
-            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
         }
 
         private static IConfiguration BuildConfiguration()

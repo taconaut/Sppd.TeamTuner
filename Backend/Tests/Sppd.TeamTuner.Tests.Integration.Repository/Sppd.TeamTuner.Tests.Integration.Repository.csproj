@@ -7,12 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Config\appsettings.json" />
+    <None Remove="Config\appsettings-InMemory.json" />
+    <None Remove="Config\appsettings-MsSql.json" />
+    <None Remove="Config\appsettings-Sqlite.json" />
     <None Remove="Config\log4net.config" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Config\appsettings.json">
+    <Content Include="Config\appsettings-InMemory.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Config\appsettings-Sqlite.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Config\appsettings-MsSql.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,11 +21,16 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         /// <summary>
         ///     Tests that the a <see cref="TeamTunerUser" /> having the same unique properties but a different Id cannot be saved.
         /// </summary>
-        [SkippableFact]
-        public async Task CannotCreateSameUserTwiceTest()
+        /// <param name="provider">The database provider name.</param>
+        [SkippableTheory]
+        [InlineData("MsSql")]
+        [InlineData("Sqlite")]
+        public async Task CannotCreateSameUserTwiceTest(string provider)
         {
-            // The skip can't be done attribute based, as the data access provider has been determined when evaluating the attribute
-            Skip.IfNot(SkippableFactHelper.IsRelationalDatabase(DatabaseConfig.Provider), "Ignore when not executing on a relational database.");
+            Skip.If(provider == "MsSql" && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "Ignore when not executing on Windows");
+
+            SetConfiguration(provider);
+            Initialize();
 
             // Arrange
             var user = new TeamTunerUser
@@ -74,13 +80,18 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         }
 
         /// <summary>
-        ///     Tests that an update fails if the <see cref="BaseEntity.Version" /> has been modified.
+        /// Tests that an update fails if the <see cref="BaseEntity.Version" /> has been modified.
         /// </summary>
-        [SkippableFact]
-        public async Task CannotUpdateWithDifferentVersionTest()
+        /// <param name="provider">The provider.</param>
+        [SkippableTheory]
+        [InlineData("MsSql")]
+        [InlineData("Sqlite")]
+        public async Task CannotUpdateWithDifferentVersionTest(string provider)
         {
-            // The skip can't be done attribute based, as the data access provider has been determined when evaluating the attribute
-            Skip.IfNot(SkippableFactHelper.IsRelationalDatabase(DatabaseConfig.Provider), "Ignore when not executing on a relational database.");
+            Skip.If(provider == "MsSql" && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "Ignore when not executing on Windows");
+
+            SetConfiguration(provider);
+            Initialize();
 
             // Arrange
             var user = new TeamTunerUser
@@ -134,13 +145,18 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         }
 
         /// <summary>
-        ///     Tests that an update fails if the <see cref="BaseEntity.Version" /> has been modified.
+        /// Tests that an update fails if the <see cref="BaseEntity.Version" /> has been modified.
         /// </summary>
-        [SkippableFact]
-        public async Task CanUpdateWithSameVersionTest()
+        /// <param name="provider">The provider.</param>
+        [SkippableTheory]
+        [InlineData("MsSql")]
+        [InlineData("Sqlite")]
+        public async Task CanUpdateWithSameVersionTest(string provider)
         {
-            // The skip can't be done attribute based, as the data access provider has been determined when evaluating the attribute
-            Skip.IfNot(SkippableFactHelper.IsRelationalDatabase(DatabaseConfig.Provider), "Ignore when not executing on a relational database.");
+            Skip.If(provider == "MsSql" && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "Ignore when not executing on Windows");
+
+            SetConfiguration(provider);
+            Initialize();
 
             // Arrange
             var user = new TeamTunerUser
@@ -189,11 +205,20 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         }
 
         /// <summary>
-        ///     Tests that it is possible to save/delete/save the same <see cref="TeamTunerUser" /> if he has a different Id.
+        /// Tests that it is possible to save/delete/save the same <see cref="TeamTunerUser" /> if he has a different Id.
         /// </summary>
-        [Fact]
-        public async Task CanCreateDeleteCreateUserWithDifferentIdButSamePropertiesTest()
+        /// <param name="provider">The provider.</param>
+        [SkippableTheory]
+        [InlineData("MsSql")]
+        [InlineData("Sqlite")]
+        [InlineData("InMemory")]
+        public async Task CanCreateDeleteCreateUserWithDifferentIdButSamePropertiesTest(string provider)
         {
+            Skip.If(provider == "MsSql" && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "Ignore when not executing on Windows");
+
+            SetConfiguration(provider);
+            Initialize();
+
             // Arrange
             var user = new TeamTunerUser
                        {
@@ -269,11 +294,20 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         }
 
         /// <summary>
-        ///     Tests that specified navigation properties do get loaded.
+        /// Tests that specified navigation properties do get loaded.
         /// </summary>
-        [Fact]
-        public async Task DoesLoadSpecifiedNavigationPropertiesTest()
+        /// <param name="provider">The provider.</param>
+        [SkippableTheory]
+        [InlineData("MsSql")]
+        [InlineData("Sqlite")]
+        [InlineData("InMemory")]
+        public async Task DoesLoadSpecifiedNavigationPropertiesTest(string provider)
         {
+            Skip.If(provider == "MsSql" && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "Ignore when not executing on Windows");
+
+            SetConfiguration(provider);
+            Initialize();
+
             // Arrange
             var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID);
 
@@ -289,11 +323,20 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         }
 
         /// <summary>
-        ///     Tests that nested navigation properties get loaded when specified.
+        /// Tests that nested navigation properties get loaded when specified.
         /// </summary>
-        [Fact]
-        public async Task DoesLoadSpecifiedNestedNavigationPropertiesTest()
+        /// <param name="provider">The provider.</param>
+        [SkippableTheory]
+        [InlineData("MsSql")]
+        [InlineData("Sqlite")]
+        [InlineData("InMemory")]
+        public async Task DoesLoadSpecifiedNestedNavigationPropertiesTest(string provider)
         {
+            Skip.If(provider == "MsSql" && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "Ignore when not executing on Windows");
+
+            SetConfiguration(provider);
+            Initialize();
+
             // Arrange
             var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID);
 
@@ -311,11 +354,20 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         }
 
         /// <summary>
-        ///     Tests that unspecified navigation properties do not get loaded.
+        /// Tests that unspecified navigation properties do not get loaded.
         /// </summary>
-        [Fact]
-        public async Task DoesNotLoadUnspecifiedNavigationPropertiesTest()
+        /// <param name="provider">The provider.</param>
+        [SkippableTheory]
+        [InlineData("MsSql")]
+        [InlineData("Sqlite")]
+        [InlineData("InMemory")]
+        public async Task DoesNotLoadUnspecifiedNavigationPropertiesTest(string provider)
         {
+            Skip.If(provider == "MsSql" && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "Ignore when not executing on Windows");
+
+            SetConfiguration(provider);
+            Initialize();
+
             // Arrange
             var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID);
 

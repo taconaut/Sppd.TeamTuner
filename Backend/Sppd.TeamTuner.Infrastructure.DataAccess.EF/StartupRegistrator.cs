@@ -43,7 +43,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Only register seeders if they are going to be used
-            if (databaseConfig.AutoMigrate && databaseConfig.SeedMode.MustSeedRequired())
+            if (databaseConfig.ManageDatabaseSchema && databaseConfig.SeedMode.MustSeedRequired())
             {
                 services.AddScoped<IDbSeeder, RarityDbSeeder>()
                         .AddScoped<IDbSeeder, CardThemeDbSeeder>()
@@ -62,7 +62,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
         public void Configure(IServiceProvider serviceProvider)
         {
             var databaseConfig = serviceProvider.GetConfig<DatabaseConfig>();
-            if (databaseConfig.AutoMigrate)
+            if (databaseConfig.ManageDatabaseSchema)
             {
                 serviceProvider.InitializeDatabase();
             }
