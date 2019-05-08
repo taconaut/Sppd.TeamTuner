@@ -13,7 +13,7 @@ using Sppd.TeamTuner.Core.Repositories;
 
 using Xunit;
 
-namespace Sppd.TeamTuner.Tests.Integration
+namespace Sppd.TeamTuner.Tests.Integration.Repository
 {
     public class RepositoryTests : RepositoryTestsBase
     {

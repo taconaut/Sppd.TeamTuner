@@ -14,7 +14,7 @@ using Sppd.TeamTuner.Infrastructure.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
-namespace Sppd.TeamTuner.Tests.Integration
+namespace Sppd.TeamTuner.Tests.Integration.Repository
 {
     /// <summary>
     ///     Base class for repository tests which configures the services required for the tests.

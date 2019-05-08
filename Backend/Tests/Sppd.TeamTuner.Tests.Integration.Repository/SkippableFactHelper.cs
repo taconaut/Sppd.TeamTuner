@@ -2,7 +2,7 @@
 
 using Xunit;
 
-namespace Sppd.TeamTuner.Tests.Integration
+namespace Sppd.TeamTuner.Tests.Integration.Repository
 {
     /// <summary>
     ///     Helper for <see cref="SkippableFactAttribute" />
