@@ -13,30 +13,48 @@ using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Infrastructure.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
 
-namespace Sppd.TeamTuner.Tests.Integration
+namespace Sppd.TeamTuner.Tests.Integration.Repository
 {
     /// <summary>
     ///     Base class for repository tests which configures the services required for the tests.
     /// </summary>
-    public abstract class RepositoryTestsBase : IDisposable
+    public abstract class RepositoryTestsBase
     {
         /// <summary>
         ///     Gets or sets the service provider.
         /// </summary>
         protected IServiceProvider ServiceProvider { get; set; }
 
-        protected RepositoryTestsBase()
+        protected void Teardown()
+        {
+            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
+        }
+
+        /// <summary>
+        ///     Sets the configuration by copying Config/appsettings-{provider}.json to Config/appsettings.json
+        /// </summary>
+        /// <param name="provider">The provider.</param>
+        protected void SetConfiguration(string provider)
+        {
+            var configurationSource = $"Config/appsettings-{provider}.json";
+            var configurationDest = "Config/appsettings.json";
+            File.Copy(configurationSource, configurationDest, true);
+        }
+
+        protected void Initialize()
         {
             // Instantiate StartupRegistrators registering required services
             var dataAccessStartupRegistrator = new StartupRegistrator();
             var msSqlStartupRegistrator = new Infrastructure.DataAccess.EF.MsSql.StartupRegistrator();
             var sqliteStartupRegistrator = new Infrastructure.DataAccess.EF.Sqlite.StartupRegistrator();
+            var inMemoryStartupRegistrator = new Infrastructure.DataAccess.EF.InMemory.StartupRegistrator();
             var infrastructureStartupRegistrator = new Infrastructure.StartupRegistrator();
             var startupRegistrators = new IStartupRegistrator[]
                                       {
                                           infrastructureStartupRegistrator,
                                           msSqlStartupRegistrator,
                                           sqliteStartupRegistrator,
+                                          inMemoryStartupRegistrator,
                                           dataAccessStartupRegistrator
                                       };
 
@@ -49,11 +67,6 @@ namespace Sppd.TeamTuner.Tests.Integration
 
             // Configure
             ConfigureServices(startupRegistrators);
-        }
-
-        public void Dispose()
-        {
-            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
         }
 
         private static IConfiguration BuildConfiguration()

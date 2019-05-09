@@ -7,12 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Config\appsettings.json" />
+    <None Remove="Config\appsettings-InMemory.json" />
+    <None Remove="Config\appsettings-MsSql.json" />
+    <None Remove="Config\appsettings-Sqlite.json" />
     <None Remove="Config\log4net.config" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Config\appsettings.json">
+    <Content Include="Config\appsettings-InMemory.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Config\appsettings-Sqlite.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Config\appsettings-MsSql.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -37,11 +47,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Xunit.SkippableFact" Version="1.3.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Sppd.TeamTuner.Common\Sppd.TeamTuner.Common.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory\Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure.DataAccess.EF\Sppd.TeamTuner.Infrastructure.DataAccess.EF.csproj" />

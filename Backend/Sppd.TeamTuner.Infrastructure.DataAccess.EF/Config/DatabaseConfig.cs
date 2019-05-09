@@ -14,19 +14,24 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config
         public string Provider { get; set; } = "MsSql";
 
         /// <summary>
-        ///     ConnectionString used for database connection.
+        ///     If set to true, the database will be automatically managed; otherwise the database will remain fully untouched.
         /// </summary>
-        public string ConnectionString { get; set; }
+        public bool ManageDatabaseSchema { get; set; }
 
         /// <summary>
-        ///     If set to true, the database will be automatically migrated and created when required.
+        /// If set true, the database will be created if it doesn't exist and updated to the latest migration.
         /// </summary>
-        public bool AutoMigrate { get; set; }
+        public bool Initialize { get; set; } = true;
 
         /// <summary>
         ///     If set to true, the database will be automatically migrated when required.
         /// </summary>
         public SeedMode SeedMode { get; set; }
+
+        /// <summary>
+        ///     ConnectionString used for database connection.
+        /// </summary>
+        public string ConnectionString { get; set; }
 
         /// <summary>
         ///     If set to true, the database will be deleted automatically when the application starts

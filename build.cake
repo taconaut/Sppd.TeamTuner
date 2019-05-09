@@ -119,7 +119,7 @@ Task("Run-Unit-Tests")
 Task("Run-Integration-Tests")
     .IsDependentOn("Build")
     .DoesForEach(
-        GetFiles("./**/*.Tests.Integration.csproj"),
+        GetFiles("./**/*.Tests.Integration.*csproj"),
         testProject => 
 {
     DotNetCoreTest(
