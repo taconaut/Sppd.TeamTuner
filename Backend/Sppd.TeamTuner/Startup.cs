@@ -65,7 +65,7 @@ namespace Sppd.TeamTuner
             });
 
             // Use AutoMapper
-            services.AddAutoMapper();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             RegisterServicesOnStartupRegistries(services);
 
