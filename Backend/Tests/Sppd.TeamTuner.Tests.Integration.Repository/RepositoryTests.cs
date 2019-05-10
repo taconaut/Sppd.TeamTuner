@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +13,9 @@ using Sppd.TeamTuner.Core.Repositories;
 
 using Xunit;
 
-namespace Sppd.TeamTuner.Tests.Integration.Repository
+namespace Sppd.TeamTuner.Tests.Integration.DataAccess
 {
-    public class RepositoryTests : RepositoryTestsBase
+    public class RepositoryTests
     {
         /// <summary>
         ///     Tests that the a <see cref="TeamTunerUser" /> having the same unique properties but a different Id cannot be saved.
@@ -28,6 +27,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         public async Task CannotCreateSameUserTwiceTest(string provider)
         {
             Skip.If(provider == "MsSql" && !SkipHelper.IsWindowsOS(), "Ignore when not executing on Windows");
+
+            var testManager = new TestEnvironmentServiceManager();
 
             async Task Test()
             {
@@ -46,7 +47,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 // Act
 
                 // Create user
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -58,7 +59,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 // Create user
                 user.Id = Guid.NewGuid();
                 EntityUpdateException exception = null;
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -78,7 +79,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 Assert.NotNull(exception);
             }
 
-            await ExecuteTestForProvider(provider, Test);
+            await ExecuteTestForProvider(provider, testManager, Test);
         }
 
         /// <summary>
@@ -91,6 +92,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         public async Task CannotUpdateWithDifferentVersionTest(string provider)
         {
             Skip.If(provider == "MsSql" && !SkipHelper.IsWindowsOS(), "Ignore when not executing on Windows");
+
+            var testManager = new TestEnvironmentServiceManager();
 
             async Task Test()
             {
@@ -110,7 +113,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 // Act
 
                 // Create user
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -125,7 +128,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
 
                 // Update user
                 ConcurrentEntityUpdateException exception = null;
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -145,7 +148,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 Assert.NotNull(exception);
             }
 
-            await ExecuteTestForProvider(provider, Test);
+            await ExecuteTestForProvider(provider, testManager, Test);
         }
 
         /// <summary>
@@ -158,6 +161,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         public async Task CanUpdateWithSameVersionTest(string provider)
         {
             Skip.If(provider == "MsSql" && !SkipHelper.IsWindowsOS(), "Ignore when not executing on Windows");
+
+            var testManager = new TestEnvironmentServiceManager();
 
             async Task Test()
             {
@@ -176,7 +181,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 // Act
 
                 // Create user
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -189,7 +194,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
 
                 // Update user
                 user.Email = updatedEmail;
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -207,7 +212,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 Assert.NotEqual(initialVersion, updatedVersion);
             }
 
-            await ExecuteTestForProvider(provider, Test);
+            await ExecuteTestForProvider(provider, testManager, Test);
         }
 
         /// <summary>
@@ -221,6 +226,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         public async Task CanCreateDeleteCreateUserWithDifferentIdButSamePropertiesTest(string provider)
         {
             Skip.If(provider == "MsSql" && !SkipHelper.IsWindowsOS(), "Ignore when not executing on Windows");
+
+            var testManager = new TestEnvironmentServiceManager();
 
             async Task Test()
             {
@@ -240,7 +247,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 // Act
 
                 // Create user
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -258,7 +265,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 }
 
                 // Delete user
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -277,7 +284,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
 
                 // Create user
                 user.Id = Guid.NewGuid();
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var userRepository = scope.ServiceProvider.GetService<IRepository<TeamTunerUser>>();
                     var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -298,7 +305,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 Assert.Null(exception);
             }
 
-            await ExecuteTestForProvider(provider, Test);
+            await ExecuteTestForProvider(provider, testManager, Test);
         }
 
         /// <summary>
@@ -313,13 +320,15 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         {
             Skip.If(provider == "MsSql" && !SkipHelper.IsWindowsOS(), "Ignore when not executing on Windows");
 
+            var testManager = new TestEnvironmentServiceManager();
+
             async Task Test()
             {
                 // Arrange
                 var teamId = Guid.Parse(TestingConstants.Team.HOLY_COW_ID);
 
                 Team teamWithUsers;
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var teamRepository = scope.ServiceProvider.GetService<IRepository<Team>>();
                     teamWithUsers = await teamRepository.GetAsync(teamId, new[] {nameof(Team.Users)});
@@ -329,7 +338,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 Assert.True(teamWithUsers.Users.Any());
             }
 
-            await ExecuteTestForProvider(provider, Test);
+            await ExecuteTestForProvider(provider, testManager, Test);
         }
 
         /// <summary>
@@ -344,6 +353,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         {
             Skip.If(provider == "MsSql" && !SkipHelper.IsWindowsOS(), "Ignore when not executing on Windows");
 
+            var testManager = new TestEnvironmentServiceManager();
+
             async Task Test()
             {
                 // Arrange
@@ -351,7 +362,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
 
                 // Act
                 Team team;
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var teamRepository = scope.ServiceProvider.GetService<IRepository<Team>>();
                     team = await teamRepository.GetAsync(teamId, new[] {string.Join(".", nameof(Team.Users), nameof(TeamTunerUser.Federation))});
@@ -362,7 +373,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 Assert.Contains(team.Users.Select(u => u.Federation), federation => federation != null);
             }
 
-            await ExecuteTestForProvider(provider, Test);
+            await ExecuteTestForProvider(provider, testManager, Test);
         }
 
         /// <summary>
@@ -377,6 +388,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         {
             Skip.If(provider == "MsSql" && !SkipHelper.IsWindowsOS(), "Ignore when not executing on Windows");
 
+            var testManager = new TestEnvironmentServiceManager();
+
             async Task Test()
             {
                 // Arrange
@@ -384,7 +397,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
 
                 // Act
                 Team teamWithoutUsers;
-                using (var scope = ServiceProvider.CreateScope())
+                using (var scope = testManager.ServiceProvider.CreateScope())
                 {
                     var teamRepository = scope.ServiceProvider.GetService<IRepository<Team>>();
                     teamWithoutUsers = await teamRepository.GetAsync(teamId);
@@ -394,21 +407,21 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
                 Assert.False(teamWithoutUsers.Users.Any());
             }
 
-            await ExecuteTestForProvider(provider, Test);
+            await ExecuteTestForProvider(provider, testManager, Test);
         }
 
-        private async Task ExecuteTestForProvider(string provider, Func<Task> test)
+        private static async Task ExecuteTestForProvider(string provider, TestEnvironmentServiceManager testManager, Func<Task> test)
         {
             try
             {
-                SetConfiguration(provider);
-                Initialize();
+                testManager.SetConfiguration(provider);
+                testManager.Initialize();
 
                 await test.Invoke();
             }
             finally
             {
-                Teardown();
+                testManager.Teardown();
             }
         }
     }

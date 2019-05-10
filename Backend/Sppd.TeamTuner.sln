@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory", "Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory\Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory.csproj", "{C3C4E6CD-242B-4B2F-9FB5-5CFC5B1A6762}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Tests.Integration.Repository", "Tests\Sppd.TeamTuner.Tests.Integration.Repository\Sppd.TeamTuner.Tests.Integration.Repository.csproj", "{B42FF053-85AC-4B04-8491-418179084F81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Tests.Integration.DataAccess", "Tests\Sppd.TeamTuner.Tests.Integration.Repository\Sppd.TeamTuner.Tests.Integration.DataAccess.csproj", "{B42FF053-85AC-4B04-8491-418179084F81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

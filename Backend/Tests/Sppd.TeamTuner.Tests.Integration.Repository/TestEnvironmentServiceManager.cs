@@ -13,19 +13,19 @@ using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Infrastructure.Config;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF;
 
-namespace Sppd.TeamTuner.Tests.Integration.Repository
+namespace Sppd.TeamTuner.Tests.Integration.DataAccess
 {
     /// <summary>
-    ///     Base class for repository tests which configures the services required for the tests.
+    ///     Sets up and tears down services required for the tests.
     /// </summary>
-    public abstract class RepositoryTestsBase
+    internal class TestEnvironmentServiceManager
     {
         /// <summary>
         ///     Gets or sets the service provider.
         /// </summary>
-        protected IServiceProvider ServiceProvider { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
 
-        protected void Teardown()
+        public void Teardown()
         {
             ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
         }
@@ -34,14 +34,14 @@ namespace Sppd.TeamTuner.Tests.Integration.Repository
         ///     Sets the configuration by copying Config/appsettings-{provider}.json to Config/appsettings.json
         /// </summary>
         /// <param name="provider">The provider.</param>
-        protected void SetConfiguration(string provider)
+        public void SetConfiguration(string provider)
         {
             var configurationSource = $"Config/appsettings-{provider}.json";
             var configurationDest = "Config/appsettings.json";
             File.Copy(configurationSource, configurationDest, true);
         }
 
-        protected void Initialize()
+        public void Initialize()
         {
             // Instantiate StartupRegistrators registering required services
             var dataAccessStartupRegistrator = new StartupRegistrator();
