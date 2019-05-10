@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
 
         public void Teardown()
         {
-            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
+            ServiceProvider.GetService<IDatabaseService>()?.DeleteDatabase();
         }
 
         /// <summary>
@@ -67,6 +68,21 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
 
             // Configure
             ConfigureServices(startupRegistrators);
+        }
+
+        public async Task ExecuteTestForProvider(string provider, Func<Task> test)
+        {
+            try
+            {
+                SetConfiguration(provider);
+                Initialize();
+
+                await test.Invoke();
+            }
+            finally
+            {
+                Teardown();
+            }
         }
 
         private static IConfiguration BuildConfiguration()

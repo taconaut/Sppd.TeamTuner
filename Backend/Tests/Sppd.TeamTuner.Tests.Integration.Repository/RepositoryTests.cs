@@ -79,7 +79,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
                 Assert.NotNull(exception);
             }
 
-            await ExecuteTestForProvider(provider, testManager, Test);
+            await testManager.ExecuteTestForProvider(provider, Test);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
                 Assert.NotNull(exception);
             }
 
-            await ExecuteTestForProvider(provider, testManager, Test);
+            await testManager.ExecuteTestForProvider(provider, Test);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
                 Assert.NotEqual(initialVersion, updatedVersion);
             }
 
-            await ExecuteTestForProvider(provider, testManager, Test);
+            await testManager.ExecuteTestForProvider(provider, Test);
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
                 Assert.Null(exception);
             }
 
-            await ExecuteTestForProvider(provider, testManager, Test);
+            await testManager.ExecuteTestForProvider(provider, Test);
         }
 
         /// <summary>
@@ -338,7 +338,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
                 Assert.True(teamWithUsers.Users.Any());
             }
 
-            await ExecuteTestForProvider(provider, testManager, Test);
+            await testManager.ExecuteTestForProvider(provider, Test);
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
                 Assert.Contains(team.Users.Select(u => u.Federation), federation => federation != null);
             }
 
-            await ExecuteTestForProvider(provider, testManager, Test);
+            await testManager.ExecuteTestForProvider(provider, Test);
         }
 
         /// <summary>
@@ -407,22 +407,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
                 Assert.False(teamWithoutUsers.Users.Any());
             }
 
-            await ExecuteTestForProvider(provider, testManager, Test);
-        }
-
-        private static async Task ExecuteTestForProvider(string provider, TestEnvironmentServiceManager testManager, Func<Task> test)
-        {
-            try
-            {
-                testManager.SetConfiguration(provider);
-                testManager.Initialize();
-
-                await test.Invoke();
-            }
-            finally
-            {
-                testManager.Teardown();
-            }
+            await testManager.ExecuteTestForProvider(provider, Test);
         }
     }
 }
