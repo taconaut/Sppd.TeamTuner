@@ -21,6 +21,8 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
     /// </summary>
     internal class TestEnvironmentServiceManager
     {
+        private string _configurationFile;
+
         /// <summary>
         ///     Gets or sets the service provider.
         /// </summary>
@@ -28,7 +30,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
 
         public void Teardown()
         {
-            ServiceProvider.GetService<IDatabaseService>()?.DeleteDatabase();
+            ServiceProvider.GetService<IDatabaseService>().DeleteDatabase();
         }
 
         /// <summary>
@@ -37,9 +39,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
         /// <param name="provider">The provider.</param>
         public void SetConfiguration(string provider)
         {
-            var configurationSource = $"Config/appsettings-{provider}.json";
-            var configurationDest = "Config/appsettings.json";
-            File.Copy(configurationSource, configurationDest, true);
+            _configurationFile = $"appsettings-{provider}.json";
         }
 
         public void Initialize()
@@ -85,15 +85,15 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
             }
         }
 
-        private static IConfiguration BuildConfiguration()
+        private IConfiguration BuildConfiguration()
         {
             return new ConfigurationBuilder()
                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), CoreConstants.Config.CONFIG_FOLDER))
-                   .AddJsonFile(CoreConstants.Config.APP_CONFIG_FILE_NAME, false, false)
+                   .AddJsonFile(_configurationFile, false, false)
                    .Build();
         }
 
-        private static void RegisterServices(IServiceCollection services, IEnumerable<IStartupRegistrator> startupRegistrators)
+        private void RegisterServices(IServiceCollection services, IEnumerable<IStartupRegistrator> startupRegistrators)
         {
             // Logging
             services.AddLogging(logging => { logging.AddLog4Net(Path.Combine(CoreConstants.Config.CONFIG_FOLDER, CoreConstants.Config.LOG4NET_CONFIG_FILE_NAME)); });

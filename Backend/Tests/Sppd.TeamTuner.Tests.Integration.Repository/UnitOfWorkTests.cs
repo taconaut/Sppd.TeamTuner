@@ -21,7 +21,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
     {
         /// <summary>
         ///     Performs create/update/delete operations and makes sure nothing would be committed after calling
-        ///     <see cref="IUnitOfWork.CommitAsync" /> if <see cref="IUnitOfWork.Rollback"/> is being called.
+        ///     <see cref="IUnitOfWork.CommitAsync" /> if <see cref="IUnitOfWork.Rollback" /> is being called.
         /// </summary>
         /// <param name="provider">The provider.</param>
         /// <returns></returns>
