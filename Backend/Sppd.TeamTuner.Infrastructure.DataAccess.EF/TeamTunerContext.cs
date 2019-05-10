@@ -45,8 +45,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            PrepareSaveChanges();
-            return await ExecuteAndHandleExceptions(base.SaveChangesAsync(cancellationToken));
+            return await SaveChangesAsync(true, cancellationToken);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
@@ -98,8 +97,9 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
 
         private void ValidateAllChangedEntities()
         {
-            var validationResults = _validationService.Value.ValidateAllChangedEntities();
-            validationResults.ThrowIfHasInvalid();
+            _validationService.Value
+                              .ValidateAllChangedEntities()
+                              .ThrowIfHasInvalid();
         }
 
         private void SetModifierMetadataOnChangedEntities()
