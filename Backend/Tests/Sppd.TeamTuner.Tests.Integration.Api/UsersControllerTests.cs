@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
+using Sppd.TeamTuner.Common;
 using Sppd.TeamTuner.Controllers;
 using Sppd.TeamTuner.Core.Utils.Extensions;
 using Sppd.TeamTuner.DTOs;
@@ -36,6 +38,9 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
         private static readonly string s_updateRoute = "/users";
         private static readonly string s_deleteRoute = $"/users/{s_userIdPlaceholder}";
         private static readonly string s_getByIdRoute = $"/users/{s_userIdPlaceholder}";
+        private static readonly string s_getAllRoute = "/users";
+        private static readonly string s_getCardLevelsRoute = $"/users/{s_userIdPlaceholder}/card-levels";
+        private static readonly string s_getGetCardsWithUserLevelsRoute = $"/users/{s_userIdPlaceholder}/cards";
 
         protected HttpClient Client { get; }
 
@@ -131,6 +136,146 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             Assert.Equal(updateUserResponseDto.Email, updateUserDto.Email);
             Assert.True(updateUserResponseDto.ModifiedOnUtc > authorizedUserDto.ModifiedOnUtc);
             Assert.Equal(updateUserResponseDto.CreatedOnUtc, authorizedUserDto.CreatedOnUtc);
+        }
+
+        [Fact]
+        public async Task GetAllTest()
+        {
+            // Arrange
+            var authorizeAdminDto = new AuthorizationRequestDto {Name = TestingConstants.User.ADMIN_NAME, PasswordMd5 = TestingConstants.User.ADMIN_PASSWORD_MD5};
+            var authorizeTeamUserDto = new AuthorizationRequestDto
+                                       {Name = TestingConstants.User.HOLY_COW_TEAM_MEMBER_NAME, PasswordMd5 = TestingConstants.User.HOLY_COW_TEAM_MEMBER_PASSWORD_MD5};
+
+            string token;
+
+            // Act
+
+            // Authenticate as admin
+            var authorizeAdminResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeAdminDto));
+            var authorizedAdminDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await authorizeAdminResponse.Content.ReadAsStringAsync());
+            token = authorizedAdminDto.Token;
+
+            // Get all users
+            var previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
+            IEnumerable<UserResponseDto> getAllDto;
+            try
+            {
+                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var getAllResponse = await Client.GetAsync(s_getAllRoute);
+                getAllDto = JsonConvert.DeserializeObject<IEnumerable<UserResponseDto>>(await getAllResponse.Content.ReadAsStringAsync());
+            }
+            finally
+            {
+                Client.DefaultRequestHeaders.Authorization = previousAuthenticationHeaderValue;
+            }
+
+            // Authenticate as user
+            var authorizeUserResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeTeamUserDto));
+            var authorizedUserDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await authorizeUserResponse.Content.ReadAsStringAsync());
+            token = authorizedUserDto.Token;
+
+            // Get all users (should fail)
+            HttpResponseMessage getAllResponseFail;
+            previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
+            try
+            {
+                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                getAllResponseFail = await Client.GetAsync(s_getAllRoute);
+            }
+            finally
+            {
+                Client.DefaultRequestHeaders.Authorization = previousAuthenticationHeaderValue;
+            }
+
+            // Assert
+            Assert.NotEmpty(getAllDto);
+            Assert.NotNull(getAllResponseFail);
+            Assert.False(getAllResponseFail.IsSuccessStatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, getAllResponseFail.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetCardLevelsTest()
+        {
+            // Arrange
+            var authorizeDto = new AuthorizationRequestDto
+                               {
+                                   Name = TestingConstants.User.HOLY_COW_TEAM_LEADER_NAME,
+                                   PasswordMd5 = TestingConstants.User.HOLY_COW_TEAM_LEADER_PASSWORD_MD5
+                               };
+
+            string token;
+
+            // Act
+
+            // Authenticate as user
+            var authorizeUserResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeDto));
+            var authorizedUserDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await authorizeUserResponse.Content.ReadAsStringAsync());
+            token = authorizedUserDto.Token;
+
+            // Get all users (should fail)
+            HttpResponseMessage getCardLevelsResponse;
+            IEnumerable<CardLevelResponseDto> cardLevels;
+            var previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
+            try
+            {
+                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                getCardLevelsResponse = await Client.GetAsync(s_getCardLevelsRoute.Replace(s_userIdPlaceholder, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_ID));
+                cardLevels = JsonConvert.DeserializeObject<IEnumerable<CardLevelResponseDto>>(await getCardLevelsResponse.Content.ReadAsStringAsync())
+                                        .ToList();
+            }
+            finally
+            {
+                Client.DefaultRequestHeaders.Authorization = previousAuthenticationHeaderValue;
+            }
+
+            // Assert
+            Assert.True(getCardLevelsResponse.IsSuccessStatusCode);
+            Assert.NotEmpty(cardLevels);
+            Assert.Contains(cardLevels.Select(c => c.Level), level => 1 <= level && level <= 7);
+        }
+
+        [Fact]
+        public async Task GetCardsWithUserLevelsTest()
+        {
+            // Arrange
+            var authorizeDto = new AuthorizationRequestDto
+                               {
+                                   Name = TestingConstants.User.HOLY_COW_TEAM_LEADER_NAME,
+                                   PasswordMd5 = TestingConstants.User.HOLY_COW_TEAM_LEADER_PASSWORD_MD5
+                               };
+
+            string token;
+
+            // Act
+
+            // Authenticate as user
+            var authorizeUserResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeDto));
+            var authorizedUserDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await authorizeUserResponse.Content.ReadAsStringAsync());
+            token = authorizedUserDto.Token;
+
+            // Get all users (should fail)
+            HttpResponseMessage getCardsWithUserLevels;
+            IEnumerable<UserCardResponseDto> cardResponseDtos;
+            var previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
+            try
+            {
+                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                getCardsWithUserLevels = await Client.GetAsync(s_getGetCardsWithUserLevelsRoute.Replace(s_userIdPlaceholder, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_ID));
+                cardResponseDtos = JsonConvert.DeserializeObject<IEnumerable<UserCardResponseDto>>(await getCardsWithUserLevels.Content.ReadAsStringAsync());
+            }
+            finally
+            {
+                Client.DefaultRequestHeaders.Authorization = previousAuthenticationHeaderValue;
+            }
+
+            // Assert
+            Assert.True(getCardsWithUserLevels.IsSuccessStatusCode);
+            Assert.NotEmpty(cardResponseDtos);
         }
     }
 }

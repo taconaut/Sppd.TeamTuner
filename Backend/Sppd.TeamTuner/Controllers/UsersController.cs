@@ -131,7 +131,7 @@ namespace Sppd.TeamTuner.Controllers
             }
 
             var users = await _userService.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(users));
+            return Ok(_mapper.Map<IEnumerable<UserResponseDto>>(users));
         }
 
         /// <summary>
@@ -156,7 +156,6 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/card-levels")]
         public async Task<IActionResult> GetCardLevels(Guid id)
         {
-            // TODO: secure
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
             if (!authorizationResult.Succeeded)
             {
