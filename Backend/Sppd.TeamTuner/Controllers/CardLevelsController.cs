@@ -39,16 +39,17 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Sets the card level for the given user and card
         /// </summary>
+        /// <param name="cardLevelUpdateDto">The card level update</param>
         [HttpPut]
-        public async Task<IActionResult> SetCardLevel([FromBody] SetCardLevelRequestDto cardLevelDto)
+        public async Task<IActionResult> SetCardLevel([FromBody] CardLevelUpdateRequestDto cardLevelUpdateDto)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, cardLevelDto.UserId);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, cardLevelUpdateDto.UserId);
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var cardLevel = await _userService.SetCardLevelAsync(_mapper.Map<CardLevel>(cardLevelDto));
+            var cardLevel = await _userService.SetCardLevelAsync(_mapper.Map<CardLevel>(cardLevelUpdateDto));
             return Ok(_mapper.Map<CardLevelResponseDto>(cardLevel));
         }
     }

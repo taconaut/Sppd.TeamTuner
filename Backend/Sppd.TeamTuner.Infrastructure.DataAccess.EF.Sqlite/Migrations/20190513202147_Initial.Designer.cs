@@ -2,22 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite;
 
-namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
+namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
 {
-    [DbContext(typeof(TeamTunerContextMsSql))]
-    partial class TeamTunerContextMsSqlModelSnapshot : ModelSnapshot
+    [DbContext(typeof(TeamTunerContextSqlite))]
+    [Migration("20190513202147_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.Card", b =>
                 {

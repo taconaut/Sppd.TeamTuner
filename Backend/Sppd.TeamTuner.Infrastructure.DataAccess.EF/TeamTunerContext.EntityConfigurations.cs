@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
@@ -11,6 +13,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
     /// <seealso cref="T:Microsoft.EntityFrameworkCore.DbContext" />
     public partial class TeamTunerContext
     {
+        private const string CONCAT_SEPARATOR = "\\;/";
+
         private static void ConfigureBaseEntity<TEntity>(EntityTypeBuilder<TEntity> builder)
             where TEntity : BaseEntity
         {
@@ -34,7 +38,12 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
         {
             ConfigureNamedEntity(builder);
 
-            // Indexes and unique constraint
+            // Store the friend names concatenated as string in a single column
+            builder.Property(e => e.FriendlyNames)
+                   .HasConversion(v => string.Join(CONCAT_SEPARATOR, v),
+                       v => v.Split(CONCAT_SEPARATOR.ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+
+            // Indexes and unique constraints
             builder.HasIndex(e => e.ExternalId)
                    .IsUnique()
                    .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
@@ -72,7 +81,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
                    .WithOne(e => e.User)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            // Indexes and unique constraint
+            // Indexes and unique constraints
             builder.HasIndex(e => e.Name)
                    .IsUnique()
                    .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
@@ -111,7 +120,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
                    .Ignore(e => e.CoLeaders);
         }
 
-        private static void ConfigureTeamJoinRequest(EntityTypeBuilder<TeamMembershipRequest> builder)
+        private static void ConfigureTeamMembershipRequest(EntityTypeBuilder<TeamMembershipRequest> builder)
         {
             ConfigureBaseEntity(builder);
 

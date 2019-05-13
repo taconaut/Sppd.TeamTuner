@@ -48,17 +48,17 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             await UnitOfWork.CommitAsync();
 
             // TODO: implement mailing
-            //var joinRequestFull = await _joinRequestRepository.GetAsync(joinRequest.Id, new[] {nameof(TeamJoinRequest.User), nameof(TeamJoinRequest.Team)});
-            // await _emailService.SendJoinRequestNotificationAsync(teamId, joinRequestFull);
+            // var membershipRequestFull = await _joinRequestRepository.GetAsync(joinRequest.Id, new[] {nameof(TeamJoinRequest.User), nameof(TeamJoinRequest.Team)});
+            // await _emailService.SendJoinRequestNotificationAsync(teamId, membershipRequestFull);
         }
 
         public async Task AcceptMembershipAsync(Guid membershipRequestId)
         {
-            var joinRequest = await _membershipRequestRepository.GetAsync(membershipRequestId, new[] {nameof(TeamMembershipRequest.User)});
+            var membershipRequest = await _membershipRequestRepository.GetAsync(membershipRequestId, new[] {nameof(TeamMembershipRequest.User)});
 
             // Add user to team
-            var user = joinRequest.User;
-            user.TeamId = joinRequest.TeamId;
+            var user = membershipRequest.User;
+            user.TeamId = membershipRequest.TeamId;
             user.TeamRole = CoreConstants.Authorization.Roles.MEMBER;
 
             // Job done, delete the request
@@ -67,7 +67,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             await UnitOfWork.CommitAsync();
         }
 
-        public async Task RefuseMembershipAsync(Guid joinRequestId)
+        public async Task RejectMembershipAsync(Guid joinRequestId)
         {
             // The request has been refused, only delete the request
             await _membershipRequestRepository.DeleteAsync(joinRequestId);

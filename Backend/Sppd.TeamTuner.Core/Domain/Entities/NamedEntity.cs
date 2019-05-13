@@ -8,7 +8,7 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
     /// <seealso cref="BaseEntity" />
     public abstract class NamedEntity : BaseEntity
     {
-        [Required, StringLength(CoreConstants.StringLength.Named.NAME)]
+        [Required, StringLength(CoreConstants.StringLength.Named.NAME_MAX)]
         public string Name { get; set; }
     }
 }

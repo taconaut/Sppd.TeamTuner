@@ -11,7 +11,7 @@ namespace Sppd.TeamTuner.MappingProfiles
             CreateMap<CardLevel, CardLevelResponseDto>();
 
             // DTO -> Entity
-            CreateMap<SetCardLevelRequestDto, CardLevel>();
+            CreateMap<CardLevelUpdateRequestDto, CardLevel>();
         }
     }
 }

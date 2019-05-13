@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Sppd.TeamTuner.DTOs
 {
     internal class TeamResponseDto : DescriptiveDto
     {
+        /// <summary>
+        ///     The federation identifier
+        /// </summary>
         public Guid? FederationId { get; set; }
-
-        public string Leader { get; set; }
-
-        public IEnumerable<string> CoLeaders { get; set; }
-
-        public IEnumerable<string> Members { get; set; }
     }
 }

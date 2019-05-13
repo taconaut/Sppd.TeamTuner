@@ -8,7 +8,7 @@ namespace Sppd.TeamTuner.MappingProfiles
         public TeamMembershipRequestMappingProfile()
         {
             CreateMap<TeamMembershipRequest, TeamMembershipRequestResponseDto>()
-                .ForMember(dst => dst.Name, exp => exp.MapFrom(src => src.User.Name))
+                .ForMember(dst => dst.UserName, exp => exp.MapFrom(src => src.User.Name))
                 .ForMember(dst => dst.Comment, exp => exp.MapFrom(src => src.Comment));
         }
     }

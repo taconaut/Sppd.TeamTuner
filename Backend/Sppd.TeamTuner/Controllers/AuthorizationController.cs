@@ -17,6 +17,11 @@ namespace Sppd.TeamTuner.Controllers
         private readonly IServiceProvider _serviceProvider;
         private readonly IAuthorizationService _authorizationService;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AuthorizationController" /> class.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="authorizationService">The authorization service.</param>
         protected AuthorizationController(IServiceProvider serviceProvider, IAuthorizationService authorizationService)
         {
             _serviceProvider = serviceProvider;

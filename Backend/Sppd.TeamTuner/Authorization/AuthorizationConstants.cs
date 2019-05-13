@@ -18,12 +18,20 @@
             public const string CAN_DELETE_TEAM = "CanDeleteTeam";
 
             // Team membership requests
-            public const string CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS = "CanAcceptTeamJoinRequests";
+            public const string CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS = "CanAcceptTeamMembershipRequests";
 
             // Federation
             public const string CAN_READ_FEDERATION = "CanReadFederation";
             public const string CAN_UPDATE_FEDERATION = "CanUpdateFederation";
             public const string CAN_DELETE_FEDERATION = "CanDeleteFederation";
+        }
+
+        public struct StringLength
+        {
+            public struct AuthorizationRequestDto
+            {
+                public const int PASSWORD_MD5 = 32;
+            }
         }
     }
 }

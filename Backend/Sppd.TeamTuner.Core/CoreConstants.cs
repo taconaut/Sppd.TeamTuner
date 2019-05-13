@@ -40,7 +40,8 @@
         {
             public struct TeamTunerUser
             {
-                public const int SPPD_NAME = 50;
+                public const int SPPD_NAME_MIN = 3;
+                public const int SPPD_NAME_MAX = 50;
                 public const int EMAIL = 200;
                 public const int APPLICATION_ROLE = 20;
                 public const int TEAM_ROLE = 20;
@@ -49,7 +50,8 @@
 
             public struct Named
             {
-                public const int NAME = 50;
+                public const int NAME_MIN = 3;
+                public const int NAME_MAX = 50;
             }
 
             public struct Descriptive
@@ -60,10 +62,11 @@
             public struct Card
             {
                 public const int NAME = 50;
-                public const int FRIENDLY_NAME = 10;
+                public const int FRIENDLY_NAMES = 100;
+                public const int EXTERNAL_ID = 24;
             }
 
-            public struct TeamJoinRequest
+            public struct TeamMembershipRequest
             {
                 public const int COMMENT = 500;
             }

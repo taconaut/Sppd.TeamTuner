@@ -13,7 +13,7 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
 
         public Guid UserId { get; set; }
 
-        [StringLength(CoreConstants.StringLength.TeamJoinRequest.COMMENT)]
+        [StringLength(CoreConstants.StringLength.TeamMembershipRequest.COMMENT)]
         public string Comment { get; set; }
     }
 }

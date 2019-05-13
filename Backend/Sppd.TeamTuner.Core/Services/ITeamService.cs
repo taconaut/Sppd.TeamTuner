@@ -38,7 +38,7 @@ namespace Sppd.TeamTuner.Core.Services
         ///     Refuses the membership request specified by <see cref="membershipRequestId" />.
         /// </summary>
         /// <param name="membershipRequestId">The membership request identifier.</param>
-        Task RefuseMembershipAsync(Guid membershipRequestId);
+        Task RejectMembershipAsync(Guid membershipRequestId);
 
         /// <summary>
         ///     Gets all open membership requests for the team.

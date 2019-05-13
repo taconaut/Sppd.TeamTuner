@@ -81,16 +81,16 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             // Authorize co-leader
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authenticatedCoLeaderDto.Token);
 
-            // Get team join requests as team co-leader
+            // Get team membership requests as team co-leader
             var getMembershipRequestsResponse = await Client.GetAsync(s_getTeamHolyCowMembershipRequestsRoute.Replace(s_teamIdPlaceholder, TestingConstants.Team.HOLY_COW_ID));
             var membershipRequests = JsonConvert.DeserializeObject<IEnumerable<TeamMembershipRequestResponseDto>>(await getMembershipRequestsResponse.Content.ReadAsStringAsync());
 
-            // Accept join request as co-leader
+            // Accept membership request as co-leader
             var membershipRequestId = membershipRequests.Single().Id;
             var acceptMembershipRequestResponse =
                 await Client.PostAsync(s_acceptMembershipRequestRoute.Replace(s_teamMembershipRequestIdPlaceholder, membershipRequestId.ToString()), null);
 
-            // Get team join requests after having accepted the only one; it should be empty
+            // Get team membership requests after having accepted the only one; it should be empty
             var getEmptyMembershipRequestsResponse = await Client.GetAsync(s_getTeamHolyCowMembershipRequestsRoute.Replace(s_teamIdPlaceholder, TestingConstants.Team.HOLY_COW_ID));
             var emptyMembershipRequests =
                 JsonConvert.DeserializeObject<IEnumerable<TeamMembershipRequestResponseDto>>(await getEmptyMembershipRequestsResponse.Content.ReadAsStringAsync());

@@ -68,12 +68,13 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
                                     Name = "UnusedUsername",
                                     SppdName = "UnusedSppdName",
                                     Email = "garrisonsbitch@nukem.tom",
-                                    PropertiesToUpdate = new List<string> {nameof(UserUpdateRequestDto.Email)}
+                                    PropertiesToUpdate = new HashSet<string> {nameof(UserUpdateRequestDto.Email)}
                                 };
             var authorizeDto = new AuthorizationRequestDto {Name = initialUserDto.Name, PasswordMd5 = initialUserDto.PasswordMd5};
 
             // userId and token will be set according to API method responses
             Guid userId;
+            string userVersion;
             string token;
 
             // Act
@@ -82,6 +83,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             var registerResponse = await Client.PostAsync(s_registerRoute, TestsHelper.GetStringContent(initialUserDto));
             var registeredUserDto = JsonConvert.DeserializeObject<UserResponseDto>(await registerResponse.Content.ReadAsStringAsync());
             userId = registeredUserDto.Id;
+            userVersion = registeredUserDto.Version;
 
             // Authenticate
             var authorizeResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeDto));
@@ -93,6 +95,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
 
             // Update and delete
             updateUserDto.Id = userId;
+            updateUserDto.Version = userVersion;
 
             HttpResponseMessage getUpdatedUserResponse;
             HttpResponseMessage updateResponse;

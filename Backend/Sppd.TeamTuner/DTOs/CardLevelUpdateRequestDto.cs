@@ -3,14 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Sppd.TeamTuner.DTOs
 {
-    public class CardLevelResponseDto
+    public class CardLevelUpdateRequestDto
     {
-        /// <summary>
-        ///     The card level identifier
-        /// </summary>
-        [Required]
-        public Guid Id { get; set; }
-
         /// <summary>
         ///     The user identifier
         /// </summary>
@@ -24,7 +18,7 @@ namespace Sppd.TeamTuner.DTOs
         public Guid CardId { get; set; }
 
         /// <summary>
-        ///     The level of the card for the user
+        ///     The level of the card for the user (1-7).
         /// </summary>
         [Required, Range(1, 7)]
         public int Level { get; set; }

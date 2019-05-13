@@ -2,21 +2,24 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql;
 
-namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
+namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 {
-    [DbContext(typeof(TeamTunerContextSqlite))]
-    [Migration("20190501061552_Initial")]
-    partial class Initial
+    [DbContext(typeof(TeamTunerContextMsSql))]
+    [Migration("20190513134522_MultipleFriendlyNames")]
+    partial class MultipleFriendlyNames
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.Card", b =>
                 {
@@ -31,11 +34,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
 
                     b.Property<DateTime?>("DeletedOnUtc");
 
-                    b.Property<int>("ExternalId");
+                    b.Property<string>("ExternalId")
+                        .HasMaxLength(24);
 
-                    b.Property<string>("FriendlyName")
-                        .IsRequired()
-                        .HasMaxLength(10);
+                    b.Property<string>("FriendlyNames");
 
                     b.Property<bool>("IsDeleted");
 

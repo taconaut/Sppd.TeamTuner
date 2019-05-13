@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 using Sppd.TeamTuner.Core.Domain.Validation;
 using Sppd.TeamTuner.Core.Validation;
@@ -20,6 +21,7 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
 
         public Guid UserId { get; set; }
 
+        [Required, Range(1, 7)]
         public int Level { get; set; }
 
         public override IEnumerable<EntityValidationError> Validate(IValidationContext context)

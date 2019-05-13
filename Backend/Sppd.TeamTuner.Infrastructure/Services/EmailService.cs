@@ -27,7 +27,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             _emailConfig = new Lazy<EmailConfig>(() => emailConfigProvider.Config);
         }
 
-        public async Task SendJoinRequestNotificationAsync(Guid teamId, TeamMembershipRequest membershipRequest)
+        public async Task SendMembershipRequestNotificationAsync(Guid teamId, TeamMembershipRequest membershipRequest)
         {
             var teamUsers = await _userService.GetByTeamIdAsync(teamId);
             var usersToNotify = teamUsers.Where(u => u.TeamRole == CoreConstants.Authorization.Roles.LEADER || u.TeamRole == CoreConstants.Authorization.Roles.CO_LEADER);

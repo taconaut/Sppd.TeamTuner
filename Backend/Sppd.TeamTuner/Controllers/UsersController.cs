@@ -51,6 +51,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Creates a new user
         /// </summary>
+        /// <param name="userCreateRequestDto">The user creation request</param>
         /// <remarks>
         ///     As stated by its name, the client has to send the MD5 hash of the password (length=36). This MD5 hash will be
         ///     stored as salted hash in the DB.
@@ -67,6 +68,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Updates the user
         /// </summary>
+        /// <param name="userRequestDto">The user update request</param>
         /// <remarks>
         ///     If the PropertiesToUpdate have been specified, only these will be updated; otherwise, all properties will be
         ///     updated.
@@ -88,6 +90,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Authorizes the user
         /// </summary>
+        /// <param name="authorizationRequestDto">The authorization request</param>
         /// <remarks>
         ///     The response contains a token which has to be included as bearer token in the HTTP authorization header for
         ///     subsequent calls to API methods requiring authentication.
@@ -105,6 +108,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Deletes the user
         /// </summary>
+        /// <param name="id">The user identifier</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -137,6 +141,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Gets the user
         /// </summary>
+        /// <param name="id">The user identifier</param>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserId(Guid id)
         {
@@ -153,6 +158,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Gets all card levels having been set for the user
         /// </summary>
+        /// <param name="id">The user identifier</param>
         [HttpGet("{id}/card-levels")]
         public async Task<IActionResult> GetCardLevels(Guid id)
         {
@@ -169,6 +175,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Gets all existing cards and includes the level for the user if it has been set
         /// </summary>
+        /// <param name="id">The user identifier</param>
         [HttpGet("{id}/cards")]
         public async Task<IActionResult> GetCardsWithUserLevels(Guid id)
         {
@@ -180,9 +187,13 @@ namespace Sppd.TeamTuner.Controllers
 
             var cardsWithUserLevels = await _cardService.GetForUserAsync(id);
             var userCardDtos = _mapper.Map<IEnumerable<UserCardResponseDto>>(cardsWithUserLevels.Select(kv => kv.Key)).ToList();
+
+            // Add user attributes
             foreach (var (cardDto, level) in cardsWithUserLevels)
             {
-                userCardDtos.Single(d => cardDto.Id == d.CardId).Level = level;
+                var userCardDto = userCardDtos.Single(d => cardDto.Id == d.CardId);
+                userCardDto.Level = level;
+                userCardDto.UserId = id;
             }
 
             return Ok(userCardDtos);

@@ -36,7 +36,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Requests membership in a team for a user
         /// </summary>
-        /// <param name="membershipRequest">The membership request.</param>
+        /// <param name="membershipRequest">The membership request for a user to join a team</param>
         [HttpPost]
         public async Task<IActionResult> RequestMembership([FromBody] TeamMembershipRequestDto membershipRequest)
         {
@@ -47,7 +47,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <summary>
         ///     Accepts the membership request
         /// </summary>
-        /// <param name="id">The membership request identifier.</param>
+        /// <param name="id">The membership request identifier</param>
         [HttpPost("{id}/accept")]
         public async Task<IActionResult> AcceptMembershipRequest(Guid id)
         {
@@ -64,11 +64,11 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         /// <summary>
-        ///     Refuses the membership request
+        ///     Rejects the membership request
         /// </summary>
-        /// <param name="id">The membership request identifier.</param>
-        [HttpPost("{id}/refuse")]
-        public async Task<IActionResult> RefuseMembershipRequest(Guid id)
+        /// <param name="id">The membership request identifier</param>
+        [HttpPost("{id}/reject")]
+        public async Task<IActionResult> RejectMembershipRequest(Guid id)
         {
             var membershipRequest = await _teamService.GetMembershipRequestAsync(id);
 
@@ -78,7 +78,7 @@ namespace Sppd.TeamTuner.Controllers
                 return Forbid();
             }
 
-            await _teamService.RefuseMembershipAsync(id);
+            await _teamService.RejectMembershipAsync(id);
             return Ok();
         }
     }

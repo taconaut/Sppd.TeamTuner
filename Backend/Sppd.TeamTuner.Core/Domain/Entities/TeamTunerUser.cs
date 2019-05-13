@@ -21,7 +21,7 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
 
         public UserProfileVisibility ProfileVisibility { get; set; }
 
-        [Required, StringLength(CoreConstants.StringLength.TeamTunerUser.SPPD_NAME)]
+        [Required, StringLength(CoreConstants.StringLength.TeamTunerUser.SPPD_NAME_MAX)]
         public string SppdName { get; set; }
 
         [Required, MaxLength(CoreConstants.ArrayLength.TeamTunerUser.PASSWORD_HASH)]
