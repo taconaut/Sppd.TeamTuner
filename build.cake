@@ -11,20 +11,32 @@
 // Arguments
 //////////////////////////////////////////////////////////////////////
 
-var target = Argument("target", "Build");
+var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
 //////////////////////////////////////////////////////////////////////
 // Preparation
 //////////////////////////////////////////////////////////////////////
 
-var buildDir = Directory("./Backend/Sppd.TeamTuner/bin") + Directory(configuration);
-var artifacts = MakeAbsolute(Directory("./artifacts"));
-var solution = "./Backend/Sppd.TeamTuner.sln";
-var teamTunerProject = "./Backend/Sppd.TeamTuner/Sppd.TeamTuner.csproj";
+// Directories
 
-// Tests
-var testCoverageResults = MakeAbsolute(Directory("./coverage-results"));
+// Existing
+var backendDir = Directory("./Backend");
+var buildDir = backendDir + Directory("Sppd.TeamTuner/bin") + Directory(configuration);
+
+// To be created
+var artifactsDir = MakeAbsolute(Directory("./artifacts"));
+var testOutputDir = MakeAbsolute(Directory("./test-output"));
+var testCoverageResultsDir = MakeAbsolute(testOutputDir.Combine(Directory("coverage-results")));
+var testResultsDir = MakeAbsolute(testOutputDir.Combine(Directory("test-results")));
+
+
+// File paths
+var solutionPath = backendDir.Path + "/Sppd.TeamTuner.sln";
+var teamTunerProjectPath = backendDir.Path + "/Sppd.TeamTuner/Sppd.TeamTuner.csproj";
+
+
+// File names
 var unitTestResultsFileName = "coverage-results-unit.opencover.xml";
 var integrationTestResultsFileName = "coverage-results-integration.opencover.xml";
 var apiTestResultsFileName = "coverage-results-api.opencover.xml";
@@ -36,9 +48,11 @@ var apiTestResultsFileName = "coverage-results-api.opencover.xml";
 Task("Clean")
     .Does(() =>
 {    
-    CleanDirectory(artifacts);
-    CleanDirectory(testCoverageResults);
-    CleanDirectories("./**/obj/{configuration}");
+    CleanDirectory(artifactsDir);
+    CleanDirectory(testOutputDir);
+    CleanDirectory(testCoverageResultsDir);
+    CleanDirectory(testResultsDir);
+    CleanDirectories($"./**/obj/{configuration}");
     CleanDirectories($"./**/bin/{configuration}");
 });
 
@@ -46,7 +60,7 @@ Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    NuGetRestore(solution);
+    NuGetRestore(solutionPath);
 });
 
 Task("Build")
@@ -54,7 +68,7 @@ Task("Build")
     .Does(() =>
 {
     DotNetCoreBuild(
-        solution,
+        solutionPath,
         new DotNetCoreBuildSettings{
             NoRestore = true,
             Configuration = configuration
@@ -71,12 +85,12 @@ Task("Package-Backend")
     .Does(() =>
 {
     DotNetCorePublish(
-        teamTunerProject,
+        teamTunerProjectPath,
         new DotNetCorePublishSettings{
             NoBuild = true,
             NoRestore = true,
             Configuration = configuration,
-            OutputDirectory = $"{artifacts}/Backend"
+            OutputDirectory = $"{artifactsDir}/Backend"
         }
     );
 });
@@ -85,7 +99,7 @@ Task("Zip-Package")
     .IsDependentOn("Package-Backend")
     .Does(() =>
 {
-    Zip(artifacts, $"{artifacts}/Sppd.TeameTuner.zip");
+    Zip(artifactsDir, $"{artifactsDir}/Sppd.TeameTuner.zip");
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -103,12 +117,12 @@ Task("Run-Unit-Tests")
         new DotNetCoreTestSettings{
             NoBuild = true,
             NoRestore = true,
-            Configuration = configuration
+            Configuration = configuration           
         },
         new CoverletSettings {
             CollectCoverage = true,
             CoverletOutputFormat = CoverletOutputFormat.opencover,
-            CoverletOutputDirectory = testCoverageResults,
+            CoverletOutputDirectory = testCoverageResultsDir,
             CoverletOutputName = $"coverage-results-unit.opencover.xml",
             Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
             Include = new List<string>{"[Sppd.TeamTuner*]*"}
@@ -132,7 +146,7 @@ Task("Run-Integration-Tests")
         new CoverletSettings {
             CollectCoverage = true,
             CoverletOutputFormat = CoverletOutputFormat.opencover,
-            CoverletOutputDirectory = testCoverageResults,
+            CoverletOutputDirectory = testCoverageResultsDir,
             CoverletOutputName = $"coverage-results-integration.opencover.xml",
             Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
             Include = new List<string>{"[Sppd.TeamTuner*]*"}
@@ -156,7 +170,7 @@ Task("Run-API-Tests")
         new CoverletSettings {
             CollectCoverage = true,
             CoverletOutputFormat = CoverletOutputFormat.opencover,
-            CoverletOutputDirectory = testCoverageResults,
+            CoverletOutputDirectory = testCoverageResultsDir,
             CoverletOutputName = "coverage-results-api.opencover.xml",
             Exclude = new List<string>{"[xunit*]*", "[Sppd.TeamTuner.Tests.*]*"},
             Include = new List<string>{"[Sppd.TeamTuner*]*"}
@@ -177,14 +191,21 @@ Task("Run-All-Tests")
 Task("Upload-Coverage")
     .Does(() =>
 {
-    Codecov($"{testCoverageResults}/{unitTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
-    Codecov($"{testCoverageResults}/{integrationTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
-    Codecov($"{testCoverageResults}/{apiTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
+    Codecov($"{testCoverageResultsDir}/{unitTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
+    Codecov($"{testCoverageResultsDir}/{integrationTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
+    Codecov($"{testCoverageResultsDir}/{apiTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
 });
 
 Task("Run-Upload-All-Tests")
     .IsDependentOn("Run-All-Tests")
     .IsDependentOn("Upload-Coverage");
+
+//////////////////////////////////////////////////////////////////////
+// Default
+//////////////////////////////////////////////////////////////////////
+
+Task("Default")
+    .IsDependentOn("Build");
 
 //////////////////////////////////////////////////////////////////////
 // Execution

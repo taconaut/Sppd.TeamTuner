@@ -39,8 +39,7 @@ TestResult.xml
 [Dd]ebugPS/
 [Rr]eleasePS/
 dlldata.c
-tools/
-artifacts/
+
 
 # DNX
 project.lock.json
@@ -260,5 +259,9 @@ pub/
 #Ignore marker-file used to know which docker files we have.
 .eshopdocker_*
 \.vscode/
+
+# Ignore solution specific items
 /Backend/src/SppdDocs/Logs
-/coverage-results
+/test-output
+/artifacts
+/tools
