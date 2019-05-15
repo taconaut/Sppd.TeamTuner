@@ -37,7 +37,7 @@ namespace Sppd.TeamTuner.DTOs
         public string Description { get; set; }
 
         /// <summary>
-        ///     The profile visibility determining who will be able to see the user profile
+        ///     The profile visibility determining who will be able to see the user profile. 0=User, 1=Team, 2=Federation
         /// </summary>
         public UserProfileVisibility ProfileVisibility { get; set; }
     }

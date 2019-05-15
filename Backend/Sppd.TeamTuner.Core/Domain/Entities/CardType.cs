@@ -3,8 +3,8 @@
     /// <summary>
     ///     Specifies a card type (e.g. Spell, Ranged, Fighter)
     /// </summary>
-    /// <seealso cref="NamedEntity" />
-    public class CardType : NamedEntity
+    /// <seealso cref="CoreData" />
+    public class CardType : CoreData
     {
     }
 }

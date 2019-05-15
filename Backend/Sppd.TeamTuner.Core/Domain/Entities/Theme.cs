@@ -3,8 +3,8 @@
     /// <summary>
     ///     Specifies a theme (e.g. Sci-Fy, Adventure)
     /// </summary>
-    /// <seealso cref="NamedEntity" />
-    public class Theme : NamedEntity
+    /// <seealso cref="CoreData" />
+    public class Theme : CoreData
     {
     }
 }

@@ -8,8 +8,8 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
     /// <summary>
     ///     Specifies a rarity (e.g. Common, Legendary)
     /// </summary>
-    /// <seealso cref="NamedEntity" />
-    public class Rarity : NamedEntity
+    /// <seealso cref="CoreData" />
+    public class Rarity : CoreData
     {
         public int FriendlyLevel { get; set; }
 
