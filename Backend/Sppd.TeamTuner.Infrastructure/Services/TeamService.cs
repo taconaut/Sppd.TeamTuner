@@ -30,10 +30,10 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             _userProvider = userProvider;
         }
 
-        public override async Task<Team> CreateAsync(Team team)
+        public override async Task CreateAsync(Team team, bool commitChanges = true)
         {
             await UpdateUser(team.Id);
-            return await base.CreateAsync(team);
+            await base.CreateAsync(team, commitChanges);
         }
 
         public async Task<IEnumerable<Team>> GetAllAsync(Guid federationId)

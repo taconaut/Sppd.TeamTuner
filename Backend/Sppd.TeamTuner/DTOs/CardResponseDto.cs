@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Sppd.TeamTuner.Core;
@@ -9,9 +8,13 @@ namespace Sppd.TeamTuner.DTOs
     public class CardResponseDto : NamedDto
     {
         /// <summary>
-        ///     The friendly names of the card
+        ///     The card description.
         /// </summary>
-        public IEnumerable<string> FriendlyNames { get; set; }
+        [StringLength(CoreConstants.StringLength.Card.DESCRIPTION)]
+        public string Description { get; set; }
+
+        [Required]
+        public int ManaCost { get; set; }
 
         /// <summary>
         ///     The external identifier

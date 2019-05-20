@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="2.2.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
@@ -26,6 +27,8 @@
     <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql\Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.csproj" />
     <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite\Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.csproj" />
     <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure.DataAccess.EF\Sppd.TeamTuner.Infrastructure.DataAccess.EF.csproj" />
+    <ProjectReference Include="..\Sppd.Teamtuner.Infrastructure.Feinwaru\Sppd.TeamTuner.Infrastructure.Feinwaru.csproj" />
+    <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure.Jobs\Sppd.TeamTuner.Infrastructure.Jobs.csproj" />
     <ProjectReference Include="..\Sppd.TeamTuner.Infrastructure\Sppd.TeamTuner.Infrastructure.csproj" />
   </ItemGroup>
 

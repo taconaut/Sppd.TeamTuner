@@ -51,9 +51,9 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TeamCreateRequestDto teamCreateRequestDto)
         {
-            var teamToCreate = _mapper.Map<Team>(teamCreateRequestDto);
-            var teamCreated = await _teamService.CreateAsync(teamToCreate);
-            var responseDto = _mapper.Map<TeamResponseDto>(teamCreated);
+            var team = _mapper.Map<Team>(teamCreateRequestDto);
+            await _teamService.CreateAsync(team);
+            var responseDto = _mapper.Map<TeamResponseDto>(team);
             return Ok(responseDto);
         }
 

@@ -22,7 +22,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Extensions
     {
         public static void InitializeDatabase(this IServiceProvider serviceProvider)
         {
-            var logger = LoggerHelper.LoggerFactory.CreateLogger("DatabaseInitializer");
+            var logger = LoggerHelper.LoggerFactory.CreateLogger("Sppd.TeamTuner.Infrastructure.DataAccess.EF.DatabaseInitializer");
 
             var databaseConfig = serviceProvider.GetConfig<DatabaseConfig>();
 

@@ -54,6 +54,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
             Set.Add(entity);
         }
 
+        public void Add(IEnumerable<TEntity> entities)
+        {
+            Set.AddRange(entities);
+        }
+
         public void Update(TEntity entity)
         {
             Set.Update(entity);
@@ -63,6 +68,14 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
         {
             var entityToDelete = await GetAsync(entityId);
             entityToDelete.IsDeleted = true;
+        }
+
+        public async Task DeleteAsync(IEnumerable<Guid> entityIds)
+        {
+            foreach (var entityId in entityIds)
+            {
+                await DeleteAsync(entityId);
+            }
         }
 
         protected IQueryable<TEntity> GetQueryableWithIncludes(IEnumerable<string> includeProperties = null)

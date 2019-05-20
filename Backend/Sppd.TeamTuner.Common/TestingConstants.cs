@@ -63,6 +63,7 @@
             public const string RANGED_ID = "423F055B-581E-4EBC-8B11-14E5E9DDE890";
             public const string FIGHTER_ID = "D4E2E80B-E56E-4D30-9A1C-0AD1944B1B34";
             public const string SPELL_ID = "5FCF292E-5C80-46F3-BA84-D8D8A4351C86";
+            public const string TOTEM_ID = "A48661C8-70F6-4246-95E2-3F19340D76B0";
         }
 
         public struct User

@@ -21,5 +21,12 @@ namespace Sppd.TeamTuner.Core.Services
         ///     hasn't set a level yet.
         /// </returns>
         Task<IDictionary<Card, int?>> GetForUserAsync(Guid userId);
+
+        /// <summary>
+        ///     Checks if a card with the specified <see cref="externalId" /> exists.
+        /// </summary>
+        /// <param name="externalId">The external identifier.</param>
+        /// <returns>True if a card having this externalId has been found; otherwise false</returns>
+        Task<bool> ExternalIdExistsAsync(string externalId);
     }
 }

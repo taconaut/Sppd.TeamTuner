@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core;
@@ -41,26 +42,75 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             return Repository.GetAsync(entityId, propertiesToInclude);
         }
 
-        public virtual async Task<TEntity> CreateAsync(TEntity entity)
+        public virtual async Task CreateAsync(TEntity entity, bool commitChanges = true)
         {
             Repository.Add(entity);
-            await UnitOfWork.CommitAsync();
-            return entity;
+            if (commitChanges)
+            {
+                await UnitOfWork.CommitAsync();
+            }
         }
 
-        public virtual async Task DeleteAsync(Guid entityId)
+        public async Task CreateAsync(IEnumerable<TEntity> entities, bool commitChanges = true)
         {
-            await Repository.DeleteAsync(entityId);
-            await UnitOfWork.CommitAsync();
+            Repository.Add(entities);
+            if (commitChanges)
+            {
+                await UnitOfWork.CommitAsync();
+            }
         }
 
-        public virtual async Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames, bool commitChanges = true)
         {
             var storedEntity = await Repository.GetAsync(entity.Id);
             storedEntity.MapProperties(entity, propertyNames);
             Repository.Update(storedEntity);
-            await UnitOfWork.CommitAsync();
+            if (commitChanges)
+            {
+                await UnitOfWork.CommitAsync();
+            }
+
             return storedEntity;
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, IEnumerable<string> propertyNames = null, bool commitChanges = true)
+        {
+            var propertyNamesList = propertyNames?.ToList();
+
+            var result = new List<TEntity>();
+
+            foreach (var entity in entities)
+            {
+                var storedEntity = await Repository.GetAsync(entity.Id);
+                storedEntity.MapProperties(entity, propertyNamesList);
+                result.Add(storedEntity);
+                Repository.Update(storedEntity);
+            }
+
+            if (commitChanges)
+            {
+                await UnitOfWork.CommitAsync();
+            }
+
+            return result;
+        }
+
+        public virtual async Task DeleteAsync(Guid entityId, bool commitChanges = true)
+        {
+            await Repository.DeleteAsync(entityId);
+            if (commitChanges)
+            {
+                await UnitOfWork.CommitAsync();
+            }
+        }
+
+        public async Task DeleteAsync(IEnumerable<Guid> entityIds, bool commitChanges = true)
+        {
+            await Repository.DeleteAsync(entityIds);
+            if (commitChanges)
+            {
+                await UnitOfWork.CommitAsync();
+            }
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System;
 
+using Hangfire;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using Sppd.TeamTuner.Core;
+using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Core.Utils.Extensions;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
@@ -15,7 +18,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql
         private const string PROVIDER_NAME = "MsSql";
         private const string ID_PLACEHOLDER = "{id}";
 
-        public int Priority => 90;
+        public int Priority => 110;
 
         public void Register(IServiceCollection services)
         {
@@ -35,6 +38,13 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql
 
         public void Configure(IServiceProvider serviceProvider)
         {
+            var generalConfig = serviceProvider.GetConfig<GeneralConfig>();
+            var databaseConfig = serviceProvider.GetConfig<DatabaseConfig>();
+
+            if (generalConfig.EnableHangfire && PROVIDER_NAME.Equals(databaseConfig.Provider, StringComparison.InvariantCultureIgnoreCase))
+            {
+                GlobalConfiguration.Configuration.UseSqlServerStorage(databaseConfig.ConnectionString);
+            }
         }
     }
 }

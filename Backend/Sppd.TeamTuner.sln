@@ -42,6 +42,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Tests.Integration.DataAccess", "Tests\Sppd.TeamTuner.Tests.Integration.Repository\Sppd.TeamTuner.Tests.Integration.DataAccess.csproj", "{B42FF053-85AC-4B04-8491-418179084F81}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sppd.TeamTuner.Infrastructure.Jobs", "Sppd.TeamTuner.Infrastructure.Jobs\Sppd.TeamTuner.Infrastructure.Jobs.csproj", "{73FF7939-ADEB-4920-AE9F-BF38890B5510}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sppd.TeamTuner.Infrastructure.Feinwaru", "Sppd.Teamtuner.Infrastructure.Feinwaru\Sppd.TeamTuner.Infrastructure.Feinwaru.csproj", "{99C36427-8602-431C-823E-1880238A677C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +96,14 @@ Global
 		{B42FF053-85AC-4B04-8491-418179084F81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B42FF053-85AC-4B04-8491-418179084F81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B42FF053-85AC-4B04-8491-418179084F81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73FF7939-ADEB-4920-AE9F-BF38890B5510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73FF7939-ADEB-4920-AE9F-BF38890B5510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73FF7939-ADEB-4920-AE9F-BF38890B5510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73FF7939-ADEB-4920-AE9F-BF38890B5510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99C36427-8602-431C-823E-1880238A677C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99C36427-8602-431C-823E-1880238A677C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99C36427-8602-431C-823E-1880238A677C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99C36427-8602-431C-823E-1880238A677C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

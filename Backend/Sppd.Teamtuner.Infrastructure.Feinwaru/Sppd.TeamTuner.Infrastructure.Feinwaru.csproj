@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sppd.TeamTuner.Common\Sppd.TeamTuner.Common.csproj" />
+    <ProjectReference Include="..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
+  </ItemGroup>
+
+</Project>

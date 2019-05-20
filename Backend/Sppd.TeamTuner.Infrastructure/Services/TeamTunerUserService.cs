@@ -49,7 +49,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             return user;
         }
 
-        public override Task<TeamTunerUser> CreateAsync(TeamTunerUser entity)
+        public override Task CreateAsync(TeamTunerUser entity, bool commitChanges = true)
         {
             throw new NotSupportedException($"Call method 'CreateAsync(TeamTunerUser user, string passwordMd5)' to create a {nameof(TeamTunerUser)}");
         }

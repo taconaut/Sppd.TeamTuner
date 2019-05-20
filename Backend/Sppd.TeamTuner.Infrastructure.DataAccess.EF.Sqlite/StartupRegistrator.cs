@@ -1,9 +1,13 @@
 ﻿using System;
 
+using Hangfire;
+using Hangfire.SQLite;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using Sppd.TeamTuner.Core;
+using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Core.Utils.Extensions;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
@@ -35,6 +39,13 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite
 
         public void Configure(IServiceProvider serviceProvider)
         {
+            var generalConfig = serviceProvider.GetConfig<GeneralConfig>();
+            var databaseConfig = serviceProvider.GetConfig<DatabaseConfig>();
+
+            if (generalConfig.EnableHangfire && PROVIDER_NAME.Equals(databaseConfig.Provider, StringComparison.InvariantCultureIgnoreCase))
+            {
+                GlobalConfiguration.Configuration.UseSQLiteStorage(databaseConfig.ConnectionString);
+            }
         }
     }
 }

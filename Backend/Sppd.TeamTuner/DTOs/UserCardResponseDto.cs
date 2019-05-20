@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Sppd.TeamTuner.Core;
@@ -25,11 +24,6 @@ namespace Sppd.TeamTuner.DTOs
         /// </summary>
         [Required]
         public Guid UserId { get; set; }
-
-        /// <summary>
-        ///     The friendly names of the card
-        /// </summary>
-        public IEnumerable<string> FriendlyName { get; set; }
 
         /// <summary>
         ///     The theme identifier

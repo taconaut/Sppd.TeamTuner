@@ -12,11 +12,13 @@ namespace Sppd.TeamTuner.Infrastructure.Services
 {
     internal class CardService : ServiceBase<Card>, ICardService
     {
+        private readonly ICardRepository _cardRepository;
         private readonly ICardLevelRepository _cardLevelRepository;
 
-        public CardService(IRepository<Card> cardRepository, ICardLevelRepository cardLevelRepository, IUnitOfWork unitOfWork)
+        public CardService(ICardRepository cardRepository, ICardLevelRepository cardLevelRepository, IUnitOfWork unitOfWork)
             : base(cardRepository, unitOfWork)
         {
+            _cardRepository = cardRepository;
             _cardLevelRepository = cardLevelRepository;
         }
 
@@ -25,6 +27,11 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             var cards = await Repository.GetAllAsync();
             var cardLevels = await _cardLevelRepository.GetAllForUserAsync(userId);
             return cards.ToDictionary(card => card, card => cardLevels.SingleOrDefault(cl => cl.CardId == card.Id)?.Level);
+        }
+
+        public async Task<bool> ExternalIdExistsAsync(string externalId)
+        {
+            return await _cardRepository.ExternalIdExistsAsync(externalId);
         }
     }
 }

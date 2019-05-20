@@ -29,12 +29,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
 
                     b.Property<DateTime?>("DeletedOnUtc");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(500);
+
                     b.Property<string>("ExternalId")
                         .HasMaxLength(24);
 
-                    b.Property<string>("FriendlyNames");
-
                     b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("ManaCost");
 
                     b.Property<Guid>("ModifiedById");
 

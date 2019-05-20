@@ -13,16 +13,13 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
     /// <seealso cref="NamedEntity" />
     public class Card : NamedEntity
     {
-        private IEnumerable<string> _friendlyNames;
-
-        public IEnumerable<string> FriendlyNames
-        {
-            get => _friendlyNames ?? (_friendlyNames = new List<string>());
-            set => _friendlyNames = value;
-        }
-
         [StringLength(CoreConstants.StringLength.Card.EXTERNAL_ID)]
         public string ExternalId { get; set; }
+
+        [StringLength(CoreConstants.StringLength.Card.DESCRIPTION)]
+        public string Description { get; set; }
+
+        public int ManaCost { get; set; }
 
         public Theme Theme { get; set; }
 
@@ -56,6 +53,11 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
             if (TypeId == default)
             {
                 yield return new EntityValidationError("Must be set", nameof(Type));
+            }
+
+            if (ManaCost > 10 || ManaCost < 1)
+            {
+                yield return new EntityValidationError("Must be between 1-10", nameof(ManaCost));
             }
         }
     }

@@ -42,6 +42,12 @@ namespace Sppd.TeamTuner.Core.Repositories
         void Add(TEntity entity);
 
         /// <summary>
+        ///     Adds the entities.
+        /// </summary>
+        /// <param name="entities">The entities.</param>
+        void Add(IEnumerable<TEntity> entities);
+
+        /// <summary>
         ///     Updates the entity.
         /// </summary>
         /// <param name="entity">The entity to update.</param>
@@ -52,5 +58,11 @@ namespace Sppd.TeamTuner.Core.Repositories
         /// </summary>
         /// <param name="entityId">The entity identifier.</param>
         Task DeleteAsync(Guid entityId);
+
+        /// <summary>
+        ///     Deletes the entities.
+        /// </summary>
+        /// <param name="entityIds">The entity identifiers.</param>
+        Task DeleteAsync(IEnumerable<Guid> entityIds);
     }
 }

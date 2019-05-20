@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Sppd.TeamTuner.Common;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Repositories;
-using Sppd.TeamTuner.Common;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {
@@ -44,6 +44,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                     {
                                         Id = Guid.Parse(TestingConstants.CardType.SPELL_ID),
                                         Name = "Spell"
+                                    });
+            _cardTypeRepository.Add(new CardType
+                                    {
+                                        Id = Guid.Parse(TestingConstants.CardType.TOTEM_ID),
+                                        Name = "Totem"
                                     });
 
             return Task.CompletedTask;

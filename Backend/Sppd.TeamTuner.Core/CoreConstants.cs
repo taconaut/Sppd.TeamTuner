@@ -62,7 +62,7 @@
             public struct Card
             {
                 public const int NAME = 50;
-                public const int FRIENDLY_NAMES = 100;
+                public const int DESCRIPTION = 500;
                 public const int EXTERNAL_ID = 24;
             }
 

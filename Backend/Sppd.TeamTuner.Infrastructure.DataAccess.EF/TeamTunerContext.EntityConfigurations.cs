@@ -1,6 +1,4 @@
-﻿using System;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
@@ -13,8 +11,6 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
     /// <seealso cref="T:Microsoft.EntityFrameworkCore.DbContext" />
     public partial class TeamTunerContext
     {
-        private const string CONCAT_SEPARATOR = "\\;/";
-
         private static void ConfigureBaseEntity<TEntity>(EntityTypeBuilder<TEntity> builder)
             where TEntity : BaseEntity
         {
@@ -37,11 +33,6 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
         private static void ConfigureCard(EntityTypeBuilder<Card> builder)
         {
             ConfigureNamedEntity(builder);
-
-            // Store the friend names concatenated as string in a single column
-            builder.Property(e => e.FriendlyNames)
-                   .HasConversion(v => string.Join(CONCAT_SEPARATOR, v),
-                       v => v.Split(CONCAT_SEPARATOR.ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
 
             // Indexes and unique constraints
             builder.HasIndex(e => e.ExternalId)

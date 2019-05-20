@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Hangfire;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -103,6 +105,8 @@ namespace Sppd.TeamTuner
                 app.UseHsts();
             }
 
+            ConfigureServicesOnStartupRegistries(app.ApplicationServices);
+
             if (generalConfig.EnableSwaggerUI)
             {
                 app.UseSwagger();
@@ -118,9 +122,12 @@ namespace Sppd.TeamTuner
             app.UseCookiePolicy();
             app.UseAuthentication();
 
-            app.UseMvc();
+            if (generalConfig.EnableHangfire)
+            {
+                app.UseHangfireDashboard();
+            }
 
-            ConfigureServicesOnStartupRegistries(app.ApplicationServices);
+            app.UseMvc();
 
             _logger.LogInformation("Application is ready");
         }

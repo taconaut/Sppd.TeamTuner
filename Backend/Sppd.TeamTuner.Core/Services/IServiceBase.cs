@@ -41,8 +41,16 @@ namespace Sppd.TeamTuner.Core.Services
         ///     Creates an entity and commits changes.
         /// </summary>
         /// <param name="entity">The entity.</param>
+        /// <param name="commitChanges">If true, the changes will be committed</param>
         /// <returns>The created entity</returns>
-        Task<TEntity> CreateAsync(TEntity entity);
+        Task CreateAsync(TEntity entity, bool commitChanges = true);
+
+        /// <summary>
+        ///     Creates all entities and commits changes.
+        /// </summary>
+        /// <param name="entities">The entities.</param>
+        /// <param name="commitChanges">If true, the changes will be committed</param>
+        Task CreateAsync(IEnumerable<TEntity> entities, bool commitChanges = true);
 
         /// <summary>
         ///     Updates the entity and commits changes.
@@ -52,13 +60,34 @@ namespace Sppd.TeamTuner.Core.Services
         ///     The properties to update. If null is being specified all properties which are not part
         ///     of <see cref="BaseEntity" /> will be updated.
         /// </param>
+        /// <param name="commitChanges">If true, the changes will be committed</param>
         /// <returns>The updated entity</returns>
-        Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames = null);
+        Task<TEntity> UpdateAsync(TEntity entity, IEnumerable<string> propertyNames = null, bool commitChanges = true);
+
+        /// <summary>
+        ///     Updates the entities and commits changes.
+        /// </summary>
+        /// <param name="entities">The entities.</param>
+        /// <param name="propertyNames">
+        ///     The properties to update. If null is being specified all properties which are not part
+        ///     of <see cref="BaseEntity" /> will be updated.
+        /// </param>
+        /// <param name="commitChanges">If true, the changes will be committed</param>
+        /// <returns>The updated entities</returns>
+        Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, IEnumerable<string> propertyNames = null, bool commitChanges = true);
 
         /// <summary>
         ///     Deletes the entity and commits changes.
         /// </summary>
         /// <param name="entityId">The entity identifier.</param>
-        Task DeleteAsync(Guid entityId);
+        /// <param name="commitChanges">If true, the changes will be committed</param>
+        Task DeleteAsync(Guid entityId, bool commitChanges = true);
+
+        /// <summary>
+        ///     Deletes the entities and commits changes.
+        /// </summary>
+        /// <param name="entityIds">The entity identifiers.</param>
+        /// <param name="commitChanges">If true, the changes will be committed</param>
+        Task DeleteAsync(IEnumerable<Guid> entityIds, bool commitChanges = true);
     }
 }
