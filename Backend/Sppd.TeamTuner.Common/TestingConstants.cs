@@ -58,12 +58,19 @@
 
         public struct CardType
         {
-            public const string ASSASSIN_ID = "59F49F99-0548-46EC-8F7A-955E8BC057AE";
+            public const string SPELL_ID = "59F49F99-0548-46EC-8F7A-955E8BC057AE";
             public const string TANK_ID = "86DD3114-D105-4C1C-810F-F90A4A96AFF5";
-            public const string RANGED_ID = "423F055B-581E-4EBC-8B11-14E5E9DDE890";
-            public const string FIGHTER_ID = "D4E2E80B-E56E-4D30-9A1C-0AD1944B1B34";
-            public const string SPELL_ID = "5FCF292E-5C80-46F3-BA84-D8D8A4351C86";
-            public const string TOTEM_ID = "A48661C8-70F6-4246-95E2-3F19340D76B0";
+            public const string SPAWN_ID = "423F055B-581E-4EBC-8B11-14E5E9DDE890";
+            public const string CHARACTER_ID = "D4E2E80B-E56E-4D30-9A1C-0AD1944B1B34";
+        }
+
+        public struct CharacterType
+        {
+            public const string ASSASSIN_ID = "B43590BB-CE86-450D-B5DD-A6297B11F884";
+            public const string MELEE_ID = "0E70F6F6-FF96-48A2-8DA4-AD8798C61FC9";
+            public const string RANGED_ID = "BB881B6D-1C1E-4C08-8DD5-E3E528397416";
+            public const string TANK_ID = "6C457448-50A9-4181-B643-D695F74018E1";
+            public const string TOTEM_ID = "9F114687-F240-4116-B5BD-6CD167A08C1D";
         }
 
         public struct User

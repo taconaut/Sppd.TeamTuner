@@ -21,6 +21,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid?>("CharacterTypeId");
+
                     b.Property<Guid>("CreatedById");
 
                     b.Property<DateTime>("CreatedOnUtc");
@@ -58,6 +60,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CharacterTypeId");
 
                     b.HasIndex("ExternalId")
                         .IsUnique()
@@ -142,6 +146,38 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CardType");
+                });
+
+            modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.CharacterType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CreatedById");
+
+                    b.Property<DateTime>("CreatedOnUtc");
+
+                    b.Property<Guid?>("DeletedById");
+
+                    b.Property<DateTime?>("DeletedOnUtc");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<Guid>("ModifiedById");
+
+                    b.Property<DateTime>("ModifiedOnUtc");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CharacterType");
                 });
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.Federation", b =>
@@ -418,6 +454,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.Card", b =>
                 {
+                    b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.CharacterType", "CharacterType")
+                        .WithMany()
+                        .HasForeignKey("CharacterTypeId");
+
                     b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.Rarity", "Rarity")
                         .WithMany()
                         .HasForeignKey("RarityId")

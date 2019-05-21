@@ -21,7 +21,8 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
                 .ForMember(dst => dst.ExternalId, exp => exp.MapFrom(src => src.Id))
                 .ForMember(dst => dst.ThemeId, exp => exp.MapFrom(src => GetThemeId(src.Theme)))
                 .ForMember(dst => dst.RarityId, exp => exp.MapFrom(src => GetRarityId(src.Rarity)))
-                .ForMember(dst => dst.TypeId, exp => exp.MapFrom(src => GetCardTypeId(src.Type, src.CharacterType)))
+                .ForMember(dst => dst.TypeId, exp => exp.MapFrom(src => GetCardTypeId(src.Type)))
+                .ForMember(dst => dst.CharacterTypeId, exp => exp.MapFrom(src => GetCharacterTypeId(src.CharacterType)))
 
                 // Use constant value
                 .ForMember(dst => dst.IsDeleted, exp => exp.MapFrom(src => false))
@@ -30,6 +31,7 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
                 .ForMember(dst => dst.Theme, exp => exp.Ignore())
                 .ForMember(dst => dst.Rarity, exp => exp.Ignore())
                 .ForMember(dst => dst.Type, exp => exp.Ignore())
+                .ForMember(dst => dst.CharacterType, exp => exp.Ignore())
 
                 // Ignore all properties from BaseEntity
                 .ForMember(dst => dst.Id, exp => exp.Ignore())
@@ -87,7 +89,7 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
             }
         }
 
-        private static Guid GetCardTypeId(string type, string characterType)
+        private static Guid GetCardTypeId(string type)
         {
             switch (type)
             {
@@ -95,30 +97,42 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
                     return Guid.Parse(TestingConstants.CardType.SPELL_ID);
 
                 case "character":
+                    return Guid.Parse(TestingConstants.CardType.CHARACTER_ID);
+
                 case "spawn":
-                    switch (characterType)
-                    {
-                        case "assassin":
-                            return Guid.Parse(TestingConstants.CardType.ASSASSIN_ID);
-
-                        case "melee":
-                            return Guid.Parse(TestingConstants.CardType.FIGHTER_ID);
-
-                        case "ranged":
-                            return Guid.Parse(TestingConstants.CardType.RANGED_ID);
-
-                        case "tank":
-                            return Guid.Parse(TestingConstants.CardType.TANK_ID);
-
-                        case "totem":
-                            return Guid.Parse(TestingConstants.CardType.TOTEM_ID);
-
-                        default:
-                            throw new NotSupportedException($"CharacterType '{characterType}' is not supported");
-                    }
+                    return Guid.Parse(TestingConstants.CardType.SPAWN_ID);
 
                 default:
                     throw new NotSupportedException($"Type '{type}' is not supported");
+            }
+        }
+
+        private static Guid? GetCharacterTypeId(string characterType)
+        {
+            if (string.IsNullOrEmpty(characterType))
+            {
+                return null;
+            }
+
+            switch (characterType)
+            {
+                case "assassin":
+                    return Guid.Parse(TestingConstants.CharacterType.ASSASSIN_ID);
+
+                case "melee":
+                    return Guid.Parse(TestingConstants.CharacterType.MELEE_ID);
+
+                case "ranged":
+                    return Guid.Parse(TestingConstants.CharacterType.RANGED_ID);
+
+                case "tank":
+                    return Guid.Parse(TestingConstants.CharacterType.TANK_ID);
+
+                case "totem":
+                    return Guid.Parse(TestingConstants.CharacterType.TOTEM_ID);
+
+                default:
+                    throw new NotSupportedException($"CharacterType '{characterType}' is not supported");
             }
         }
     }

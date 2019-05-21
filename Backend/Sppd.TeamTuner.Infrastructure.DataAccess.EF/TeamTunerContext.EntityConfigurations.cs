@@ -64,6 +64,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             ConfigureNamedEntity(builder);
         }
 
+        private static void ConfigureCharacterType(EntityTypeBuilder<CharacterType> builder)
+        {
+            ConfigureNamedEntity(builder);
+        }
+
         private static void ConfigureTeamTunerUser(EntityTypeBuilder<TeamTunerUser> builder)
         {
             ConfigureDescriptiveEntity(builder);

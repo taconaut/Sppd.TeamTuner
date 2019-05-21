@@ -63,6 +63,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             builder.Entity<Card>(ConfigureCard);
             builder.Entity<CardLevel>(ConfigureCardLevel);
             builder.Entity<CardType>(ConfigureCardType);
+            builder.Entity<CharacterType>(ConfigureCharacterType);
 
             builder.Entity<TeamTunerUser>(ConfigureTeamTunerUser);
             builder.Entity<Team>(ConfigureTeam);

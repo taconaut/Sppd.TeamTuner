@@ -22,33 +22,18 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
         {
             _cardTypeRepository.Add(new CardType
                                     {
-                                        Id = Guid.Parse(TestingConstants.CardType.ASSASSIN_ID),
-                                        Name = "Assassin"
-                                    });
-            _cardTypeRepository.Add(new CardType
-                                    {
-                                        Id = Guid.Parse(TestingConstants.CardType.FIGHTER_ID),
-                                        Name = "Fighter"
-                                    });
-            _cardTypeRepository.Add(new CardType
-                                    {
-                                        Id = Guid.Parse(TestingConstants.CardType.RANGED_ID),
-                                        Name = "Ranged"
-                                    });
-            _cardTypeRepository.Add(new CardType
-                                    {
-                                        Id = Guid.Parse(TestingConstants.CardType.TANK_ID),
-                                        Name = "Tank"
-                                    });
-            _cardTypeRepository.Add(new CardType
-                                    {
                                         Id = Guid.Parse(TestingConstants.CardType.SPELL_ID),
                                         Name = "Spell"
                                     });
             _cardTypeRepository.Add(new CardType
                                     {
-                                        Id = Guid.Parse(TestingConstants.CardType.TOTEM_ID),
-                                        Name = "Totem"
+                                        Id = Guid.Parse(TestingConstants.CardType.CHARACTER_ID),
+                                        Name = "Character"
+                                    });
+            _cardTypeRepository.Add(new CardType
+                                    {
+                                        Id = Guid.Parse(TestingConstants.CardType.SPAWN_ID),
+                                        Name = "Spawn"
                                     });
 
             return Task.CompletedTask;

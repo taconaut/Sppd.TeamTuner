@@ -49,7 +49,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
                 services.AddScoped<IDbSeeder, RarityDbSeeder>()
                         .AddScoped<IDbSeeder, CardThemeDbSeeder>()
                         .AddScoped<IDbSeeder, CardDbSeeder>()
-                        .AddScoped<IDbSeeder, CardTypeDbSeeder>();
+                        .AddScoped<IDbSeeder, CardTypeDbSeeder>()
+                        .AddScoped<IDbSeeder, CharacterTypeDbSeeder>();
 
                 if (databaseConfig.SeedMode == SeedMode.Test)
                 {

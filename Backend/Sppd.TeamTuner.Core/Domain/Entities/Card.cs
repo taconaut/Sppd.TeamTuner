@@ -33,6 +33,10 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
 
         public Guid TypeId { get; set; }
 
+        public CharacterType CharacterType { get; set; }
+
+        public Guid? CharacterTypeId { get; set; }
+
         public override IEnumerable<EntityValidationError> Validate(IValidationContext context)
         {
             if (string.IsNullOrWhiteSpace(Name))
