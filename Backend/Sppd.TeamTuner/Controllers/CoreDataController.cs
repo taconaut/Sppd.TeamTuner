@@ -39,7 +39,7 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         /// <summary>
-        ///     Gets all card types (Spell, Fighter...)
+        ///     Gets all card types (Spell, Spawn, Character)
         /// </summary>
         [AllowAnonymous]
         [HttpGet("card-types")]
@@ -50,7 +50,7 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         /// <summary>
-        ///     Gets all card types (Spell, Fighter...)
+        ///     Gets all character types (Assassin, Melee...)
         /// </summary>
         [AllowAnonymous]
         [HttpGet("character-types")]

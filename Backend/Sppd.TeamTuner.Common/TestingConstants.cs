@@ -59,7 +59,6 @@
         public struct CardType
         {
             public const string SPELL_ID = "59F49F99-0548-46EC-8F7A-955E8BC057AE";
-            public const string TANK_ID = "86DD3114-D105-4C1C-810F-F90A4A96AFF5";
             public const string SPAWN_ID = "423F055B-581E-4EBC-8B11-14E5E9DDE890";
             public const string CHARACTER_ID = "D4E2E80B-E56E-4D30-9A1C-0AD1944B1B34";
         }
