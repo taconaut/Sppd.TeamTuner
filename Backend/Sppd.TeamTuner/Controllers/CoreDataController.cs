@@ -50,6 +50,17 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         /// <summary>
+        ///     Gets all card types (Spell, Fighter...)
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet("character-types")]
+        public async Task<IActionResult> GetCharacterTypes()
+        {
+            var characterTypes = await _coreDataService.GetCharacterTypesAsync();
+            return Ok(_mapper.Map<IEnumerable<CharacterTypeResponseDto>>(characterTypes));
+        }
+
+        /// <summary>
         ///     Gets all rarities (Common, Rare...)
         /// </summary>
         [AllowAnonymous]

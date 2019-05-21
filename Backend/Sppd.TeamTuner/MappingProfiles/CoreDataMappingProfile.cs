@@ -9,6 +9,7 @@ namespace Sppd.TeamTuner.MappingProfiles
         {
             // Entity -> DTO
             CreateEntityToDtoMap<CardTypeResponseDto>();
+            CreateEntityToDtoMap<CharacterTypeResponseDto>();
             CreateEntityToDtoMap<RarityResponseDto>();
             CreateEntityToDtoMap<ThemeResponseDto>();
         }

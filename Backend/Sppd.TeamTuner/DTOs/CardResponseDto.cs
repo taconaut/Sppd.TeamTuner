@@ -40,5 +40,10 @@ namespace Sppd.TeamTuner.DTOs
         /// </summary>
         [Required]
         public Guid TypeId { get; set; }
+
+        /// <summary>
+        ///     The character type identifier.
+        /// </summary>
+        public Guid? CharacterTypeId { get; set; }
     }
 }

@@ -16,6 +16,11 @@ namespace Sppd.TeamTuner.Core.Services
         Task<IEnumerable<CardType>> GetCardTypesAsync();
 
         /// <summary>
+        ///     Gets all character types (Assassin, Melee...)
+        /// </summary>
+        Task<IEnumerable<CharacterType>> GetCharacterTypesAsync();
+
+        /// <summary>
         ///     Gets all rarities (Common, Rare...)
         /// </summary>
         Task<IEnumerable<Rarity>> GetRaritiesAsync();
