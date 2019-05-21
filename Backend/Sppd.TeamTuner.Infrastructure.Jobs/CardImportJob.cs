@@ -35,6 +35,7 @@ namespace Sppd.TeamTuner.Infrastructure.Jobs
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to import cards");
+                throw;
             }
         }
     }
