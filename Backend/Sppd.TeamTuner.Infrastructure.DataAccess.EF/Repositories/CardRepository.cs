@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Repositories;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
@@ -14,9 +16,19 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
         {
         }
 
-        public async Task<bool> ExternalIdExistsAsync(string externalId)
+        public async Task<Card> GetByExternalIdAsync(string externalId)
         {
-            return await Set.AnyAsync(card => Equals(externalId, card.ExternalId));
+            Card entity;
+            try
+            {
+                entity = await GetQueryableWithIncludes().SingleAsync(e => e.ExternalId == externalId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new EntityNotFoundException(typeof(Card), externalId);
+            }
+
+            return entity;
         }
     }
 }

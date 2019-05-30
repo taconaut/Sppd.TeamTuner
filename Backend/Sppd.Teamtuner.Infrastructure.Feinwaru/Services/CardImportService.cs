@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Config;
+using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Infrastructure.Feinwaru.Config;
 using Sppd.TeamTuner.Infrastructure.Feinwaru.Domain.Enumerations;
@@ -60,14 +61,14 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.Services
 
         private async Task UpdateCardsAsync(CardListResponse cardsList)
         {
-            var cardsToUpdate = await GetCardsToUpdateAsync(cardsList);
+            var cardsToAddUpdateDelete = await GetCardsToAddUpdateDeleteAsync(cardsList);
 
             // Convert the Feinwaru cards to team tuner entities
-            var cardAddEntities = _mapper.Map<IEnumerable<Card>>(cardsToUpdate.ToAdd).ToList();
-            var cardUpdateEntities = _mapper.Map<IEnumerable<Card>>(cardsToUpdate.ToUpdate).ToList();
+            var cardAddEntities = _mapper.Map<IEnumerable<Card>>(cardsToAddUpdateDelete.ToAdd).ToList();
+            var cardUpdateEntities = _mapper.Map<IEnumerable<Card>>(cardsToAddUpdateDelete.ToUpdate).ToList();
             // The update entities haven't got the correct entity IDs. Set the correct ones
             await SetIdsAsync(cardUpdateEntities);
-            var cardDeleteEntityIds = cardsToUpdate.IdsToDelete.ToList();
+            var cardDeleteEntityIds = cardsToAddUpdateDelete.IdsToDelete.ToList();
 
             // Save the cards
             await _cardService.CreateAsync(cardAddEntities, false);
@@ -88,7 +89,7 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.Services
             }
         }
 
-        private async Task<CardsToUpdateResult> GetCardsToUpdateAsync(CardListResponse cardsList)
+        private async Task<CardsToUpdateResult> GetCardsToAddUpdateDeleteAsync(CardListResponse cardsList)
         {
             var cardsToAdd = new List<Domain.Objects.Card>();
             var cardsToUpdate = new List<Domain.Objects.Card>();
@@ -100,21 +101,23 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.Services
                 // The identifier used by Feinwaru
                 var externalId = cardListCard.Id;
 
-                if (await _cardService.ExternalIdExistsAsync(externalId))
+                try
                 {
-                    // TODO: update condition once Feinwaru has added the updated_at property
-                    if (_feinwaruConfig.Value.ImportMode == CardImportMode.UpdateAll || false)
+                    var storedCard = await _cardService.GetByExternalIdAsync(externalId);
+
+                    if (_feinwaruConfig.Value.ImportMode == CardImportMode.UpdateAll || storedCard.ModifiedOnUtc < cardListCard.UpdatedAtUtc)
                     {
-                        cardResponseTasks.Add(GetCardAsync(externalId), CardUpdateOperation.Update);
+                        cardResponseTasks.Add(GetCardResponseAsync(externalId), CardUpdateOperation.Update);
                     }
                     else
                     {
-                        _logger.LogTrace($"Do not retrieve card {cardListCard.Name} with externalId={externalId} because it already exists");
+                        _logger.LogTrace(
+                            $"Do not retrieve card {cardListCard.Name} with externalId={externalId} because it already exists and has been last updated '{storedCard.ModifiedOnUtc}', whereas it last changed '{cardListCard.UpdatedAtUtc}'");
                     }
                 }
-                else
+                catch (EntityNotFoundException)
                 {
-                    cardResponseTasks.Add(GetCardAsync(externalId), CardUpdateOperation.Add);
+                    cardResponseTasks.Add(GetCardResponseAsync(externalId), CardUpdateOperation.Add);
                 }
             }
 
@@ -162,7 +165,7 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.Services
             return await GetResponseAsync<CardListResponse>(_feinwaruConfig.Value.CardsListEndpoint);
         }
 
-        private async Task<CardResponse> GetCardAsync(string cardId)
+        private async Task<CardResponse> GetCardResponseAsync(string cardId)
         {
             return await GetResponseAsync<CardResponse>(_feinwaruConfig.Value.CardEndpoint.Replace(ID_PLACEHOLDER, cardId));
         }

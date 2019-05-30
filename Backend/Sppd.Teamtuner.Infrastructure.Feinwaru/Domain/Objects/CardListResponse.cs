@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
@@ -29,5 +30,8 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.Domain.Objects
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("updated_at")]
+        public DateTime UpdatedAtUtc { get; set; }
     }
 }

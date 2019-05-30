@@ -29,9 +29,9 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             return cards.ToDictionary(card => card, card => cardLevels.SingleOrDefault(cl => cl.CardId == card.Id)?.Level);
         }
 
-        public async Task<bool> ExternalIdExistsAsync(string externalId)
+        public Task<Card> GetByExternalIdAsync(string externalId)
         {
-            return await _cardRepository.ExternalIdExistsAsync(externalId);
+            return _cardRepository.GetByExternalIdAsync(externalId);
         }
     }
 }
