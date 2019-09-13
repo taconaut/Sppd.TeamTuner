@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Sppd.TeamTuner.Common;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Repositories;
-using Sppd.TeamTuner.Common;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {
@@ -44,6 +44,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                      {
                                          Id = new Guid(TestingConstants.Theme.NEUTRAL_ID),
                                          Name = "Neutral"
+                                     });
+            _cardThemeRepository.Add(new Theme
+                                     {
+                                         Id = new Guid(TestingConstants.Theme.SUPERHERO_ID),
+                                         Name = "Superhero"
                                      });
 
             return Task.CompletedTask;

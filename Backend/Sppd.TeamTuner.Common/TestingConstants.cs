@@ -20,6 +20,7 @@
             public const string MYSTICAL_ID = "BF148B37-4E92-446F-9AB6-B80BF6BA7D05";
             public const string FANTASY_ID = "2A0C0C38-97F1-4CD7-8072-89113FA738DA";
             public const string NEUTRAL_ID = "EA08E01B-1418-43B7-B7D1-926FCAED2A66";
+            public const string SUPERHERO_ID = "2584122B-4A69-486B-8CBC-8FC55015B738";
         }
 
         public struct Team
@@ -61,6 +62,7 @@
             public const string SPELL_ID = "59F49F99-0548-46EC-8F7A-955E8BC057AE";
             public const string SPAWN_ID = "423F055B-581E-4EBC-8B11-14E5E9DDE890";
             public const string CHARACTER_ID = "D4E2E80B-E56E-4D30-9A1C-0AD1944B1B34";
+            public const string TRAP_ID = "9B8BCF5E-3757-47CC-AAA0-4B9E77DCF2A7";
         }
 
         public struct CharacterType

@@ -63,6 +63,9 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
                 case "general":
                     return Guid.Parse(TestingConstants.Theme.NEUTRAL_ID);
 
+                case "superhero":
+                    return Guid.Parse(TestingConstants.Theme.SUPERHERO_ID);
+
                 default:
                     throw new NotSupportedException($"Theme '{themeName}' is not supported");
             }
@@ -101,6 +104,9 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
 
                 case "spawn":
                     return Guid.Parse(TestingConstants.CardType.SPAWN_ID);
+
+                case "trap":
+                    return Guid.Parse(TestingConstants.CardType.TRAP_ID);
 
                 default:
                     throw new NotSupportedException($"Type '{type}' is not supported");

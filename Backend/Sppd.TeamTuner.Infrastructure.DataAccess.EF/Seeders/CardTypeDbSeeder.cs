@@ -35,6 +35,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                         Id = Guid.Parse(TestingConstants.CardType.SPAWN_ID),
                                         Name = "Spawn"
                                     });
+            _cardTypeRepository.Add(new CardType
+                                    {
+                                        Id = Guid.Parse(TestingConstants.CardType.TRAP_ID),
+                                        Name = "Trap"
+                                    });
 
             return Task.CompletedTask;
         }
