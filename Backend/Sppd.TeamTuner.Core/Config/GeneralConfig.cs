@@ -7,6 +7,11 @@
     public class GeneralConfig : IConfig
     {
         /// <summary>
+        ///     Gets or sets the email verification URL.
+        /// </summary>
+        public string EmailVerificationUrl { get; set; }
+
+        /// <summary>
         ///     Specifies if Swagger UI will be enabled
         /// </summary>
         public bool EnableSwaggerUI { get; set; }

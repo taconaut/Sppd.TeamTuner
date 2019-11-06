@@ -66,6 +66,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             builder.Entity<CharacterType>(ConfigureCharacterType);
 
             builder.Entity<TeamTunerUser>(ConfigureTeamTunerUser);
+            builder.Entity<TeamTunerUserRegistrationRequest>(ConfigureTeamTunerUserRegistrationValidation);
             builder.Entity<Team>(ConfigureTeam);
             builder.Entity<Federation>(ConfigureFederation);
             builder.Entity<TeamMembershipRequest>(ConfigureTeamMembershipRequest);

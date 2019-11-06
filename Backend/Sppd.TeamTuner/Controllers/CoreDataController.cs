@@ -43,7 +43,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet("card-types")]
-        public async Task<IActionResult> GetCardTypes()
+        public async Task<ActionResult<IEnumerable<CardTypeResponseDto>>> GetCardTypes()
         {
             var cardTypes = await _coreDataService.GetCardTypesAsync();
             return Ok(_mapper.Map<IEnumerable<CardTypeResponseDto>>(cardTypes));
@@ -54,7 +54,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet("character-types")]
-        public async Task<IActionResult> GetCharacterTypes()
+        public async Task<ActionResult<IEnumerable<CharacterTypeResponseDto>>> GetCharacterTypes()
         {
             var characterTypes = await _coreDataService.GetCharacterTypesAsync();
             return Ok(_mapper.Map<IEnumerable<CharacterTypeResponseDto>>(characterTypes));
@@ -65,7 +65,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet("rarities")]
-        public async Task<IActionResult> GetRarities()
+        public async Task<ActionResult<IEnumerable<RarityResponseDto>>> GetRarities()
         {
             var rarities = await _coreDataService.GetRaritiesAsync();
             return Ok(_mapper.Map<IEnumerable<RarityResponseDto>>(rarities));
@@ -76,7 +76,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet("themes")]
-        public async Task<IActionResult> GetThemes()
+        public async Task<ActionResult<IEnumerable<ThemeResponseDto>>> GetThemes()
         {
             var themes = await _coreDataService.GetThemesAsync();
             return Ok(_mapper.Map<IEnumerable<ThemeResponseDto>>(themes));

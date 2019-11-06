@@ -20,6 +20,13 @@ namespace Sppd.TeamTuner.Core.Repositories
         Task<TeamTunerUser> GetByNameAsync(string username);
 
         /// <summary>
+        ///     Gets the <see cref="TeamTunerUser" /> by email.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
+        Task<TeamTunerUser> GetByEmailAsync(string email);
+
+        /// <summary>
         ///     Gets all <see cref="TeamTunerUser" />s being part of the <see cref="Team" />
         /// </summary>
         /// <param name="teamId">The team identifier.</param>

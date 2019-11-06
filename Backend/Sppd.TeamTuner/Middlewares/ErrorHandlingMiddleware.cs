@@ -78,7 +78,7 @@ namespace Sppd.TeamTuner.Middlewares
 
                 case BusinessException _:
                     code = HttpStatusCode.InternalServerError;
-                    message = $"A business error has occured: {ex.Message}";
+                    message = ex.Message;
                     break;
 
                 default:

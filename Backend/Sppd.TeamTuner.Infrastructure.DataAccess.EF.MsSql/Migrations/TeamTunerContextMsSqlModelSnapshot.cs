@@ -15,7 +15,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -371,6 +371,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<bool>("IsEmailVerified");
+
                     b.Property<Guid>("ModifiedById");
 
                     b.Property<DateTime>("ModifiedOnUtc");
@@ -421,6 +423,46 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     b.HasIndex("TeamId");
 
                     b.ToTable("TeamTunerUser");
+                });
+
+            modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUserRegistrationRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CreatedById");
+
+                    b.Property<DateTime>("CreatedOnUtc");
+
+                    b.Property<Guid?>("DeletedById");
+
+                    b.Property<DateTime?>("DeletedOnUtc");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<Guid>("ModifiedById");
+
+                    b.Property<DateTime>("ModifiedOnUtc");
+
+                    b.Property<Guid>("RegistrationCode");
+
+                    b.Property<DateTime>("RegistrationDate");
+
+                    b.Property<Guid>("UserId");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegistrationCode");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.ToTable("TeamTunerUserRegistrationRequest");
                 });
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.Theme", b =>
@@ -519,6 +561,14 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.Team", "Team")
                         .WithMany("Users")
                         .HasForeignKey("TeamId");
+                });
+
+            modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUserRegistrationRequest", b =>
+                {
+                    b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

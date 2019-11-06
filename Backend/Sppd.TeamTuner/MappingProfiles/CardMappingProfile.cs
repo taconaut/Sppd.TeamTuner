@@ -10,6 +10,7 @@ namespace Sppd.TeamTuner.MappingProfiles
             // Entity -> DTO
             CreateMap<Card, UserCardResponseDto>()
                 .ForMember(dst => dst.CardId, exp => exp.MapFrom(src => src.Id))
+                .ForMember(dst => dst.CardName, exp => exp.MapFrom(src => src.Name))
                 .ForMember(dst => dst.UserId, exp => exp.Ignore())
                 .ForMember(dst => dst.Level, exp => exp.Ignore());
             CreateEntityToDtoMap<CardResponseDto>();

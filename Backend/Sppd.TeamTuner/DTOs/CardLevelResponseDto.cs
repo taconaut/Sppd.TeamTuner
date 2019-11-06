@@ -28,5 +28,10 @@ namespace Sppd.TeamTuner.DTOs
         /// </summary>
         [Required, Range(1, 7)]
         public int Level { get; set; }
+
+        /// <summary>
+        ///     When the level has been last modified.
+        /// </summary>
+        public DateTime? LevelLastModified { get; set; }
     }
 }

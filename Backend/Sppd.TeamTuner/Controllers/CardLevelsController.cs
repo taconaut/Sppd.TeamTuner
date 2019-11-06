@@ -17,6 +17,9 @@ namespace Sppd.TeamTuner.Controllers
     ///     Exposes an API to manage card levels.
     /// </summary>
     /// <seealso cref="ControllerBase" />
+    [Authorize]
+    [ApiController]
+    [Route("card-levels")]
     public class CardLevelsController : AuthorizationController
     {
         private readonly ITeamTunerUserService _userService;
@@ -41,7 +44,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="cardLevelUpdateDto">The card level update</param>
         [HttpPut]
-        public async Task<IActionResult> SetCardLevel([FromBody] CardLevelUpdateRequestDto cardLevelUpdateDto)
+        public async Task<ActionResult<CardLevelResponseDto>> SetCardLevel([FromBody] CardLevelUpdateRequestDto cardLevelUpdateDto)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, cardLevelUpdateDto.UserId);
             if (!authorizationResult.Succeeded)

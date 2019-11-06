@@ -8,7 +8,7 @@ namespace Sppd.TeamTuner.Core.Domain.Interfaces
     /// <summary>
     ///     Interface for team tuner user
     /// </summary>
-    public interface ITeamTunerUser
+    public interface ITeamTunerUser : IAuthorizing
     {
         Guid Id { get; }
 

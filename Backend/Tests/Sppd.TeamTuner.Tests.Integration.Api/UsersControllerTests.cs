@@ -38,7 +38,6 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
         private static readonly string s_updateRoute = "/users";
         private static readonly string s_deleteRoute = $"/users/{s_userIdPlaceholder}";
         private static readonly string s_getByIdRoute = $"/users/{s_userIdPlaceholder}";
-        private static readonly string s_getAllRoute = "/users";
         private static readonly string s_getCardLevelsRoute = $"/users/{s_userIdPlaceholder}/card-levels";
         private static readonly string s_getGetCardsWithUserLevelsRoute = $"/users/{s_userIdPlaceholder}/cards";
 
@@ -139,64 +138,6 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
             Assert.Equal(updateUserResponseDto.Email, updateUserDto.Email);
             Assert.True(updateUserResponseDto.ModifiedOnUtc > authorizedUserDto.ModifiedOnUtc);
             Assert.Equal(updateUserResponseDto.CreatedOnUtc, authorizedUserDto.CreatedOnUtc);
-        }
-
-        [Fact]
-        public async Task GetAllTest()
-        {
-            // Arrange
-            var authorizeAdminDto = new AuthorizationRequestDto {Name = TestingConstants.User.ADMIN_NAME, PasswordMd5 = TestingConstants.User.ADMIN_PASSWORD_MD5};
-            var authorizeTeamUserDto = new AuthorizationRequestDto
-                                       {Name = TestingConstants.User.HOLY_COW_TEAM_MEMBER_NAME, PasswordMd5 = TestingConstants.User.HOLY_COW_TEAM_MEMBER_PASSWORD_MD5};
-
-            string token;
-
-            // Act
-
-            // Authenticate as admin
-            var authorizeAdminResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeAdminDto));
-            var authorizedAdminDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await authorizeAdminResponse.Content.ReadAsStringAsync());
-            token = authorizedAdminDto.Token;
-
-            // Get all users
-            var previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
-            IEnumerable<UserResponseDto> getAllDto;
-            try
-            {
-                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                var getAllResponse = await Client.GetAsync(s_getAllRoute);
-                getAllDto = JsonConvert.DeserializeObject<IEnumerable<UserResponseDto>>(await getAllResponse.Content.ReadAsStringAsync());
-            }
-            finally
-            {
-                Client.DefaultRequestHeaders.Authorization = previousAuthenticationHeaderValue;
-            }
-
-            // Authenticate as user
-            var authorizeUserResponse = await Client.PostAsync(s_authorizeRoute, TestsHelper.GetStringContent(authorizeTeamUserDto));
-            var authorizedUserDto = JsonConvert.DeserializeObject<UserAuthorizationResponseDto>(await authorizeUserResponse.Content.ReadAsStringAsync());
-            token = authorizedUserDto.Token;
-
-            // Get all users (should fail)
-            HttpResponseMessage getAllResponseFail;
-            previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
-            try
-            {
-                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                getAllResponseFail = await Client.GetAsync(s_getAllRoute);
-            }
-            finally
-            {
-                Client.DefaultRequestHeaders.Authorization = previousAuthenticationHeaderValue;
-            }
-
-            // Assert
-            Assert.NotEmpty(getAllDto);
-            Assert.NotNull(getAllResponseFail);
-            Assert.False(getAllResponseFail.IsSuccessStatusCode);
-            Assert.Equal(HttpStatusCode.Forbidden, getAllResponseFail.StatusCode);
         }
 
         [Fact]

@@ -20,12 +20,18 @@ namespace Sppd.TeamTuner.Infrastructure.Services
     {
         private readonly ITeamTunerUserRepository _teamTunerUserRepository;
         private readonly ICardLevelRepository _cardLevelRepository;
+        private readonly IRegistrationRequestRepository _registrationRequestRepository;
+        private readonly IEmailVerificationService _emailVerificationService;
 
-        public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, ICardLevelRepository cardLevelRepository, IUnitOfWork unitOfWork)
+        public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, ICardLevelRepository cardLevelRepository,
+            IRegistrationRequestRepository registrationRequestRepository, IEmailVerificationService emailVerificationService,
+            IUnitOfWork unitOfWork)
             : base(teamTunerUserRepository, unitOfWork)
         {
             _teamTunerUserRepository = teamTunerUserRepository;
             _cardLevelRepository = cardLevelRepository;
+            _registrationRequestRepository = registrationRequestRepository;
+            _emailVerificationService = emailVerificationService;
         }
 
         public async Task<TeamTunerUser> AuthenticateAsync(string name, string passwordMd5)
@@ -41,9 +47,14 @@ namespace Sppd.TeamTuner.Infrastructure.Services
                 throw new SecurityException("Name or password incorrect");
             }
 
-            if (!VerifyPasswordHash(passwordMd5, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(passwordMd5.ToUpper(), user.PasswordHash, user.PasswordSalt))
             {
                 throw new SecurityException("Name or password incorrect");
+            }
+
+            if (!user.IsEmailVerified)
+            {
+                throw new SecurityException("Email has not been verified");
             }
 
             return user;
@@ -56,15 +67,35 @@ namespace Sppd.TeamTuner.Infrastructure.Services
 
         public async Task<TeamTunerUser> CreateAsync(TeamTunerUser user, string passwordMd5)
         {
-            await AddAsync(user, passwordMd5);
+            // Create the user
+            await AddAsync(user, passwordMd5.ToUpper());
+
+            // Create the registration request (used to validate the email)
+            var registrationRequest = GetRegistrationRequest(user);
+            _registrationRequestRepository.Add(registrationRequest);
+
+            // Send the validation mail
+            await _emailVerificationService.SendEmailVerificationAsync(user, registrationRequest);
+
+            // Persist to DB
             await UnitOfWork.CommitAsync();
 
             return user;
         }
 
-        public Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)
+        public async Task<bool> VerifyEmailAsync(string code)
         {
-            return _teamTunerUserRepository.GetByTeamIdAsync(teamId);
+            return await _emailVerificationService.VerifyEmailAsync(code);
+        }
+
+        public async Task<bool> ResendEmailVerificationAsync(string code)
+        {
+            return await _emailVerificationService.ResendEmailVerificationAsync(code);
+        }
+
+        public async Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)
+        {
+            return await _teamTunerUserRepository.GetByTeamIdAsync(teamId);
         }
 
         public async Task<IEnumerable<CardLevel>> GetCardLevelsAsync(Guid userId)
@@ -86,7 +117,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
                 _cardLevelRepository.Add(cardLevelToUpdate);
             }
 
-            cardLevelToUpdate.MapProperties(cardLevel);
+            cardLevelToUpdate.MapProperties(cardLevel, new[] {nameof(CardLevel.CardId), nameof(CardLevel.UserId), nameof(CardLevel.Level)});
 
             await UnitOfWork.CommitAsync();
 
@@ -118,6 +149,17 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             user.PasswordSalt = passwordSalt;
 
             _teamTunerUserRepository.Add(user);
+        }
+
+        private static TeamTunerUserRegistrationRequest GetRegistrationRequest(TeamTunerUser user)
+        {
+            return new TeamTunerUserRegistrationRequest
+                   {
+                       UserId = user.Id,
+                       User = user,
+                       RegistrationCode = Guid.NewGuid(),
+                       RegistrationDate = DateTime.UtcNow
+                   };
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

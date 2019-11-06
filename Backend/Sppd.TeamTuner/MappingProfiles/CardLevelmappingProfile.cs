@@ -8,7 +8,8 @@ namespace Sppd.TeamTuner.MappingProfiles
         public CardLevelMappingProfile()
         {
             // Entity -> DTO
-            CreateMap<CardLevel, CardLevelResponseDto>();
+            CreateMap<CardLevel, CardLevelResponseDto>()
+                .ForMember(dst => dst.LevelLastModified, exp => exp.MapFrom(src => src.ModifiedOnUtc));
 
             // DTO -> Entity
             CreateMap<CardLevelUpdateRequestDto, CardLevel>();

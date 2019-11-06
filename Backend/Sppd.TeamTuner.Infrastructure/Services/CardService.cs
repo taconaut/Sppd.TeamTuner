@@ -22,11 +22,11 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             _cardLevelRepository = cardLevelRepository;
         }
 
-        public async Task<IDictionary<Card, int?>> GetForUserAsync(Guid userId)
+        public async Task<IDictionary<Card, CardLevel>> GetForUserAsync(Guid userId)
         {
             var cards = await Repository.GetAllAsync();
             var cardLevels = await _cardLevelRepository.GetAllForUserAsync(userId);
-            return cards.ToDictionary(card => card, card => cardLevels.SingleOrDefault(cl => cl.CardId == card.Id)?.Level);
+            return cards.ToDictionary(card => card, card => cardLevels.SingleOrDefault(cl => cl.CardId == card.Id));
         }
 
         public Task<Card> GetByExternalIdAsync(string externalId)

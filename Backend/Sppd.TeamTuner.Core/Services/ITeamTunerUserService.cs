@@ -55,5 +55,19 @@ namespace Sppd.TeamTuner.Core.Services
         /// <param name="cardLevel">The card level.</param>
         /// <returns>The <see cref="CardLevel" /></returns>
         Task<CardLevel> SetCardLevelAsync(CardLevel cardLevel);
+
+        /// <summary>
+        ///     Confirms the email for the given code.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns><c>True</c> if the email could be confirmed; otherwise <c>false</c></returns>
+        Task<bool> VerifyEmailAsync(string code);
+
+        /// <summary>
+        ///     Sends the same mail, previously sent by <see cref="SendEmailVerificationAsync" />.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns><c>True</c> if the mail could be sent; otherwise <c>false</c>.</returns>
+        Task<bool> ResendEmailVerificationAsync(string code);
     }
 }

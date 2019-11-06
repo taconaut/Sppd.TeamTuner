@@ -105,6 +105,12 @@ namespace Sppd.TeamTuner
                 app.UseHsts();
             }
 
+            // Allow CORS
+            // TODO: Check if this is really what we want
+            app.UseCors(builder => builder.AllowAnyOrigin()
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod());
+
             ConfigureServicesOnStartupRegistries(app.ApplicationServices);
 
             if (generalConfig.EnableSwaggerUI)
@@ -193,6 +199,15 @@ namespace Sppd.TeamTuner
                                                                                                });
                                                userTask.Wait();
                                                user = userTask.Result;
+
+                                               if (!user.IsEmailVerified)
+                                               {
+                                                   throw new SecurityException("Email not verified");
+                                               }
+                                           }
+                                           catch (SecurityException)
+                                           {
+                                               throw;
                                            }
                                            catch (Exception ex)
                                            {
@@ -233,22 +248,24 @@ namespace Sppd.TeamTuner
         {
             _logger.LogDebug("Start dynamic assembly loading");
 
-            var directoryCatalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, $"{CoreConstants.Application.APP_DLL_PREFIX}*.dll");
-            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToList();
-            foreach (var assemblyFilePath in directoryCatalog.LoadedFiles)
+            using (var directoryCatalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, $"{CoreConstants.Application.APP_DLL_PREFIX}*.dll"))
             {
-                var isAssemblyRegistered = loadedAssemblies.Any(a => string.Equals(a.GetFilePath(), assemblyFilePath, StringComparison.InvariantCultureIgnoreCase));
-                if (!isAssemblyRegistered)
+                var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).ToList();
+                foreach (var assemblyFilePath in directoryCatalog.LoadedFiles)
                 {
-                    try
+                    var isAssemblyRegistered = loadedAssemblies.Any(a => string.Equals(a.GetFilePath(), assemblyFilePath, StringComparison.InvariantCultureIgnoreCase));
+                    if (!isAssemblyRegistered)
                     {
-                        // Load the application assembly if it hasn't already been loaded
-                        Assembly.Load(assemblyFilePath);
-                        _logger.LogInformation($"Dynamically loaded assembly '{assemblyFilePath}'");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, $"Failed to load assembly '{assemblyFilePath}' ");
+                        try
+                        {
+                            // Load the application assembly if it hasn't already been loaded
+                            Assembly.Load(assemblyFilePath);
+                            _logger.LogInformation($"Dynamically loaded assembly '{assemblyFilePath}'");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, $"Failed to load assembly '{assemblyFilePath}' ");
+                        }
                     }
                 }
             }

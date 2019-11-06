@@ -38,6 +38,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                 {
                                     Id = systemUser.Id,
                                     Email = systemUser.Email,
+                                    IsEmailVerified = true,
                                     ApplicationRole = CoreConstants.Authorization.Roles.SYSTEM,
                                     PasswordHash = Encoding.ASCII.GetBytes("A"),
                                     PasswordSalt = Encoding.ASCII.GetBytes("A"),
@@ -52,6 +53,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.ADMIN_NAME,
                                             SppdName = "App-Admin",
                                             Email = "admin@sppdteamtuner.com",
+                                            IsEmailVerified = true,
                                             ApplicationRole = CoreConstants.Authorization.Roles.ADMIN
                                         }, TestingConstants.User.ADMIN_PASSWORD_MD5);
 
@@ -62,6 +64,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_COW_TEAM_LEADER_NAME,
                                             SppdName = "Team-HolyCow-Leader",
                                             Email = "holyCowLeader@sppdteamtuner.com",
+                                            IsEmailVerified = true,
                                             ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Authorization.Roles.LEADER,
@@ -97,6 +100,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_NAME,
                                             SppdName = "Team-HolyCow-CoLeader",
                                             Email = "holyCowCoLeader@sppdteamtuner.com",
+                                            IsEmailVerified = true,
                                             ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Authorization.Roles.CO_LEADER,
@@ -132,6 +136,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_COW_TEAM_MEMBER_NAME,
                                             SppdName = "Team-HolyCow-Member",
                                             Email = "holyCowMember@sppdteamtuner.com",
+                                            IsEmailVerified = true,
                                             ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Authorization.Roles.MEMBER,
@@ -169,6 +174,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_FEDERATION_LEADER_NAME,
                                             SppdName = "Federation-Holy-Leader",
                                             Email = "holyLeader@sppdteamtuner.com",
+                                            IsEmailVerified = true,
                                             ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Authorization.Roles.MEMBER,
@@ -181,6 +187,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_FEDERATION_CO_LEADER_NAME,
                                             SppdName = "Federation-Holy-CoLeader",
                                             Email = "holyCoLeader@sppdteamtuner.com",
+                                            IsEmailVerified = true,
                                             ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Authorization.Roles.MEMBER,
@@ -193,6 +200,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                             Name = TestingConstants.User.HOLY_FEDERATION_MEMBER_NAME,
                                             SppdName = "Federation-Holy-Member",
                                             Email = "holyMember@sppdteamtuner.com",
+                                            IsEmailVerified = true,
                                             ApplicationRole = CoreConstants.Authorization.Roles.USER,
                                             TeamId = new Guid(TestingConstants.Team.HOLY_COW_ID),
                                             TeamRole = CoreConstants.Authorization.Roles.MEMBER,

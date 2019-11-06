@@ -72,10 +72,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Providers
                 return userProvider.CurrentUser;
             }
 
-            if (entry.Entity is ITeamTunerUser user)
+            if (entry.Entity is IAuthorizing authorizingEntity)
             {
                 // Special case for user creation: The user creates himself and thus doesn't exist yet. Use him as the current user.
-                return user;
+                return authorizingEntity.AuthorizingUser;
             }
 
             throw new BusinessException("CurrentUser not defined");

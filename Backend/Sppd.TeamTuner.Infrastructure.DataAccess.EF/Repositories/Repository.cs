@@ -31,17 +31,14 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
 
         public async Task<TEntity> GetAsync(Guid entityId, IEnumerable<string> includeProperties = null)
         {
-            TEntity entity;
             try
             {
-                entity = await GetQueryableWithIncludes(includeProperties).SingleAsync(e => e.Id == entityId);
+                return await GetQueryableWithIncludes(includeProperties).SingleAsync(e => e.Id == entityId);
             }
             catch (InvalidOperationException)
             {
                 throw new EntityNotFoundException(typeof(TEntity), entityId.ToString());
             }
-
-            return entity;
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(IEnumerable<string> includeProperties = null)

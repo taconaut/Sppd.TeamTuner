@@ -19,6 +19,10 @@ namespace Sppd.TeamTuner.Core.Domain.Entities
     {
         public IEnumerable<CardLevel> CardLevels { get; set; }
 
+        public bool IsEmailVerified { get; set; }
+
+        public ITeamTunerUser AuthorizingUser => this;
+
         public UserProfileVisibility ProfileVisibility { get; set; }
 
         [Required, StringLength(CoreConstants.StringLength.TeamTunerUser.SPPD_NAME_MAX)]

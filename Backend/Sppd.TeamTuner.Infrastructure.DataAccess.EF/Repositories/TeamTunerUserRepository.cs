@@ -23,6 +23,12 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
                 .SingleOrDefaultAsync(e => e.Name == name);
         }
 
+        public async Task<TeamTunerUser> GetByEmailAsync(string email)
+        {
+            return await GetQueryableWithIncludes()
+                .SingleOrDefaultAsync(e => e.Email == email);
+        }
+
         public async Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)
         {
             return await GetQueryableWithIncludes()

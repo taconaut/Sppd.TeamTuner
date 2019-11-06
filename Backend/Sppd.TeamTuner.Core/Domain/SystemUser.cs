@@ -39,5 +39,7 @@ namespace Sppd.TeamTuner.Core.Domain
         public string FederationRole => null;
 
         public UserProfileVisibility ProfileVisibility => UserProfileVisibility.User;
+
+        public ITeamTunerUser AuthorizingUser => this;
     }
 }

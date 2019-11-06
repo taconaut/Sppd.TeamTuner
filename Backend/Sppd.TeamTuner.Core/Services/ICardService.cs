@@ -21,7 +21,7 @@ namespace Sppd.TeamTuner.Core.Services
         ///     A dictionary containing all existing cards as key; the value will either be a level (1-7) or NULL if the user
         ///     hasn't set a level yet.
         /// </returns>
-        Task<IDictionary<Card, int?>> GetForUserAsync(Guid userId);
+        Task<IDictionary<Card, CardLevel>> GetForUserAsync(Guid userId);
 
         /// <summary>
         ///     Gets the card having the specified external identifier

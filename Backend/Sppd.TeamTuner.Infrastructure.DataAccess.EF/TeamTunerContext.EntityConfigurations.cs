@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
@@ -16,6 +18,15 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
         {
             // Do not load soft deleted entities
             builder.HasQueryFilter(m => !m.IsDeleted);
+
+            // Specify UTC kind as this is not supported out of the box
+            // See: https://github.com/aspnet/EntityFrameworkCore/issues/4711
+            builder.Property(e => e.ModifiedOnUtc)
+                   .HasConversion(dateTime => dateTime, dateTime => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc));
+            builder.Property(e => e.CreatedOnUtc)
+                   .HasConversion(dateTime => dateTime, dateTime => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc));
+            builder.Property(e => e.DeletedOnUtc)
+                   .HasConversion(dateTime => dateTime, dateTime => dateTime.HasValue ? DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc) : (DateTime?) null);
         }
 
         private static void ConfigureNamedEntity<TEntity>(EntityTypeBuilder<TEntity> builder)
@@ -85,6 +96,19 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
                    .IsUnique()
                    .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
             builder.HasIndex(e => e.Email)
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
+        }
+
+        private static void ConfigureTeamTunerUserRegistrationValidation(EntityTypeBuilder<TeamTunerUserRegistrationRequest> builder)
+        {
+            ConfigureBaseEntity(builder);
+
+            builder.Property(e => e.RegistrationDate)
+                   .HasConversion(dateTime => dateTime, dateTime => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc));
+
+            builder.HasIndex(e => e.RegistrationCode);
+            builder.HasIndex(e => e.UserId)
                    .IsUnique()
                    .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
         }

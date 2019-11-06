@@ -44,9 +44,20 @@ namespace Sppd.TeamTuner.DTOs
         public Guid TypeId { get; set; }
 
         /// <summary>
+        ///     The character type identifier.
+        /// </summary>
+        [Required]
+        public Guid? CharacterTypeId { get; set; }
+
+        /// <summary>
         ///     The level (NULL if not set)
         /// </summary>
         [Range(1, 7)]
         public int? Level { get; set; }
+
+        /// <summary>
+        ///     When the level has been last modified.
+        /// </summary>
+        public DateTime? LevelLastModified { get; set; }
     }
 }

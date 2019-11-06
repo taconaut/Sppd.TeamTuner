@@ -2,7 +2,7 @@
 
 namespace Sppd.TeamTuner.DTOs
 {
-    internal class TeamResponseDto : DescriptiveDto
+    public class TeamResponseDto : DescriptiveDto
     {
         /// <summary>
         ///     The federation identifier

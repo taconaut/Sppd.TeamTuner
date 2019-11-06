@@ -43,7 +43,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<CardResponseDto>>> GetAll()
         {
             var cards = await _cardService.GetAllAsync();
             return Ok(_mapper.Map<IEnumerable<CardResponseDto>>(cards));
