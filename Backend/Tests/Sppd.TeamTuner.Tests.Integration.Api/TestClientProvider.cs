@@ -27,18 +27,8 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
 
         private static IWebHostBuilder CreateWebHostBuilder()
         {
-            return WebHost.CreateDefaultBuilder()
-                          .ConfigureAppConfiguration((hostingContext, config) =>
-                          {
-                              config.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), CoreConstants.Config.CONFIG_FOLDER));
-                              config.AddJsonFile(CoreConstants.Config.APP_CONFIG_FILE_NAME, false, false);
-                          })
-                          .ConfigureLogging((hostingContext, logging) =>
-                          {
-                              logging.AddLog4Net(Path.Combine(CoreConstants.Config.CONFIG_FOLDER, CoreConstants.Config.LOG4NET_CONFIG_FILE_NAME));
-                          })
-                          .UseUrls(SERVER_URL)
-                          .UseStartup<Startup>();
+            return Program.CreateWebHostBuilder()
+                          .UseUrls(SERVER_URL);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core;
+using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Repositories;
@@ -22,16 +23,18 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         private readonly ICardLevelRepository _cardLevelRepository;
         private readonly IRegistrationRequestRepository _registrationRequestRepository;
         private readonly IEmailVerificationService _emailVerificationService;
+        private readonly Lazy<GeneralConfig> _generalConfig;
 
         public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, ICardLevelRepository cardLevelRepository,
             IRegistrationRequestRepository registrationRequestRepository, IEmailVerificationService emailVerificationService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork, IConfigProvider<GeneralConfig> generalConfigProvider)
             : base(teamTunerUserRepository, unitOfWork)
         {
             _teamTunerUserRepository = teamTunerUserRepository;
             _cardLevelRepository = cardLevelRepository;
             _registrationRequestRepository = registrationRequestRepository;
             _emailVerificationService = emailVerificationService;
+            _generalConfig = new Lazy<GeneralConfig>(() => generalConfigProvider.Config);
         }
 
         public async Task<TeamTunerUser> AuthenticateAsync(string name, string passwordMd5)
@@ -74,8 +77,15 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             var registrationRequest = GetRegistrationRequest(user);
             _registrationRequestRepository.Add(registrationRequest);
 
-            // Send the validation mail
-            await _emailVerificationService.SendEmailVerificationAsync(user, registrationRequest);
+            if (_generalConfig.Value.IsUserEmailVerificationEnabled)
+            {
+                // Send the validation mail
+                await _emailVerificationService.SendEmailVerificationAsync(user, registrationRequest);
+            }
+            else
+            {
+                user.IsEmailVerified = true;
+            }
 
             // Persist to DB
             await UnitOfWork.CommitAsync();

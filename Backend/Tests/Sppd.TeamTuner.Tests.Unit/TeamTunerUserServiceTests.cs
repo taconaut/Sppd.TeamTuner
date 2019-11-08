@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 
 using Sppd.TeamTuner.Core;
+using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
@@ -26,9 +27,10 @@ namespace Sppd.TeamTuner.Tests.Unit
             var registrationRequestRepositoryMock = new Mock<IRegistrationRequestRepository>();
             var emailServiceMock = new Mock<IEmailVerificationService>();
             var cardLevelRepositoryMock = new Mock<ICardLevelRepository>();
+            var generalConfigProviderMock = new Mock<IConfigProvider<GeneralConfig>>();
 
             _userService = new TeamTunerUserService(teamTunerRepositoryMock.Object, cardLevelRepositoryMock.Object, registrationRequestRepositoryMock.Object,
-                emailServiceMock.Object, unitOfWorkMock.Object);
+                emailServiceMock.Object, unitOfWorkMock.Object, generalConfigProviderMock.Object);
         }
 
         private readonly TeamTunerUser _testUser;

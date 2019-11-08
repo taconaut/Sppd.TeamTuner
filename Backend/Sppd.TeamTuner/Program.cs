@@ -23,7 +23,7 @@ namespace Sppd.TeamTuner
                 .Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args = null)
         {
             return WebHost.CreateDefaultBuilder(args)
                           .ConfigureAppConfiguration((hostingContext, config) =>
