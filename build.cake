@@ -2,10 +2,10 @@
 // Tools & Add-ins
 //////////////////////////////////////////////////////////////////////
 
-#tool nuget:?package=Codecov&version=1.5.0
+#tool nuget:?package=Codecov&version=1.8.0
 
-#addin nuget:?package=Cake.Coverlet&version=2.2.1
-#addin nuget:?package=Cake.Codecov&version=0.6.0
+#addin nuget:?package=Cake.Coverlet&version=2.3.4
+#addin nuget:?package=Cake.Codecov&version=0.7.0
 
 //////////////////////////////////////////////////////////////////////
 // Arguments
@@ -43,7 +43,7 @@ var apiTestResultsFileName = "coverage-results-api.opencover.xml";
 // Tasks
 //////////////////////////////////////////////////////////////////////
 
-Task ("Clean")
+Task ("Backend-Clean")
     .Does (() => {
         CleanDirectory (artifactsDir);
         CleanDirectory (testOutputDir);
@@ -53,14 +53,14 @@ Task ("Clean")
         CleanDirectories ($"./**/bin/{configuration}");
     });
 
-Task ("Restore-NuGet-Packages")
-    .IsDependentOn ("Clean")
+Task ("Backend-Restore-NuGet-Packages")
+    .IsDependentOn ("Backend-Clean")
     .Does (() => {
         NuGetRestore (solutionPath);
     });
 
-Task ("Build")
-    .IsDependentOn ("Restore-NuGet-Packages")
+Task ("Backend-Build")
+    .IsDependentOn ("Backend-Restore-NuGet-Packages")
     .Does (() => {
         DotNetCoreBuild (
             solutionPath,
@@ -75,8 +75,8 @@ Task ("Build")
 ////// Packaging
 //////////////////////////////////////////////////////////////////////
 
-Task ("Package-Backend")
-    .IsDependentOn ("Build")
+Task ("Backend-Package")
+    .IsDependentOn ("Backend-Build")
     .Does (() => {
         DotNetCorePublish (
             teamTunerProjectPath,
@@ -90,7 +90,7 @@ Task ("Package-Backend")
     });
 
 Task ("Zip-Package")
-    .IsDependentOn ("Package-Backend")
+    .IsDependentOn ("Backend-Package")
     .Does (() => {
         Zip (artifactsDir, $"{artifactsDir}/Sppd.TeameTuner.zip");
     });
@@ -114,8 +114,8 @@ var testSettings = new DotNetCoreTestSettings {
     ResultsDirectory = testResultsDir
 };
 
-Task ("Run-Unit-Tests")
-    .IsDependentOn ("Build")
+Task ("Backend-Run-Unit-Tests")
+    .IsDependentOn ("Backend-Build")
     .DoesForEach (
         GetFiles ("./**/*.Tests.Unit.csproj"),
         testProject => {
@@ -125,8 +125,8 @@ Task ("Run-Unit-Tests")
             DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
         });
 
-Task ("Run-Integration-Tests")
-    .IsDependentOn ("Build")
+Task ("Backend-Run-Integration-Tests")
+    .IsDependentOn ("Backend-Build")
     .DoesForEach (
         GetFiles ("./**/*.Tests.Integration.*csproj"),
         testProject => {
@@ -136,8 +136,8 @@ Task ("Run-Integration-Tests")
             DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
         });
 
-Task ("Run-API-Tests")
-    .IsDependentOn ("Build")
+Task ("Backend-Run-API-Tests")
+    .IsDependentOn ("Backend-Build")
     .DoesForEach (
         GetFiles ("./**/*.Tests.Integration.Api.csproj"),
         testProject => {
@@ -147,33 +147,33 @@ Task ("Run-API-Tests")
             DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
         });
 
-Task ("Run-All-Tests")
-    .IsDependentOn ("Build")
-    .IsDependentOn ("Run-Unit-Tests")
-    .IsDependentOn ("Run-Integration-Tests")
-    .IsDependentOn ("Run-API-Tests");
+Task ("Backend-Run-All-Tests")
+    .IsDependentOn ("Backend-Build")
+    .IsDependentOn ("Backend-Run-Unit-Tests")
+    .IsDependentOn ("Backend-Run-Integration-Tests")
+    .IsDependentOn ("Backend-Run-API-Tests");
 
 //////////////////////////////////////////////////////////////////////
 // Codecov
 //////////////////////////////////////////////////////////////////////
 
-Task ("Upload-Coverage")
+Task ("Backend-Upload-Coverage")
     .Does (() => {
         Codecov ($"{testCoverageResultsDir}/{unitTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
         Codecov ($"{testCoverageResultsDir}/{integrationTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
         Codecov ($"{testCoverageResultsDir}/{apiTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
     });
 
-Task ("Run-Upload-All-Tests")
-    .IsDependentOn ("Run-All-Tests")
-    .IsDependentOn ("Upload-Coverage");
+Task ("Backend-Run-Upload-All-Tests")
+    .IsDependentOn ("Backend-Run-All-Tests")
+    .IsDependentOn ("Backend-Upload-Coverage");
 
 //////////////////////////////////////////////////////////////////////
 // Default
 //////////////////////////////////////////////////////////////////////
 
 Task ("Default")
-    .IsDependentOn ("Build");
+    .IsDependentOn ("Backend-Build");
 
 //////////////////////////////////////////////////////////////////////
 // Execution

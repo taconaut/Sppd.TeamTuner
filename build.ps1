@@ -42,7 +42,20 @@ https://cakebuild.net
 [CmdletBinding()]
 Param(
     [string]$Script = "build.cake",
-	[ValidateSet("Default", "Clean", "Restore-NuGet-Packages", "Build", "Package-Backend", "Zip-Package", "Run-Unit-Tests", "Run-Integration-Tests", "Run-API-Tests", "Run-All-Tests", "Upload-Coverage", "Run-Upload-All-Tests")]
+    [ValidateSet(
+        "Default", 
+        "Backend-Clean", 
+        "Backend-Restore-NuGet-Packages", 
+        "Backend-Build", 
+        "Backend-Package", 
+        "Zip-Package", 
+        "Backend-Run-Unit-Tests", 
+        "Backend-Run-Integration-Tests", 
+        "Backend-Run-API-Tests", 
+        "Backend-Run-All-Tests", 
+        "Backend-Upload-Coverage", 
+        "Backend-Run-Upload-All-Tests"
+    )]
     [string]$Target,
     [string]$Configuration,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
@@ -53,37 +66,31 @@ Param(
     [switch]$Experimental,
     [switch]$Mono,
     [switch]$SkipToolPackageRestore,
-    [Parameter(Position=0,Mandatory=$false,ValueFromRemainingArguments=$true)]
+    [Parameter(Position = 0, Mandatory = $false, ValueFromRemainingArguments = $true)]
     [string[]]$ScriptArgs
 )
 
 [Reflection.Assembly]::LoadWithPartialName("System.Security") | Out-Null
-function MD5HashFile([string] $filePath)
-{
-    if ([string]::IsNullOrEmpty($filePath) -or !(Test-Path $filePath -PathType Leaf))
-    {
+function MD5HashFile([string] $filePath) {
+    if ([string]::IsNullOrEmpty($filePath) -or !(Test-Path $filePath -PathType Leaf)) {
         return $null
     }
 
     [System.IO.Stream] $file = $null;
     [System.Security.Cryptography.MD5] $md5 = $null;
-    try
-    {
+    try {
         $md5 = [System.Security.Cryptography.MD5]::Create()
         $file = [System.IO.File]::OpenRead($filePath)
         return [System.BitConverter]::ToString($md5.ComputeHash($file))
     }
-    finally
-    {
-        if ($null -ne $file)
-        {
+    finally {
+        if ($null -ne $file) {
             $file.Dispose()
         }
     }
 }
 
-function GetProxyEnabledWebClient
-{
+function GetProxyEnabledWebClient {
     $wc = New-Object System.Net.WebClient
     $proxy = [System.Net.WebRequest]::GetSystemWebProxy()
     $proxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials        
@@ -93,7 +100,7 @@ function GetProxyEnabledWebClient
 
 Write-Host "Preparing to run build script..."
 
-if(!$PSScriptRoot){
+if (!$PSScriptRoot) {
     $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 }
 
@@ -119,7 +126,9 @@ if (!(Test-Path $PACKAGES_CONFIG)) {
     Write-Verbose -Message "Downloading packages.config..."    
     try {        
         $wc = GetProxyEnabledWebClient
-        $wc.DownloadFile("https://cakebuild.net/download/bootstrapper/packages", $PACKAGES_CONFIG) } catch {
+        $wc.DownloadFile("https://cakebuild.net/download/bootstrapper/packages", $PACKAGES_CONFIG) 
+    }
+    catch {
         Throw "Could not download packages.config."
     }
 }
@@ -141,7 +150,8 @@ if (!(Test-Path $NUGET_EXE)) {
     try {
         $wc = GetProxyEnabledWebClient
         $wc.DownloadFile($NUGET_URL, $NUGET_EXE)
-    } catch {
+    }
+    catch {
         Throw "Could not download NuGet.exe."
     }
 }
@@ -150,16 +160,16 @@ if (!(Test-Path $NUGET_EXE)) {
 $ENV:NUGET_EXE = $NUGET_EXE
 
 # Restore tools from NuGet?
-if(-Not $SkipToolPackageRestore.IsPresent) {
+if (-Not $SkipToolPackageRestore.IsPresent) {
     Push-Location
     Set-Location $TOOLS_DIR
 
     # Check for changes in packages.config and remove installed tools if true.
     [string] $md5Hash = MD5HashFile($PACKAGES_CONFIG)
-    if((!(Test-Path $PACKAGES_CONFIG_MD5)) -Or
-      ($md5Hash -ne (Get-Content $PACKAGES_CONFIG_MD5 ))) {
+    if ((!(Test-Path $PACKAGES_CONFIG_MD5)) -Or
+        ($md5Hash -ne (Get-Content $PACKAGES_CONFIG_MD5 ))) {
         Write-Verbose -Message "Missing or changed package.config hash..."
-        Remove-Item * -Recurse -Exclude packages.config,nuget.exe
+        Remove-Item * -Recurse -Exclude packages.config, nuget.exe
     }
 
     Write-Verbose -Message "Restoring tools from NuGet..."
@@ -168,8 +178,7 @@ if(-Not $SkipToolPackageRestore.IsPresent) {
     if ($LASTEXITCODE -ne 0) {
         Throw "An error occurred while restoring NuGet tools."
     }
-    else
-    {
+    else {
         $md5Hash | Out-File $PACKAGES_CONFIG_MD5 -Encoding "ASCII"
     }
     Write-Verbose -Message ($NuGetOutput | out-string)
