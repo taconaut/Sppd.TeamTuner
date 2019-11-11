@@ -45,13 +45,15 @@ Param(
     [ValidateSet(
         # Global
         "Default", 
+        "Common-Clean",
+        "Clean",
         "Zip-Package",
 
         # Backend
         "Backend-Clean", 
         "Backend-Restore-NuGet-Packages", 
         "Backend-Build", 
-        "Backend-Package",
+        "Backend-Test-Package",
         "Backend-Run-Unit-Tests", 
         "Backend-Run-Integration-Tests", 
         "Backend-Run-API-Tests", 
@@ -63,7 +65,8 @@ Param(
         "Frontend-Clean",
         "Frontend-Npm-Install",
         "Frontend-Build",
-        "Frontend-Package"
+        "Frontend-Package",
+        "Frontend-Generate-API-Client"
     )]
     [string]$Target,
     [string]$Configuration,

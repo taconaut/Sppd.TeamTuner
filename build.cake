@@ -7,6 +7,8 @@
 #addin nuget:?package=Cake.Coverlet&version=2.3.4
 #addin nuget:?package=Cake.Codecov&version=0.7.0
 #addin nuget:?package=Cake.Npm&version=0.17.0
+#addin nuget:?package=Cake.CodeGen.NSwag&version=1.2.0&loaddependencies=true
+#addin nuget:?package=Cake.Git&version=0.21.0
 
 //////////////////////////////////////////////////////////////////////
 // Arguments
@@ -22,8 +24,8 @@ var configuration = Argument ("configuration", "Release");
 // Directories
 
 // Existing
+var projectDir = Directory("./");
 var backendDir = Directory ("./Backend");
-
 var frontendDir = Directory ("./Frontend");
 var frontendDistDir = MakeAbsolute (MakeAbsolute (frontendDir).Combine (Directory ("dist")));
 
@@ -36,20 +38,27 @@ var testResultsDir = MakeAbsolute (testOutputDir.Combine (Directory ("test-resul
 // File paths
 var solutionPath = backendDir.Path + "/Sppd.TeamTuner.sln";
 var teamTunerProjectPath = backendDir.Path + "/Sppd.TeamTuner/Sppd.TeamTuner.csproj";
+var apiClientFilePath = frontendDir.Path + "/src/api.ts";
 
 // File names
 var unitTestResultsFileName = "coverage-results-unit.opencover.xml";
 var integrationTestResultsFileName = "coverage-results-integration.opencover.xml";
 var apiTestResultsFileName = "coverage-results-api.opencover.xml";
 
+// URIs
+var localApiUri = "https://localhost:44336/swagger/v1/swagger.json";
 
 //////////////////////////////////////////////////////////////////////
 // Tasks
 //////////////////////////////////////////////////////////////////////
 
-Task ("Backend-Clean")
+Task ("Common-Clean")
     .Does (() => {
         CleanDirectory (artifactsDir);
+    });
+
+Task ("Backend-Clean")
+    .Does (() => {
         CleanDirectory (testOutputDir);
         CleanDirectory (testCoverageResultsDir);
         CleanDirectory (testResultsDir);
@@ -63,6 +72,7 @@ Task ("Frontend-Clean")
     });
 
 Task ("Clean")
+    .IsDependentOn ("Common-Clean")
     .IsDependentOn ("Backend-Clean")
     .IsDependentOn ("Frontend-Clean");
 
@@ -88,9 +98,10 @@ Task ("Backend-Build")
 
 Task ("Frontend-Npm-Install")
     .Does (() => {
-        var settings = new NpmInstallSettings();
-        settings.ForProduction();
-        settings.FromPath(frontendDir);
+        var settings = new NpmInstallSettings {
+            WorkingDirectory = frontendDir,
+            Production = false
+        };
 
         NpmInstall(settings);
     });
@@ -98,9 +109,10 @@ Task ("Frontend-Npm-Install")
 Task ("Frontend-Build")
     .IsDependentOn ("Frontend-Clean")
     .Does (() => {
-        var settings = new NpmRunScriptSettings();
-        settings.ScriptName = "build";
-        settings.FromPath(frontendDir);
+        var settings = new NpmRunScriptSettings {
+            ScriptName = "build",
+            WorkingDirectory = frontendDir 
+        };
 
         NpmRunScript(settings);
     });
@@ -113,8 +125,9 @@ Task ("Build")
 ////// Packaging
 //////////////////////////////////////////////////////////////////////
 
-Task ("Backend-Package")
-    .IsDependentOn ("Backend-Build")
+Task ("Backend-Test-Package")
+    .IsDependentOn("Common-Clean")
+    .IsDependentOn("Backend-Run-All-Tests")
     .Does (() => {
         DotNetCorePublish (
             teamTunerProjectPath,
@@ -128,16 +141,42 @@ Task ("Backend-Package")
     });
 
 Task ("Frontend-Package")
+    .IsDependentOn("Common-Clean")
     .IsDependentOn ("Frontend-Build")
     .Does (() => {
         CopyDirectory(frontendDistDir, $"{artifactsDir}/Frontend");
     });
 
 Task ("Zip-Package")
-    .IsDependentOn ("Backend-Package")
+    .IsDependentOn ("Backend-Test-Package")
     .IsDependentOn ("Frontend-Package")
     .Does (() => {
-        Zip (artifactsDir, $"{artifactsDir}/Sppd.TeameTuner.zip");
+        var gitCommitHash = GitLogTip(projectDir).Sha;
+        // TODO: handle tag version once release rpocess has been defined
+        var version = gitCommitHash?.Substring(0, 8) ?? "Unknown";
+        Zip (artifactsDir, $"{artifactsDir}/Sppd.TeameTuner-{version}.zip");
+    });
+
+//////////////////////////////////////////////////////////////////////
+////// Client API generation
+//////////////////////////////////////////////////////////////////////
+
+Task ("Frontend-Generate-API-Client")
+    .Does (() => {
+        // The frontend API client is being generated from the swagger json made available when running the backend.
+        // This process could be improved by using the project itself as a source, there are currently following issues I'm aware of
+        // 1) When trying to do this from NSwagStudio, the process hangs and never finishes.
+        // 2) Cake.CodeGen.NSwag does not expose this yet.
+        var settings = new TypeScriptClientGeneratorSettings {
+            ClassName = "{controller}Client",
+            Template = TypeScriptTemplate.Axios,
+            OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator(),
+            ExceptionClass = "ApiException",
+            GenerateDtoTypes = true
+        };
+
+        NSwag.FromJsonSpecification(new Uri(localApiUri))
+        .GenerateTypeScriptClient(apiClientFilePath, settings);
     });
 
 //////////////////////////////////////////////////////////////////////
