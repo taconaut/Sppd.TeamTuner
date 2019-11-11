@@ -108,6 +108,7 @@ Task ("Frontend-Npm-Install")
 
 Task ("Frontend-Build")
     .IsDependentOn ("Frontend-Clean")
+    .IsDependentOn("Frontend-Npm-Install")
     .Does (() => {
         var settings = new NpmRunScriptSettings {
             ScriptName = "build",
