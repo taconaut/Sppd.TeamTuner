@@ -43,18 +43,27 @@ https://cakebuild.net
 Param(
     [string]$Script = "build.cake",
     [ValidateSet(
+        # Global
         "Default", 
+        "Zip-Package",
+
+        # Backend
         "Backend-Clean", 
         "Backend-Restore-NuGet-Packages", 
         "Backend-Build", 
-        "Backend-Package", 
-        "Zip-Package", 
+        "Backend-Package",
         "Backend-Run-Unit-Tests", 
         "Backend-Run-Integration-Tests", 
         "Backend-Run-API-Tests", 
         "Backend-Run-All-Tests", 
         "Backend-Upload-Coverage", 
-        "Backend-Run-Upload-All-Tests"
+        "Backend-Run-Upload-All-Tests",
+
+        # Frontend
+        "Frontend-Clean",
+        "Frontend-Npm-Install",
+        "Frontend-Build",
+        "Frontend-Package"
     )]
     [string]$Target,
     [string]$Configuration,

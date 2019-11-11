@@ -6,6 +6,7 @@
 
 #addin nuget:?package=Cake.Coverlet&version=2.3.4
 #addin nuget:?package=Cake.Codecov&version=0.7.0
+#addin nuget:?package=Cake.Npm&version=0.17.0
 
 //////////////////////////////////////////////////////////////////////
 // Arguments
@@ -22,7 +23,9 @@ var configuration = Argument ("configuration", "Release");
 
 // Existing
 var backendDir = Directory ("./Backend");
-var buildDir = backendDir + Directory ("Sppd.TeamTuner/bin") + Directory (configuration);
+
+var frontendDir = Directory ("./Frontend");
+var frontendDistDir = MakeAbsolute (MakeAbsolute (frontendDir).Combine (Directory ("dist")));
 
 // To be created
 var artifactsDir = MakeAbsolute (Directory ("./artifacts"));
@@ -39,6 +42,7 @@ var unitTestResultsFileName = "coverage-results-unit.opencover.xml";
 var integrationTestResultsFileName = "coverage-results-integration.opencover.xml";
 var apiTestResultsFileName = "coverage-results-api.opencover.xml";
 
+
 //////////////////////////////////////////////////////////////////////
 // Tasks
 //////////////////////////////////////////////////////////////////////
@@ -53,6 +57,17 @@ Task ("Backend-Clean")
         CleanDirectories ($"./**/bin/{configuration}");
     });
 
+Task ("Frontend-Clean")
+    .Does (() => {
+        CleanDirectory (frontendDistDir);
+    });
+
+Task ("Clean")
+    .IsDependentOn ("Backend-Clean")
+    .IsDependentOn ("Frontend-Clean");
+
+
+
 Task ("Backend-Restore-NuGet-Packages")
     .IsDependentOn ("Backend-Clean")
     .Does (() => {
@@ -66,10 +81,33 @@ Task ("Backend-Build")
             solutionPath,
             new DotNetCoreBuildSettings {
                 NoRestore = true,
-                    Configuration = configuration
+                Configuration = configuration
             }
         );
     });
+
+Task ("Frontend-Npm-Install")
+    .Does (() => {
+        var settings = new NpmInstallSettings();
+        settings.ForProduction();
+        settings.FromPath(frontendDir);
+
+        NpmInstall(settings);
+    });
+
+Task ("Frontend-Build")
+    .IsDependentOn ("Frontend-Clean")
+    .Does (() => {
+        var settings = new NpmRunScriptSettings();
+        settings.ScriptName = "build";
+        settings.FromPath(frontendDir);
+
+        NpmRunScript(settings);
+    });
+
+Task ("Build")
+    .IsDependentOn ("Backend-Build")
+    .IsDependentOn ("Frontend-Build");
 
 //////////////////////////////////////////////////////////////////////
 ////// Packaging
@@ -82,15 +120,22 @@ Task ("Backend-Package")
             teamTunerProjectPath,
             new DotNetCorePublishSettings {
                 NoBuild = true,
-                    NoRestore = true,
-                    Configuration = configuration,
-                    OutputDirectory = $"{artifactsDir}/Backend"
+                NoRestore = true,
+                Configuration = configuration,
+                OutputDirectory = $"{artifactsDir}/Backend"
             }
         );
     });
 
+Task ("Frontend-Package")
+    .IsDependentOn ("Frontend-Build")
+    .Does (() => {
+        CopyDirectory(frontendDistDir, $"{artifactsDir}/Frontend");
+    });
+
 Task ("Zip-Package")
     .IsDependentOn ("Backend-Package")
+    .IsDependentOn ("Frontend-Package")
     .Does (() => {
         Zip (artifactsDir, $"{artifactsDir}/Sppd.TeameTuner.zip");
     });
@@ -120,7 +165,7 @@ Task ("Backend-Run-Unit-Tests")
         GetFiles ("./**/*.Tests.Unit.csproj"),
         testProject => {
             testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-unit.xml");
-            coverletSettings.CoverletOutputName = $"coverage-results-unit.opencover.xml";
+            coverletSettings.CoverletOutputName = "coverage-results-unit.opencover.xml";
 
             DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
         });
@@ -131,7 +176,7 @@ Task ("Backend-Run-Integration-Tests")
         GetFiles ("./**/*.Tests.Integration.*csproj"),
         testProject => {
             testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-integration.xml");
-            coverletSettings.CoverletOutputName = $"coverage-results-integration.opencover.xml";
+            coverletSettings.CoverletOutputName = "coverage-results-integration.opencover.xml";
 
             DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
         });
@@ -142,7 +187,7 @@ Task ("Backend-Run-API-Tests")
         GetFiles ("./**/*.Tests.Integration.Api.csproj"),
         testProject => {
             testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-api.xml");
-            coverletSettings.CoverletOutputName = $"coverage-results-api.opencover.xml";
+            coverletSettings.CoverletOutputName = "coverage-results-api.opencover.xml";
 
             DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
         });
