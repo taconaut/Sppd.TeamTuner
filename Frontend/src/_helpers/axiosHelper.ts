@@ -1,20 +1,9 @@
 import axios from 'axios'
-import { config } from '@/config'
+import { configurationService } from '@/_services/configuration.service'
 import { UserAuthorizationResponseDto } from '@/api'
 
 function configureDefaults() {
-  axios.defaults.baseURL = config.apiUrl
-
-  axios.interceptors.response.use(
-    function (response) {
-      return response;
-    },
-    function (error) {
-      // handle error
-      if (error.response) {
-        alert(error.response.data.message);
-      }
-    });
+  axios.defaults.baseURL = configurationService.apiUrl
 }
 
 function setCurrentUser(currentUser: UserAuthorizationResponseDto | null) {

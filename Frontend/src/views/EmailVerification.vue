@@ -35,7 +35,11 @@ export default {
   mehtods: {
     async resendVerificationEmail() {
       await authorizationService.resend.resendVerificationEmail(this.code)
-      // TODO: notify user in toast or similar
+      this.$toasted.show('We\'ve sent you an email. Please check your inbox and click on the link to confirm it.', {
+        type: 'success',
+        position: 'top-center',
+        duration: 5000
+      })
     }
   }
 }

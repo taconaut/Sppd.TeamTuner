@@ -134,10 +134,20 @@ export default {
         .createUser(this.username, this.email, this.passwordFirst)
         .then(
           () => {
+            this.$toasted.show(
+              "Account created. We've sent you an email. Please check your inbox and click on the link to confirm it.",
+              {
+                type: 'success',
+                position: 'top-center',
+                duration: 5000
+              }
+            )
+
             this.$emit('close')
           },
           error => {
             this.error = error.response.data.error
+            this.isDoRegister = false
           }
         )
 

@@ -58,7 +58,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </remarks>
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<UserResponseDto>> Register([FromBody] UserCreateRequestDto userCreateRequestDto)
+        public async Task<ActionResult<UserResponseDto>> RegisterUser([FromBody] UserCreateRequestDto userCreateRequestDto)
         {
             var userToCreate = _mapper.Map<TeamTunerUser>(userCreateRequestDto);
             var createdUser = await _userService.CreateAsync(userToCreate, userCreateRequestDto.PasswordMd5);
@@ -74,7 +74,7 @@ namespace Sppd.TeamTuner.Controllers
         ///     updated.
         /// </remarks>
         [HttpPut]
-        public async Task<ActionResult<UserResponseDto>> Update([FromBody] UserUpdateRequestDto userRequestDto)
+        public async Task<ActionResult<UserResponseDto>> UpdateUser([FromBody] UserUpdateRequestDto userRequestDto)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, userRequestDto.Id);
             if (!authorizationResult.Succeeded)
@@ -97,7 +97,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </remarks>
         [AllowAnonymous]
         [HttpPost("authorize")]
-        public async Task<ActionResult<UserAuthorizationResponseDto>> Authorize([FromBody] AuthorizationRequestDto authorizationRequestDto)
+        public async Task<ActionResult<UserAuthorizationResponseDto>> AuthorizeUser([FromBody] AuthorizationRequestDto authorizationRequestDto)
         {
             var user = await _userService.AuthenticateAsync(authorizationRequestDto.Name, authorizationRequestDto.PasswordMd5);
             var userDto = _mapper.Map<UserAuthorizationResponseDto>(user);
@@ -110,7 +110,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The user identifier</param>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(Guid id)
+        public async Task<ActionResult> DeleteUser(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_USER, id);
             if (!authorizationResult.Succeeded)
@@ -127,7 +127,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The user identifier</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserResponseDto>> GetByUserId(Guid id)
+        public async Task<ActionResult<UserResponseDto>> GetUserByUserId(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
             if (!authorizationResult.Succeeded)
@@ -144,7 +144,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The user identifier</param>
         [HttpGet("{id}/card-levels")]
-        public async Task<ActionResult<IEnumerable<CardLevelResponseDto>>> GetCardLevels(Guid id)
+        public async Task<ActionResult<IEnumerable<CardLevelResponseDto>>> GetUserCardLevels(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
             if (!authorizationResult.Succeeded)

@@ -49,7 +49,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="teamCreateRequestDto">The team creation request</param>
         [HttpPost]
-        public async Task<ActionResult<TeamResponseDto>> Create([FromBody] TeamCreateRequestDto teamCreateRequestDto)
+        public async Task<ActionResult<TeamResponseDto>> CreateTeam([FromBody] TeamCreateRequestDto teamCreateRequestDto)
         {
             var team = _mapper.Map<Team>(teamCreateRequestDto);
             await _teamService.CreateAsync(team);
@@ -62,7 +62,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="teamUpdateRequestDto">The team update request</param>
         [HttpPut]
-        public async Task<ActionResult<TeamResponseDto>> Update([FromBody] TeamUpdateRequestDto teamUpdateRequestDto)
+        public async Task<ActionResult<TeamResponseDto>> UpdateTeam([FromBody] TeamUpdateRequestDto teamUpdateRequestDto)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_TEAM, teamUpdateRequestDto.Id);
             if (!authorizationResult.Succeeded)
@@ -80,7 +80,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteTeam(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_TEAM, id);
             if (!authorizationResult.Succeeded)
@@ -97,7 +97,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TeamResponseDto>> GetById(Guid id)
+        public async Task<ActionResult<TeamResponseDto>> GetTeamById(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, id);
             if (!authorizationResult.Succeeded)
@@ -114,7 +114,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpGet("{id}/users")]
-        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers(Guid id)
+        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetTeamUsers(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, id);
             if (!authorizationResult.Succeeded)
@@ -131,7 +131,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpGet("{id}/membership-requests")]
-        public async Task<ActionResult<IEnumerable<TeamMembershipRequestResponseDto>>> GetMembershipRequests(Guid id)
+        public async Task<ActionResult<IEnumerable<TeamMembershipRequestResponseDto>>> GetTeamMembershipRequests(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS, id);
             if (!authorizationResult.Succeeded)

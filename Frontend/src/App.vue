@@ -89,7 +89,8 @@ export default {
     })
   },
   destroyed() {
-    eventBus.$off('ShowLoginDialog')
+    eventBus.$off(eventIdentifiers.showLoginDialog)
+    eventBus.$off(eventIdentifiers.showRegisterDialog)
   }
 }
 </script>

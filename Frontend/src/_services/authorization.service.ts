@@ -34,7 +34,7 @@ class AuthorizationService {
     userCreateRequest.passwordMd5 = stringHelper.md5hash(password)
 
     const usersClient = new UsersClient()
-    const userCreateResponse = await usersClient.register(userCreateRequest)
+    const userCreateResponse = await usersClient.registerUser(userCreateRequest)
 
     return userCreateResponse
   }
@@ -45,7 +45,7 @@ class AuthorizationService {
     authorizationRequest.passwordMd5 = stringHelper.md5hash(password)
 
     const usersClient = new UsersClient()
-    const authorizationResponse = await usersClient.authorize(authorizationRequest)
+    const authorizationResponse = await usersClient.authorizeUser(authorizationRequest)
 
     localStorage.setItem(storageKeys.currentUser, JSON.stringify(authorizationResponse))
     this.currentUserSubject.next(authorizationResponse)

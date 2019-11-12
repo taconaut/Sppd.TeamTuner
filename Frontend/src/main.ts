@@ -1,9 +1,13 @@
 import Vue from 'vue'
-import '@babel/polyfill'
-import 'mutationobserver-shim'
-import '@/plugins/bootstrap-vue'
 import App from '@/App.vue'
 import router from '@/router'
+
+import '@babel/polyfill'
+import 'mutationobserver-shim'
+
+// Plugins
+import '@/plugins/bootstrap-vue'
+import '@/plugins/vue-toasted'
 
 Vue.config.productionTip = false
 
