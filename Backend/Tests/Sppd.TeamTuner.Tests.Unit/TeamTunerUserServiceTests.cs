@@ -21,16 +21,22 @@ namespace Sppd.TeamTuner.Tests.Unit
             _testUser = new TeamTunerUser();
 
             var unitOfWorkMock = new Mock<IUnitOfWork>();
+
+            var emailConfigProviderMock = new Mock<IConfigProvider<EmailConfig>>();
+
+            // Repositories
             var teamTunerRepositoryMock = new Mock<ITeamTunerUserRepository>();
             teamTunerRepositoryMock.Setup(r => r.GetAsync(_testUser.Id, It.IsAny<IEnumerable<string>>()))
                                    .ReturnsAsync(_testUser);
             var registrationRequestRepositoryMock = new Mock<IRegistrationRequestRepository>();
-            var emailServiceMock = new Mock<IEmailVerificationService>();
+            var teamMembershipRequestRepositoryMock = new Mock<ITeamMembershipRequestRepository>();
             var cardLevelRepositoryMock = new Mock<ICardLevelRepository>();
-            var generalConfigProviderMock = new Mock<IConfigProvider<GeneralConfig>>();
+
+            // Services
+            var emailServiceMock = new Mock<IEmailVerificationService>();
 
             _userService = new TeamTunerUserService(teamTunerRepositoryMock.Object, cardLevelRepositoryMock.Object, registrationRequestRepositoryMock.Object,
-                emailServiceMock.Object, unitOfWorkMock.Object, generalConfigProviderMock.Object);
+                emailServiceMock.Object, teamMembershipRequestRepositoryMock.Object, unitOfWorkMock.Object, emailConfigProviderMock.Object);
         }
 
         private readonly TeamTunerUser _testUser;

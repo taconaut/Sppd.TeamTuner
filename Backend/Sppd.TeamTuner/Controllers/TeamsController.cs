@@ -110,11 +110,23 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         /// <summary>
-        ///     Gets the team users
+        ///     Get all teams containing the specified name in their name.
+        /// </summary>
+        /// <param name="name">The name having to be contained in the team name.</param>
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TeamResponseDto>>> SearchTeamByName([FromQuery] string name)
+        {
+            var teams = await _teamService.SearchByNameAsync(name);
+            return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(teams));
+        }
+
+        /// <summary>
+        ///     Gets the team members.
         /// </summary>
         /// <param name="id">The team identifier</param>
-        [HttpGet("{id}/users")]
-        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetTeamUsers(Guid id)
+        [HttpGet("{id}/members")]
+        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetTeamMembers(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, id);
             if (!authorizationResult.Succeeded)

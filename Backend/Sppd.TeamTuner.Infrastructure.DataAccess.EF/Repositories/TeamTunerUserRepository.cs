@@ -10,7 +10,7 @@ using Sppd.TeamTuner.Core.Repositories;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
 {
-    internal class TeamTunerUserRepository : Repository<TeamTunerUser>, ITeamTunerUserRepository
+    internal class TeamTunerUserRepository : NamedEntityRepository<TeamTunerUser>, ITeamTunerUserRepository
     {
         public TeamTunerUserRepository(TeamTunerContext context)
             : base(context)

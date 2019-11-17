@@ -45,17 +45,12 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory
         private void SetVersionOnChangedEntities()
         {
             var entriesToSetVersionOn = ChangeTracker.Entries<BaseEntity>()
-                                                     .Where(e => HasToSetModifierMetadata(e.State))
-                                                     .ToList();
-
-            if (!entriesToSetVersionOn.Any())
-            {
-                return;
-            }
+                                                     .Where(e => IsEntityStateModified(e.State));
 
             var random = new Random();
             var entityVersion = new byte[8];
             random.NextBytes(entityVersion);
+
             foreach (var entry in entriesToSetVersionOn)
             {
                 random.NextBytes(entityVersion);
@@ -63,7 +58,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory
             }
         }
 
-        private static bool HasToSetModifierMetadata(EntityState state)
+        private static bool IsEntityStateModified(EntityState state)
         {
             return state == EntityState.Modified || state == EntityState.Added || state == EntityState.Deleted;
         }

@@ -26,6 +26,11 @@ namespace Sppd.TeamTuner.Infrastructure.Services
 
         public async Task SendEmailAsync(string subject, string body, bool isBodyHtml, IEnumerable<string> emailAddresses)
         {
+            if (!_emailConfig.Value.IsSendMailEnabled)
+            {
+                return;
+            }
+
             var emailAddressesList = emailAddresses.ToList();
             if (!emailAddressesList.Any())
             {

@@ -19,6 +19,7 @@
 
             // Team membership requests
             public const string CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS = "CanAcceptTeamMembershipRequests";
+            public const string CAN_ABORT_TEAM_MEMBERSHIP_REQUESTS = "CanAbortTeamMembershipRequests";
 
             // Federation
             public const string CAN_READ_FEDERATION = "CanReadFederation";

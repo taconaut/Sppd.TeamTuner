@@ -32,6 +32,11 @@ namespace Sppd.TeamTuner.DTOs
         public Guid? TeamId { get; set; }
 
         /// <summary>
+        ///     The name of the team.
+        /// </summary>
+        public string TeamName { get; set; }
+
+        /// <summary>
         ///     The team role
         /// </summary>
         public string TeamRole { get; set; }

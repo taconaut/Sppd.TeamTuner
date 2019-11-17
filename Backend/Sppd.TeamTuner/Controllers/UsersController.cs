@@ -88,6 +88,23 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         /// <summary>
+        ///     Leave the team the user is currently in.
+        /// </summary>
+        /// <param name="id">The user identifier.</param>
+        /// <returns>The updates <see cref="UserResponseDto" />.</returns>
+        [HttpPut("{id}/leaveTeam")]
+        public async Task<ActionResult<UserResponseDto>> LeaveTeam(Guid id)
+        {
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, id);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return _mapper.Map<UserResponseDto>(await _userService.LeaveTeam(id));
+        }
+
+        /// <summary>
         ///     Authorizes the user
         /// </summary>
         /// <param name="authorizationRequestDto">The authorization request</param>
@@ -135,7 +152,7 @@ namespace Sppd.TeamTuner.Controllers
                 return Forbid();
             }
 
-            var user = await _userService.GetByIdAsync(id);
+            var user = await _userService.GetByIdAsync(id, new[] {nameof(TeamTunerUser.Team)});
             return Ok(_mapper.Map<UserResponseDto>(user));
         }
 

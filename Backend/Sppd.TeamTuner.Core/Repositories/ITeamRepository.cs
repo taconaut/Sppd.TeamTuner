@@ -10,7 +10,7 @@ namespace Sppd.TeamTuner.Core.Repositories
     ///     Repository to handle <see cref="Team" />s
     /// </summary>
     /// <seealso cref="IRepository{Team}" />
-    public interface ITeamRepository : IRepository<Team>
+    public interface ITeamRepository : INamedEntityRepository<Team>
     {
         /// <summary>
         ///     Gets all teams being part of the federation.

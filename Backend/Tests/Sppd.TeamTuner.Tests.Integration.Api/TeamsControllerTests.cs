@@ -28,7 +28,7 @@ namespace Sppd.TeamTuner.Tests.Integration.Api
         private static readonly string s_authorizeRoute = "/users/authorize";
         private static readonly string s_membershipRequestsRoute = "/team-membership-requests";
         private static readonly string s_getTeamHolyCowMembershipRequestsRoute = $"/teams/{s_teamIdPlaceholder}/membership-requests";
-        private static readonly string s_getTeamHolyCowUsersRoute = $"/teams/{s_teamIdPlaceholder}/users";
+        private static readonly string s_getTeamHolyCowUsersRoute = $"/teams/{s_teamIdPlaceholder}/members";
         private static readonly string s_acceptMembershipRequestRoute = $"/team-membership-requests/{s_teamMembershipRequestIdPlaceholder}/accept";
 
         protected HttpClient Client { get; }

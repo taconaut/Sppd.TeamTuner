@@ -72,6 +72,10 @@ class AuthorizationService {
     axiosHelper.setCurrentUser(null)
   }
 
+  public isCurrentUserInRole(role: string) {
+    return this.currentUserValue !== null && this.currentUserValue.applicationRole === role
+  }
+
   private getCurrentUserFromLocalStorage() {
     return localStorage.getItem(storageKeys.currentUser)
   }

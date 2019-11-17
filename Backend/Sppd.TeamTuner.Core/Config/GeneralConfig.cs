@@ -21,11 +21,6 @@
         /// </summary>
         public bool EnableHangfire { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the user email will be verified by sending a verification mail.
-        /// </summary>
-        public bool IsUserEmailVerificationEnabled { get; set; }
-
         public string SectionKey => "General";
     }
 }

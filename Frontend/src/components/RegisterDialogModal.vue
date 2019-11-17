@@ -6,7 +6,7 @@
           <h2>Register</h2>
           <form @submit.prevent="handleSubmit">
             <div class="form-group">
-              <label for="username">Username</label>
+              <label for="username">Name</label>
               <input
                 type="text"
                 v-model="username"
@@ -31,24 +31,22 @@
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input
+              <b-input
                 type="password"
                 v-model="passwordFirst"
                 name="passwordFirst"
                 autocomplete="new-password"
-                class="form-control"
                 :class="{ 'is-invalid': !isPasswordFirstValid }"
               />
               <div v-show="!isPasswordFirstValid" class="invalid-feedback">Password is required</div>
             </div>
             <div class="form-group">
-              <label for="password">Repeat Password</label>
-              <input
+              <label for="password">Confirm password</label>
+              <b-input
                 type="password"
                 v-model="passwordSecond"
                 name="passwordSecond"
                 autocomplete="new-password"
-                class="form-control"
                 :class="{ 'is-invalid': !isPasswordSecondValid  }"
               />
               <div v-show="!isPasswordSecondValid" class="invalid-feedback">Passwords don't match</div>

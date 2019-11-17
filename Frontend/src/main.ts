@@ -8,6 +8,7 @@ import 'mutationobserver-shim'
 // Plugins
 import '@/plugins/bootstrap-vue'
 import '@/plugins/vue-toasted'
+import '@/plugins/vue-bootstrap-typeahead'
 
 Vue.config.productionTip = false
 

@@ -20,6 +20,13 @@ namespace Sppd.TeamTuner.Core.Services
         Task<IEnumerable<Team>> GetAllAsync(Guid federationId);
 
         /// <summary>
+        ///     get all teams having a name containing the specified <see cref="teamName" />
+        /// </summary>
+        /// <param name="teamName">Name of the team.</param>
+        /// <returns>A list of teams having a name containing <see cref="teamName" />.</returns>
+        Task<IEnumerable<Team>> SearchByNameAsync(string teamName);
+
+        /// <summary>
         ///     Request to join the <see cref="Team" /> for <see cref="TeamTunerUser" /> wit Id <see cref="userId" />
         /// </summary>
         /// <param name="userId">The Id of the user.</param>
@@ -53,5 +60,11 @@ namespace Sppd.TeamTuner.Core.Services
         /// <param name="membershipRequestId">The membership request identifier.</param>
         /// <returns>The membership request.</returns>
         Task<TeamMembershipRequest> GetMembershipRequestAsync(Guid membershipRequestId);
+
+        /// <summary>
+        ///     Aborts the membership request.
+        /// </summary>
+        /// <param name="membershipRequestId">The membership request identifier.</param>
+        Task AbortMembershipRequestAsync(Guid membershipRequestId);
     }
 }

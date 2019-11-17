@@ -9,7 +9,8 @@ namespace Sppd.TeamTuner.MappingProfiles
         public TeamTunerUserMappingProfile()
         {
             // Entity -> DTO
-            CreateEntityToDtoMap<UserResponseDto>();
+            CreateEntityToDtoMap<UserResponseDto>()
+                .ForMember(dst => dst.TeamName, exp => exp.MapFrom(src => src.Team == null ? null : src.Team.Name));
             CreateEntityToDtoMap<UserAuthorizationResponseDto>();
 
             // DTO -> Entity

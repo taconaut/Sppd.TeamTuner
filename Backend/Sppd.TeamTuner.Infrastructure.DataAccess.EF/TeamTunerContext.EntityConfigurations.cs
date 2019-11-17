@@ -33,6 +33,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             where TEntity : NamedEntity
         {
             ConfigureBaseEntity(builder);
+
+            builder.HasIndex(e => e.Name)
+                   .IsUnique()
+                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
         }
 
         private static void ConfigureDescriptiveEntity<TEntity>(EntityTypeBuilder<TEntity> builder)
@@ -147,9 +151,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             builder.HasIndex(e => e.UserId)
                    .IsUnique()
                    .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
-            builder.HasIndex(e => e.TeamId)
-                   .IsUnique()
-                   .HasFilter(DataAccessConstants.IS_DELETED_FILTER);
+            builder.HasIndex(e => e.TeamId);
         }
     }
 }

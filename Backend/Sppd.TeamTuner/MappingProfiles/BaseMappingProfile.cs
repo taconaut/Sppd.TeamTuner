@@ -14,14 +14,14 @@ namespace Sppd.TeamTuner.MappingProfiles
             where TDto : IVersionedDto
         {
             return CreateMap<TDto, TEntity>()
-                .ForMember(dst => dst.Version, expression => expression.MapFrom(src => Base64UrlTextEncoder.Decode(src.Version)));
+                .ForMember(dst => dst.Version, exp => exp.MapFrom(src => Base64UrlTextEncoder.Decode(src.Version)));
         }
 
         protected IMappingExpression<TEntity, TDto> CreateEntityToDtoMap<TDto>()
             where TDto : IVersionedDto
         {
             return CreateMap<TEntity, TDto>()
-                .ForMember(dst => dst.Version, expression => expression.MapFrom(src => Base64UrlTextEncoder.Encode(src.Version)));
+                .ForMember(dst => dst.Version, exp => exp.MapFrom(src => Base64UrlTextEncoder.Encode(src.Version)));
         }
     }
 }

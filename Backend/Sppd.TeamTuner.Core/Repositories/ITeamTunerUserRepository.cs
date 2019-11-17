@@ -10,7 +10,7 @@ namespace Sppd.TeamTuner.Core.Repositories
     ///     Repository to handle <see cref="TeamTunerUser" />s
     /// </summary>
     /// <seealso cref="Repositories.IRepository{TeamTunerUser}" />
-    public interface ITeamTunerUserRepository : IRepository<TeamTunerUser>
+    public interface ITeamTunerUserRepository : INamedEntityRepository<TeamTunerUser>
     {
         /// <summary>
         ///     Gets the <see cref="TeamTunerUser" /> having the specified <see cref="username" />

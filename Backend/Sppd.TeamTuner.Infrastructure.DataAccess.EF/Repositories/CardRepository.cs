@@ -9,7 +9,7 @@ using Sppd.TeamTuner.Core.Repositories;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
 {
-    internal class CardRepository : Repository<Card>, ICardRepository
+    internal class CardRepository : NamedEntityRepository<Card>, ICardRepository
     {
         public CardRepository(TeamTunerContext context)
             : base(context)

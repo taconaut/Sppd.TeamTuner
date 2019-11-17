@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core;
@@ -13,26 +14,26 @@ namespace Sppd.TeamTuner.Infrastructure.Services
 {
     internal class TeamService : ServiceBase<Team>, ITeamService
     {
-        private readonly ITeamRepository _teamRepository;
-        private readonly IRepository<TeamTunerUser> _userRepository;
-        private readonly ITeamMembershipRequestRepository _membershipRequestRepository;
         private readonly IEmailService _emailService;
+        private readonly ITeamRepository _teamRepository;
+        private readonly ITeamTunerUserRepository _userRepository;
+        private readonly ITeamMembershipRequestRepository _membershipRequestRepository;
         private readonly ITeamTunerUserProvider _userProvider;
 
-        public TeamService(ITeamRepository teamRepository, IRepository<TeamTunerUser> userRepository, ITeamMembershipRequestRepository membershipRequestRepository,
-            IEmailService emailService, IUnitOfWork unitOfWork, ITeamTunerUserProvider userProvider)
+        public TeamService(IEmailService emailService, ITeamRepository teamRepository, ITeamTunerUserRepository userRepository,
+            ITeamMembershipRequestRepository membershipRequestRepository, IUnitOfWork unitOfWork, ITeamTunerUserProvider userProvider)
             : base(teamRepository, unitOfWork)
         {
+            _emailService = emailService;
             _teamRepository = teamRepository;
             _userRepository = userRepository;
             _membershipRequestRepository = membershipRequestRepository;
-            _emailService = emailService;
             _userProvider = userProvider;
         }
 
         public override async Task CreateAsync(Team team, bool commitChanges = true)
         {
-            await UpdateUser(team.Id);
+            await MakeCreatingUserLeader(team.Id);
             await base.CreateAsync(team, commitChanges);
         }
 
@@ -41,15 +42,18 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             return await _teamRepository.GetAllAsync(federationId);
         }
 
+        public async Task<IEnumerable<Team>> SearchByNameAsync(string teamName)
+        {
+            return await _teamRepository.SearchByNameAsync(teamName);
+        }
+
         public async Task RequestMembershipAsync(Guid userId, Guid teamId, string comment)
         {
             var membershipRequest = new TeamMembershipRequest {UserId = userId, TeamId = teamId, Comment = comment};
             _membershipRequestRepository.Add(membershipRequest);
             await UnitOfWork.CommitAsync();
 
-            // TODO: implement mailing
-            // var membershipRequestFull = await _joinRequestRepository.GetAsync(joinRequest.Id, new[] {nameof(TeamJoinRequest.User), nameof(TeamJoinRequest.Team)});
-            // await _emailService.SendJoinRequestNotificationAsync(teamId, membershipRequestFull);
+            await SendMembershipRequestEmailAsync(userId);
         }
 
         public async Task AcceptMembershipAsync(Guid membershipRequestId)
@@ -76,7 +80,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
 
         public async Task<IEnumerable<TeamMembershipRequest>> GetMembershipRequestsAsync(Guid teamId)
         {
-            return await _membershipRequestRepository.GetForTeam(teamId);
+            return await _membershipRequestRepository.GetForTeam(teamId, new[] {nameof(TeamMembershipRequest.User)});
         }
 
         public async Task<TeamMembershipRequest> GetMembershipRequestAsync(Guid membershipRequestId)
@@ -84,7 +88,31 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             return await _membershipRequestRepository.GetAsync(membershipRequestId);
         }
 
-        private async Task UpdateUser(Guid teamId)
+        public async Task AbortMembershipRequestAsync(Guid membershipRequestId)
+        {
+            await _membershipRequestRepository.DeleteAsync(membershipRequestId);
+            await UnitOfWork.CommitAsync();
+        }
+
+        private async Task SendMembershipRequestEmailAsync(Guid userId)
+        {
+            var membershipRequest = await _membershipRequestRepository.GetForUser(userId,
+                new[] {nameof(TeamMembershipRequest.User), $"{nameof(TeamMembershipRequest.Team)}.{nameof(Team.Users)}"});
+
+            var subject = $"{membershipRequest.User.Name} would like to join {membershipRequest.Team.Name}";
+            var body = $@"Hi {membershipRequest.Team.Name} leaders and co-leaders,
+
+{membershipRequest.User.Name} would like to join your team.
+You can let him in here: TODO: add link
+
+Your Sppd.TeamTuner team.";
+            var mailTo = membershipRequest.Team.CoLeaders.Select(user => user.Email)
+                                          .Append(membershipRequest.Team.Leader.Email);
+
+            await _emailService.SendEmailAsync(subject, body, false, mailTo);
+        }
+
+        private async Task MakeCreatingUserLeader(Guid teamId)
         {
             var user = await _userRepository.GetAsync(_userProvider.CurrentUser.Id);
 

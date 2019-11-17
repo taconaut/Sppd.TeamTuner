@@ -30,5 +30,13 @@ namespace Sppd.TeamTuner.DTOs
         /// </summary>
         [StringLength(CoreConstants.StringLength.TeamMembershipRequest.COMMENT)]
         public string Comment { get; set; }
+
+        [Required]
+        public Guid TeamId { get; set; }
+
+        [Required, StringLength(CoreConstants.StringLength.Named.NAME_MAX, MinimumLength = CoreConstants.StringLength.Named.NAME_MIN)]
+        public string TeamName { get; set; }
+
+        public DateTime RequestDateUtc { get; set; }
     }
 }

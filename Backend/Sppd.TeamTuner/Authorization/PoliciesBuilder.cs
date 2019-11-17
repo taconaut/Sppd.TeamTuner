@@ -89,6 +89,14 @@ namespace Sppd.TeamTuner.Authorization
                     var teamId = authorizationRequest.Resource as Guid?;
                     return IsAdmin(user) || IsTeamLeader(user, teamId) || IsTeamCoLeader(user, teamId);
                 }));
+            options.AddPolicy(AuthorizationConstants.Policies.CAN_ABORT_TEAM_MEMBERSHIP_REQUESTS,
+                policy => policy.RequireAssertion(ctx =>
+                {
+                    var authorizationRequest = (AuthorizationRequest) ctx.Resource;
+                    var user = authorizationRequest.CurrentUser;
+                    var userId = authorizationRequest.Resource as Guid?;
+                    return IsAdmin(user) || IsCurrentUser(user, userId);
+                }));
 
             // Federation
             options.AddPolicy(AuthorizationConstants.Policies.CAN_READ_FEDERATION,

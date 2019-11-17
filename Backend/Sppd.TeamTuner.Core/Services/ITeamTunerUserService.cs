@@ -69,5 +69,19 @@ namespace Sppd.TeamTuner.Core.Services
         /// <param name="code">The code.</param>
         /// <returns><c>True</c> if the mail could be sent; otherwise <c>false</c>.</returns>
         Task<bool> ResendEmailVerificationAsync(string code);
+
+        /// <summary>
+        ///     Gets the pending team membership request for the user with id being <see cref="userId" />.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>The pending <see cref="TeamMembershipRequest" /> if it exists; otherwise <c>NULL</c></returns>
+        Task<TeamMembershipRequest> GetPendingTeamMembershipRequest(Guid userId);
+
+        /// <summary>
+        ///     Removes the user from the team.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>The updated <see cref="TeamTunerUser" />.</returns>
+        Task<TeamTunerUser> LeaveTeam(Guid userId);
     }
 }

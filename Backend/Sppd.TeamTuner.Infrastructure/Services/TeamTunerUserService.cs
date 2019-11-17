@@ -23,18 +23,20 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         private readonly ICardLevelRepository _cardLevelRepository;
         private readonly IRegistrationRequestRepository _registrationRequestRepository;
         private readonly IEmailVerificationService _emailVerificationService;
-        private readonly Lazy<GeneralConfig> _generalConfig;
+        private readonly ITeamMembershipRequestRepository _teamMembershipRequestRepository;
+        private readonly Lazy<EmailConfig> _emailConfig;
 
         public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, ICardLevelRepository cardLevelRepository,
             IRegistrationRequestRepository registrationRequestRepository, IEmailVerificationService emailVerificationService,
-            IUnitOfWork unitOfWork, IConfigProvider<GeneralConfig> generalConfigProvider)
+            ITeamMembershipRequestRepository teamMembershipRequestRepository, IUnitOfWork unitOfWork, IConfigProvider<EmailConfig> emailConfigProvider)
             : base(teamTunerUserRepository, unitOfWork)
         {
             _teamTunerUserRepository = teamTunerUserRepository;
             _cardLevelRepository = cardLevelRepository;
             _registrationRequestRepository = registrationRequestRepository;
             _emailVerificationService = emailVerificationService;
-            _generalConfig = new Lazy<GeneralConfig>(() => generalConfigProvider.Config);
+            _teamMembershipRequestRepository = teamMembershipRequestRepository;
+            _emailConfig = new Lazy<EmailConfig>(() => emailConfigProvider.Config);
         }
 
         public async Task<TeamTunerUser> AuthenticateAsync(string name, string passwordMd5)
@@ -77,7 +79,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             var registrationRequest = GetRegistrationRequest(user);
             _registrationRequestRepository.Add(registrationRequest);
 
-            if (_generalConfig.Value.IsUserEmailVerificationEnabled)
+            if (_emailConfig.Value.IsSendMailEnabled)
             {
                 // Send the validation mail
                 await _emailVerificationService.SendEmailVerificationAsync(user, registrationRequest);
@@ -101,6 +103,24 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         public async Task<bool> ResendEmailVerificationAsync(string code)
         {
             return await _emailVerificationService.ResendEmailVerificationAsync(code);
+        }
+
+        public async Task<TeamMembershipRequest> GetPendingTeamMembershipRequest(Guid userId)
+        {
+            return await _teamMembershipRequestRepository.GetForUser(userId,
+                new[] {nameof(TeamMembershipRequest.User), $"{nameof(TeamMembershipRequest.Team)}.{nameof(Team.Users)}"});
+        }
+
+        public async Task<TeamTunerUser> LeaveTeam(Guid userId)
+        {
+            var user = await GetByIdAsync(userId);
+            user.TeamId = null;
+            user.Team = null;
+            user.TeamRole = null;
+
+            await UnitOfWork.CommitAsync();
+
+            return user;
         }
 
         public async Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)

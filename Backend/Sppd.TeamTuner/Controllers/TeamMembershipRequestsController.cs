@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,17 +22,24 @@ namespace Sppd.TeamTuner.Controllers
     public class TeamMembershipRequestsController : AuthorizationController
     {
         private readonly ITeamService _teamService;
+        private readonly ITeamTunerUserService _userService;
+        private readonly IMapper _mapper;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TeamMembershipRequestsController" /> class.
         /// </summary>
         /// <param name="teamService">The team service.</param>
+        /// <param name="userService">The user service.</param>
         /// <param name="authorizationService">The authorization service.</param>
         /// <param name="serviceProvider">The service provider.</param>
-        public TeamMembershipRequestsController(ITeamService teamService, IAuthorizationService authorizationService, IServiceProvider serviceProvider)
+        /// <param name="mapper">The mapper.</param>
+        public TeamMembershipRequestsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService,
+            IServiceProvider serviceProvider, IMapper mapper)
             : base(serviceProvider, authorizationService)
         {
             _teamService = teamService;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -42,6 +51,17 @@ namespace Sppd.TeamTuner.Controllers
         {
             await _teamService.RequestMembershipAsync(membershipRequest.UserId, membershipRequest.TeamId, membershipRequest.Comment);
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<TeamMembershipRequestResponseDto>> GetPendingTeamMembershipRequest([FromQuery] Guid userId)
+        {
+            var request = await _userService.GetPendingTeamMembershipRequest(userId);
+            var response = request == null
+                ? null
+                : _mapper.Map<TeamMembershipRequestResponseDto>(request);
+
+            return Ok(response);
         }
 
         /// <summary>
@@ -79,6 +99,25 @@ namespace Sppd.TeamTuner.Controllers
             }
 
             await _teamService.RejectMembershipAsync(id);
+            return Ok();
+        }
+
+        /// <summary>
+        ///     Aborts the membership request
+        /// </summary>
+        /// <param name="id">The membership request identifier</param>
+        [HttpPost("{id}/abort")]
+        public async Task<IActionResult> AbortMembershipRequest(Guid id)
+        {
+            var membershipRequest = await _teamService.GetMembershipRequestAsync(id);
+
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ABORT_TEAM_MEMBERSHIP_REQUESTS, membershipRequest.UserId);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            await _teamService.AbortMembershipRequestAsync(id);
             return Ok();
         }
     }

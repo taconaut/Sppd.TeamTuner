@@ -58,6 +58,7 @@ namespace Sppd.TeamTuner
             _logger.LogDebug("Start configuring services");
 
             LoadApplicationAssemblies();
+            RegisterServicesOnStartupRegistrators(services);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -68,8 +69,6 @@ namespace Sppd.TeamTuner
 
             // Use AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            RegisterServicesOnStartupRegistries(services);
 
             RegisterSwagger(services);
             RegisterAuthentication(services);
@@ -94,6 +93,8 @@ namespace Sppd.TeamTuner
 
             var generalConfig = app.ApplicationServices.GetConfig<GeneralConfig>();
 
+            ConfigureServicesOnStartupRegistrators(app.ApplicationServices);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -110,8 +111,6 @@ namespace Sppd.TeamTuner
             app.UseCors(builder => builder.AllowAnyOrigin()
                                           .AllowAnyHeader()
                                           .AllowAnyMethod());
-
-            ConfigureServicesOnStartupRegistries(app.ApplicationServices);
 
             if (generalConfig.EnableSwaggerUI)
             {
@@ -278,7 +277,7 @@ namespace Sppd.TeamTuner
         ///     <see cref="IStartupRegistrator" />
         /// </summary>
         /// <param name="services">The service collection to register the services on.</param>
-        private static void RegisterServicesOnStartupRegistries(IServiceCollection services)
+        private static void RegisterServicesOnStartupRegistrators(IServiceCollection services)
         {
             var startupRegistratorInstances = GetInstances<IStartupRegistrator>();
             foreach (var startupRegistratorInstance in startupRegistratorInstances.OrderBy(s => s.Priority))
@@ -292,7 +291,7 @@ namespace Sppd.TeamTuner
         ///     <see cref="IStartupRegistrator" />
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
-        private static void ConfigureServicesOnStartupRegistries(IServiceProvider serviceProvider)
+        private static void ConfigureServicesOnStartupRegistrators(IServiceProvider serviceProvider)
         {
             var startupRegistratorInstances = GetInstances<IStartupRegistrator>();
             foreach (var startupRegistratorInstance in startupRegistratorInstances.OrderBy(s => s.Priority))

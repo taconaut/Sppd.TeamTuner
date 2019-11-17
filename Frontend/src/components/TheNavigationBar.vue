@@ -3,17 +3,23 @@
     <router-link class="navbar-brand" to="/">Sppd.TeamTuner</router-link>
     <div class="collapse navbar-collapse" />
     <span class="navbar-button">
-      <b-button v-if="!isAuthorized" class="btn-success" @click="emitShowLoginDialogEvent">Login</b-button>
       <b-button
         v-if="!isAuthorized"
-        class="ml-1 btn-secondary"
+        variant="success"
+        @click="emitShowLoginDialogEvent"
+      >Login</b-button>
+      <b-button
+        v-if="!isAuthorized"
+        class="ml-1"
+        variant="secondary"
         @click="emitShowRegisterDialogEvent"
       >Register</b-button>
       <b-dropdown v-if="isAuthorized" toggle-class="text-decoration-none" variant="link" no-caret>
         <template v-slot:button-content>
           <img class="avatar" :src="currentUserAvatar" />
         </template>
-        <b-dropdown-item :to="this.currentUserProfileUrl">Profile</b-dropdown-item>
+        <b-dropdown-item :to="this.currentUserProfileUrl">User profile</b-dropdown-item>
+        <b-dropdown-item>Team profile</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
         <b-dropdown-item @click="logout">Logout</b-dropdown-item>
       </b-dropdown>
@@ -40,7 +46,7 @@ export default {
     currentUserAvatar() {
       // TODO: use the user avatar instead of this.
       return (
-        'https://api.adorable.io/avatars/36/' + this.currentUser.email + '.png'
+        'https://api.adorable.io/avatars/36/' + this.currentUser.id + '.png'
       )
     },
     currentUserProfileUrl() {
