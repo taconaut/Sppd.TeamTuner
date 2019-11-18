@@ -57,7 +57,7 @@ export default {
       if (
         !this.isAuthorized &&
         this.$router.currentRoute.name !== 'home' &&
-        this.$router.currentRoute.name !== 'email-confirmation'
+        this.$router.currentRoute.name !== 'email-verification'
       ) {
         // Redirect to home if the user has logged out
         this.$router.push({ name: 'home' })
