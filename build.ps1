@@ -58,7 +58,7 @@ Param(
         "Backend-Run-Integration-Tests", 
         "Backend-Run-API-Tests", 
         "Backend-Run-All-Tests", 
-        "Backend-Upload-Coverage", 
+        "Backend-Upload-Codecov", 
         "Backend-Run-Upload-All-Tests",
 
         # Frontend

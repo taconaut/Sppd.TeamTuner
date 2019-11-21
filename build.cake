@@ -242,7 +242,7 @@ Task ("Backend-Run-All-Tests")
 // Codecov
 //////////////////////////////////////////////////////////////////////
 
-Task ("Backend-Upload-Coverage")
+Task ("Backend-Upload-Codecov")
     .Does (() => {
         Codecov ($"{testCoverageResultsDir}/{unitTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
         Codecov ($"{testCoverageResultsDir}/{integrationTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
@@ -251,7 +251,7 @@ Task ("Backend-Upload-Coverage")
 
 Task ("Backend-Run-Upload-All-Tests")
     .IsDependentOn ("Backend-Run-All-Tests")
-    .IsDependentOn ("Backend-Upload-Coverage");
+    .IsDependentOn ("Backend-Upload-Codecov");
 
 //////////////////////////////////////////////////////////////////////
 // Default
