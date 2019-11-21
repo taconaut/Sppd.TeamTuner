@@ -17,7 +17,7 @@ import TheSideBar from '@/components/TheSideBar'
 import LoginDialogModal from '@/components/LoginDialogModal'
 import RegisterDialogModal from '@/components/RegisterDialogModal'
 import { authorizationService } from '@/_services'
-import { eventBus, axiosHelper } from '@/_helpers'
+import { eventBus, axiosConfigurator } from '@/_helpers'
 import { eventIdentifiers } from '@/_constants'
 
 export default {
@@ -66,7 +66,7 @@ export default {
     }
   },
   created() {
-    axiosHelper.configureDefaults()
+    axiosConfigurator.configureDefaults()
   },
   mounted() {
     eventBus.$on(eventIdentifiers.showLoginDialog, isVisible => {

@@ -1,3 +1,3 @@
 export * from './eventBus'
 export * from './stringHelper'
-export * from './axiosHelper'
+export * from './axiosConfigurator'

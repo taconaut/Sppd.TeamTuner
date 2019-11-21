@@ -1,4 +1,4 @@
-import { stringHelper, axiosHelper } from '@/_helpers'
+import { stringHelper, axiosConfigurator } from '@/_helpers'
 import { storageKeys } from '@/_constants'
 import { UsersClient, AuthorizationRequestDto, UserAuthorizationResponseDto, UserCreateRequestDto } from '@/api'
 import { BehaviorSubject } from 'rxjs'
@@ -9,7 +9,7 @@ class AuthorizationService {
   public constructor() {
     var currentUserJson = this.getCurrentUserFromLocalStorage()
     var currentUser = currentUserJson == null ? null : JSON.parse(currentUserJson) as UserAuthorizationResponseDto
-    axiosHelper.setCurrentUser(currentUser)
+    axiosConfigurator.setCurrentUser(currentUser)
 
     this.currentUserSubject = new BehaviorSubject<UserAuthorizationResponseDto | null>(currentUser)
   }
@@ -50,7 +50,7 @@ class AuthorizationService {
     localStorage.setItem(storageKeys.currentUser, JSON.stringify(authorizationResponse))
     this.currentUserSubject.next(authorizationResponse)
 
-    axiosHelper.setCurrentUser(authorizationResponse)
+    axiosConfigurator.setCurrentUser(authorizationResponse)
 
     return authorizationResponse
   }
@@ -69,7 +69,7 @@ class AuthorizationService {
     localStorage.removeItem(storageKeys.currentUser)
     this.currentUserSubject.next(null)
 
-    axiosHelper.setCurrentUser(null)
+    axiosConfigurator.setCurrentUser(null)
   }
 
   public isCurrentUserInRole(role: string) {
