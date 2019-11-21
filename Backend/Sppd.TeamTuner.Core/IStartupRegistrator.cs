@@ -16,10 +16,10 @@ namespace Sppd.TeamTuner.Core
         int Priority { get; }
 
         /// <summary>
-        ///     Register services on the serviceCollection, when called.
+        ///     Configure services on the serviceCollection, when called.
         /// </summary>
         /// <param name="serviceCollection">The serviceCollection.</param>
-        void Register(IServiceCollection serviceCollection);
+        void ConfigureServices(IServiceCollection serviceCollection);
 
         /// <summary>
         ///     Configures your services.

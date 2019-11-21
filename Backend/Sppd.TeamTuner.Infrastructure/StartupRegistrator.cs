@@ -18,7 +18,7 @@ namespace Sppd.TeamTuner.Infrastructure
     {
         public int Priority => int.MinValue;
 
-        public void Register(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(typeof(IConfigProvider<>), typeof(ConfigProvider<>));
 

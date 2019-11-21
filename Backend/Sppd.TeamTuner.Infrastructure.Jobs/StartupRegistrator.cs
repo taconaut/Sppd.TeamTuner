@@ -14,7 +14,7 @@ namespace Sppd.TeamTuner.Infrastructure.Jobs
     {
         public int Priority => 150;
 
-        public void Register(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             var generalConfig = services.BuildServiceProvider().GetConfig<GeneralConfig>();
             if (!generalConfig.EnableHangfire)

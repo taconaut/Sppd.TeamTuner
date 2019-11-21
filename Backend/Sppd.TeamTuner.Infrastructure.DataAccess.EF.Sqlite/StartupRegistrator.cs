@@ -21,7 +21,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite
 
         public int Priority => 90;
 
-        public void Register(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             var databaseConfig = services.BuildServiceProvider().GetConfig<DatabaseConfig>();
 

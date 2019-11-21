@@ -17,7 +17,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.InMemory
 
         public int Priority => 90;
 
-        public void Register(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             var databaseConfig = services.BuildServiceProvider().GetConfig<DatabaseConfig>();
 

@@ -20,7 +20,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql
 
         public int Priority => 110;
 
-        public void Register(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             var databaseConfig = services.BuildServiceProvider().GetConfig<DatabaseConfig>();
 
