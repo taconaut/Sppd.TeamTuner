@@ -107,7 +107,7 @@ namespace Sppd.TeamTuner.Tests.Integration.DataAccess
 
             foreach (var startupRegistrator in startupRegistrators)
             {
-                startupRegistrator.Register(services);
+                startupRegistrator.ConfigureServices(services);
             }
         }
 
