@@ -15,7 +15,7 @@ function setCurrentUser(currentUser: UserAuthorizationResponseDto | null) {
   axios.defaults.headers.common['Authorization'] = authorizationHeaderValue
 }
 
-export const axiosHelper = {
+export const axiosConfigurator = {
   configureDefaults,
   setCurrentUser
 }
