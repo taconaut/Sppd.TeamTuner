@@ -2,24 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite;
 
-namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
+namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
 {
-    [DbContext(typeof(TeamTunerContextMsSql))]
-    [Migration("20191103100116_RegistrationRequest")]
-    partial class RegistrationRequest
+    [DbContext(typeof(TeamTunerContextSqlite))]
+    [Migration("20191124121045_InitialSqlite")]
+    partial class InitialSqlite
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.Card", b =>
                 {
@@ -69,6 +66,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     b.HasIndex("CharacterTypeId");
 
                     b.HasIndex("ExternalId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.HasIndex("Name")
                         .IsUnique()
                         .HasFilter("[IsDeleted] = 0");
 
@@ -150,6 +151,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.ToTable("CardType");
                 });
 
@@ -181,6 +186,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("CharacterType");
                 });
@@ -219,6 +228,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.ToTable("Federation");
                 });
 
@@ -252,6 +265,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("Rarity");
                 });
@@ -294,6 +311,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasIndex("FederationId");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.ToTable("Team");
                 });
 
@@ -329,9 +350,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId")
-                        .IsUnique()
-                        .HasFilter("[IsDeleted] = 0");
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("UserId")
                         .IsUnique()
@@ -495,6 +514,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("Theme");
                 });

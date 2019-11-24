@@ -28,6 +28,26 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CharacterType",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(nullable: false),
+                    CreatedById = table.Column<Guid>(nullable: false),
+                    ModifiedOnUtc = table.Column<DateTime>(nullable: false),
+                    ModifiedById = table.Column<Guid>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOnUtc = table.Column<DateTime>(nullable: true),
+                    DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    Name = table.Column<string>(maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CharacterType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Federation",
                 columns: table => new
                 {
@@ -133,15 +153,23 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     DeletedById = table.Column<Guid>(nullable: true),
                     Version = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    FriendlyName = table.Column<string>(maxLength: 10, nullable: false),
-                    ExternalId = table.Column<int>(nullable: false),
+                    ExternalId = table.Column<string>(maxLength: 24, nullable: true),
+                    Description = table.Column<string>(maxLength: 500, nullable: true),
+                    ManaCost = table.Column<int>(nullable: false),
                     ThemeId = table.Column<Guid>(nullable: false),
                     RarityId = table.Column<Guid>(nullable: false),
-                    TypeId = table.Column<Guid>(nullable: false)
+                    TypeId = table.Column<Guid>(nullable: false),
+                    CharacterTypeId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Card", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Card_CharacterType_CharacterTypeId",
+                        column: x => x.CharacterTypeId,
+                        principalTable: "CharacterType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Card_Rarity_RarityId",
                         column: x => x.RarityId,
@@ -178,6 +206,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Avatar = table.Column<byte[]>(nullable: true),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
+                    IsEmailVerified = table.Column<bool>(nullable: false),
                     ProfileVisibility = table.Column<int>(nullable: false),
                     SppdName = table.Column<string>(maxLength: 50, nullable: false),
                     PasswordHash = table.Column<byte[]>(maxLength: 64, nullable: false),
@@ -274,10 +303,50 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TeamTunerUserRegistrationRequest",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(nullable: false),
+                    CreatedById = table.Column<Guid>(nullable: false),
+                    ModifiedOnUtc = table.Column<DateTime>(nullable: false),
+                    ModifiedById = table.Column<Guid>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOnUtc = table.Column<DateTime>(nullable: true),
+                    DeletedById = table.Column<Guid>(nullable: true),
+                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    UserId = table.Column<Guid>(nullable: false),
+                    RegistrationCode = table.Column<Guid>(nullable: false),
+                    RegistrationDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamTunerUserRegistrationRequest", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TeamTunerUserRegistrationRequest_TeamTunerUser_UserId",
+                        column: x => x.UserId,
+                        principalTable: "TeamTunerUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Card_CharacterTypeId",
+                table: "Card",
+                column: "CharacterTypeId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Card_ExternalId",
                 table: "Card",
                 column: "ExternalId",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Card_Name",
+                table: "Card",
+                column: "Name",
                 unique: true,
                 filter: "[IsDeleted] = 0");
 
@@ -309,16 +378,49 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                 filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CardType_Name",
+                table: "CardType",
+                column: "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CharacterType_Name",
+                table: "CharacterType",
+                column: "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Federation_Name",
+                table: "Federation",
+                column: "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rarity_Name",
+                table: "Rarity",
+                column: "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Team_FederationId",
                 table: "Team",
                 column: "FederationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TeamMembershipRequest_TeamId",
-                table: "TeamMembershipRequest",
-                column: "TeamId",
+                name: "IX_Team_Name",
+                table: "Team",
+                column: "Name",
                 unique: true,
                 filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamMembershipRequest_TeamId",
+                table: "TeamMembershipRequest",
+                column: "TeamId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamMembershipRequest_UserId",
@@ -357,6 +459,25 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                 name: "IX_TeamTunerUser_TeamId",
                 table: "TeamTunerUser",
                 column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamTunerUserRegistrationRequest_RegistrationCode",
+                table: "TeamTunerUserRegistrationRequest",
+                column: "RegistrationCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamTunerUserRegistrationRequest_UserId",
+                table: "TeamTunerUserRegistrationRequest",
+                column: "UserId",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Theme_Name",
+                table: "Theme",
+                column: "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -368,10 +489,16 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                 name: "TeamMembershipRequest");
 
             migrationBuilder.DropTable(
+                name: "TeamTunerUserRegistrationRequest");
+
+            migrationBuilder.DropTable(
                 name: "Card");
 
             migrationBuilder.DropTable(
                 name: "TeamTunerUser");
+
+            migrationBuilder.DropTable(
+                name: "CharacterType");
 
             migrationBuilder.DropTable(
                 name: "Rarity");

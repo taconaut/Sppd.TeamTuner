@@ -19,7 +19,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite
         private const string PROVIDER_NAME = "Sqlite";
         private const string ID_PLACEHOLDER = "{id}";
 
-        public int Priority => 90;
+        public int Priority => 110;
 
         public void ConfigureServices(IServiceCollection services)
         {

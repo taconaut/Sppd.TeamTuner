@@ -19,6 +19,9 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
             // Do not load soft deleted entities
             builder.HasQueryFilter(m => !m.IsDeleted);
 
+            builder.Property(e => e.Version)
+                   .IsConcurrencyToken();
+
             // Specify UTC kind as this is not supported out of the box
             // See: https://github.com/aspnet/EntityFrameworkCore/issues/4711
             builder.Property(e => e.ModifiedOnUtc)

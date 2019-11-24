@@ -10,8 +10,8 @@ using Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql;
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 {
     [DbContext(typeof(TeamTunerContextMsSql))]
-    [Migration("20191101123428_VerifiedEmail")]
-    partial class VerifiedEmail
+    [Migration("20191124120803_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,6 +69,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     b.HasIndex("CharacterTypeId");
 
                     b.HasIndex("ExternalId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.HasIndex("Name")
                         .IsUnique()
                         .HasFilter("[IsDeleted] = 0");
 
@@ -150,6 +154,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.ToTable("CardType");
                 });
 
@@ -181,6 +189,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("CharacterType");
                 });
@@ -219,6 +231,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.ToTable("Federation");
                 });
 
@@ -252,6 +268,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("Rarity");
                 });
@@ -294,6 +314,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasIndex("FederationId");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.ToTable("Team");
                 });
 
@@ -329,9 +353,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId")
-                        .IsUnique()
-                        .HasFilter("[IsDeleted] = 0");
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("UserId")
                         .IsUnique()
@@ -427,6 +449,46 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     b.ToTable("TeamTunerUser");
                 });
 
+            modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUserRegistrationRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CreatedById");
+
+                    b.Property<DateTime>("CreatedOnUtc");
+
+                    b.Property<Guid?>("DeletedById");
+
+                    b.Property<DateTime?>("DeletedOnUtc");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<Guid>("ModifiedById");
+
+                    b.Property<DateTime>("ModifiedOnUtc");
+
+                    b.Property<Guid>("RegistrationCode");
+
+                    b.Property<DateTime>("RegistrationDate");
+
+                    b.Property<Guid>("UserId");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegistrationCode");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.ToTable("TeamTunerUserRegistrationRequest");
+                });
+
             modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.Theme", b =>
                 {
                     b.Property<Guid>("Id")
@@ -455,6 +517,10 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("Theme");
                 });
@@ -523,6 +589,14 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
                     b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.Team", "Team")
                         .WithMany("Users")
                         .HasForeignKey("TeamId");
+                });
+
+            modelBuilder.Entity("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUserRegistrationRequest", b =>
+                {
+                    b.HasOne("Sppd.TeamTuner.Core.Domain.Entities.TeamTunerUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

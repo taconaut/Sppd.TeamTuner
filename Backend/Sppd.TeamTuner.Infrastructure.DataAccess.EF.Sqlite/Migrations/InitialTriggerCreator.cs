@@ -58,6 +58,23 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 END");
 
             migrationBuilder.Sql(
+                @"CREATE TRIGGER SetCharacterTypeVersionOnUpdate
+                AFTER UPDATE ON CharacterType
+                BEGIN
+                    UPDATE CharacterType
+                    SET Version = randomblob(8)
+                    WHERE rowid = NEW.rowid;
+                END");
+            migrationBuilder.Sql(
+                @"CREATE TRIGGER SetCharacterTypeVersionOnInsert
+                AFTER INSERT ON CharacterType
+                BEGIN
+                    UPDATE CharacterType
+                    SET Version = randomblob(8)
+                    WHERE rowid = NEW.rowid;
+                END");
+
+            migrationBuilder.Sql(
                 @"CREATE TRIGGER SetFederationVersionOnUpdate
                 AFTER UPDATE ON Federation
                 BEGIN
@@ -168,6 +185,8 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
             migrationBuilder.Sql("DROP TRIGGER SetCardLevelVersionOnInsert");
             migrationBuilder.Sql("DROP TRIGGER SetCardTypeVersionOnUpdate");
             migrationBuilder.Sql("DROP TRIGGER SetCardTypeVersionOnInsert");
+            migrationBuilder.Sql("DROP TRIGGER SetCharacterTypeVersionOnUpdate");
+            migrationBuilder.Sql("DROP TRIGGER SeCharacterTypeVersionOnInsert");
             migrationBuilder.Sql("DROP TRIGGER SetFederationVersionOnUpdate");
             migrationBuilder.Sql("DROP TRIGGER SetFederationVersionOnInsert");
             migrationBuilder.Sql("DROP TRIGGER SetRarityVersionOnUpdate");

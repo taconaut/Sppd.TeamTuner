@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialSqlite : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,16 +12,16 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "CardType",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false)
+                             Name = table.Column<string>(maxLength: 50)
                          },
                 constraints: table => { table.PrimaryKey("PK_CardType", x => x.Id); });
 
@@ -29,16 +29,16 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "CharacterType",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false)
+                             Name = table.Column<string>(maxLength: 50)
                          },
                 constraints: table => { table.PrimaryKey("PK_CharacterType", x => x.Id); });
 
@@ -46,16 +46,16 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "Federation",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false),
+                             Name = table.Column<string>(maxLength: 50),
                              Avatar = table.Column<byte[]>(nullable: true),
                              Description = table.Column<string>(maxLength: 2000, nullable: true)
                          },
@@ -65,17 +65,17 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "Rarity",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false),
-                             FriendlyLevel = table.Column<int>(nullable: false)
+                             Name = table.Column<string>(maxLength: 50),
+                             FriendlyLevel = table.Column<int>()
                          },
                 constraints: table => { table.PrimaryKey("PK_Rarity", x => x.Id); });
 
@@ -83,16 +83,16 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "Theme",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false)
+                             Name = table.Column<string>(maxLength: 50)
                          },
                 constraints: table => { table.PrimaryKey("PK_Theme", x => x.Id); });
 
@@ -100,16 +100,16 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "Team",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false),
+                             Name = table.Column<string>(maxLength: 50),
                              Avatar = table.Column<byte[]>(nullable: true),
                              Description = table.Column<string>(maxLength: 2000, nullable: true),
                              FederationId = table.Column<Guid>(nullable: true)
@@ -129,22 +129,22 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "Card",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false),
+                             Name = table.Column<string>(maxLength: 50),
                              ExternalId = table.Column<string>(maxLength: 24, nullable: true),
                              Description = table.Column<string>(maxLength: 500, nullable: true),
-                             ManaCost = table.Column<int>(nullable: false),
-                             ThemeId = table.Column<Guid>(nullable: false),
-                             RarityId = table.Column<Guid>(nullable: false),
-                             TypeId = table.Column<Guid>(nullable: false),
+                             ManaCost = table.Column<int>(),
+                             ThemeId = table.Column<Guid>(),
+                             RarityId = table.Column<Guid>(),
+                             TypeId = table.Column<Guid>(),
                              CharacterTypeId = table.Column<Guid>(nullable: true)
                          },
                 constraints: table =>
@@ -180,24 +180,25 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "TeamTunerUser",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             Name = table.Column<string>(maxLength: 50, nullable: false),
+                             Name = table.Column<string>(maxLength: 50),
                              Avatar = table.Column<byte[]>(nullable: true),
                              Description = table.Column<string>(maxLength: 2000, nullable: true),
-                             ProfileVisibility = table.Column<int>(nullable: false),
-                             SppdName = table.Column<string>(maxLength: 50, nullable: false),
-                             PasswordHash = table.Column<byte[]>(maxLength: 64, nullable: false),
-                             PasswordSalt = table.Column<byte[]>(maxLength: 128, nullable: false),
-                             Email = table.Column<string>(maxLength: 200, nullable: false),
-                             ApplicationRole = table.Column<string>(maxLength: 20, nullable: false),
+                             IsEmailVerified = table.Column<bool>(),
+                             ProfileVisibility = table.Column<int>(),
+                             SppdName = table.Column<string>(maxLength: 50),
+                             PasswordHash = table.Column<byte[]>(maxLength: 64),
+                             PasswordSalt = table.Column<byte[]>(maxLength: 128),
+                             Email = table.Column<string>(maxLength: 200),
+                             ApplicationRole = table.Column<string>(maxLength: 20),
                              TeamId = table.Column<Guid>(nullable: true),
                              TeamRole = table.Column<string>(maxLength: 20, nullable: true),
                              FederationId = table.Column<Guid>(nullable: true),
@@ -224,18 +225,18 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "CardLevel",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             CardId = table.Column<Guid>(nullable: false),
-                             UserId = table.Column<Guid>(nullable: false),
-                             Level = table.Column<int>(nullable: false)
+                             CardId = table.Column<Guid>(),
+                             UserId = table.Column<Guid>(),
+                             Level = table.Column<int>()
                          },
                 constraints: table =>
                 {
@@ -258,17 +259,17 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "TeamMembershipRequest",
                 table => new
                          {
-                             Id = table.Column<Guid>(nullable: false),
-                             CreatedOnUtc = table.Column<DateTime>(nullable: false),
-                             CreatedById = table.Column<Guid>(nullable: false),
-                             ModifiedOnUtc = table.Column<DateTime>(nullable: false),
-                             ModifiedById = table.Column<Guid>(nullable: false),
-                             IsDeleted = table.Column<bool>(nullable: false),
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
                              DeletedOnUtc = table.Column<DateTime>(nullable: true),
                              DeletedById = table.Column<Guid>(nullable: true),
                              Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                             TeamId = table.Column<Guid>(nullable: false),
-                             UserId = table.Column<Guid>(nullable: false),
+                             TeamId = table.Column<Guid>(),
+                             UserId = table.Column<Guid>(),
                              Comment = table.Column<string>(maxLength: 500, nullable: true)
                          },
                 constraints: table =>
@@ -288,6 +289,34 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                "TeamTunerUserRegistrationRequest",
+                table => new
+                         {
+                             Id = table.Column<Guid>(),
+                             CreatedOnUtc = table.Column<DateTime>(),
+                             CreatedById = table.Column<Guid>(),
+                             ModifiedOnUtc = table.Column<DateTime>(),
+                             ModifiedById = table.Column<Guid>(),
+                             IsDeleted = table.Column<bool>(),
+                             DeletedOnUtc = table.Column<DateTime>(nullable: true),
+                             DeletedById = table.Column<Guid>(nullable: true),
+                             Version = table.Column<byte[]>(rowVersion: true, nullable: true),
+                             UserId = table.Column<Guid>(),
+                             RegistrationCode = table.Column<Guid>(),
+                             RegistrationDate = table.Column<DateTime>()
+                         },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamTunerUserRegistrationRequest", x => x.Id);
+                    table.ForeignKey(
+                        "FK_TeamTunerUserRegistrationRequest_TeamTunerUser_UserId",
+                        x => x.UserId,
+                        "TeamTunerUser",
+                        "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 "IX_Card_CharacterTypeId",
                 "Card",
@@ -297,6 +326,13 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "IX_Card_ExternalId",
                 "Card",
                 "ExternalId",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                "IX_Card_Name",
+                "Card",
+                "Name",
                 unique: true,
                 filter: "[IsDeleted] = 0");
 
@@ -328,16 +364,49 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
+                "IX_CardType_Name",
+                "CardType",
+                "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                "IX_CharacterType_Name",
+                "CharacterType",
+                "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                "IX_Federation_Name",
+                "Federation",
+                "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                "IX_Rarity_Name",
+                "Rarity",
+                "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
                 "IX_Team_FederationId",
                 "Team",
                 "FederationId");
 
             migrationBuilder.CreateIndex(
-                "IX_TeamMembershipRequest_TeamId",
-                "TeamMembershipRequest",
-                "TeamId",
+                "IX_Team_Name",
+                "Team",
+                "Name",
                 unique: true,
                 filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                "IX_TeamMembershipRequest_TeamId",
+                "TeamMembershipRequest",
+                "TeamId");
 
             migrationBuilder.CreateIndex(
                 "IX_TeamMembershipRequest_UserId",
@@ -377,6 +446,25 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
                 "TeamTunerUser",
                 "TeamId");
 
+            migrationBuilder.CreateIndex(
+                "IX_TeamTunerUserRegistrationRequest_RegistrationCode",
+                "TeamTunerUserRegistrationRequest",
+                "RegistrationCode");
+
+            migrationBuilder.CreateIndex(
+                "IX_TeamTunerUserRegistrationRequest_UserId",
+                "TeamTunerUserRegistrationRequest",
+                "UserId",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                "IX_Theme_Name",
+                "Theme",
+                "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
             InitialTriggerCreator.Up(migrationBuilder);
         }
 
@@ -389,6 +477,9 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Sqlite.Migrations
 
             migrationBuilder.DropTable(
                 "TeamMembershipRequest");
+
+            migrationBuilder.DropTable(
+                "TeamTunerUserRegistrationRequest");
 
             migrationBuilder.DropTable(
                 "Card");
