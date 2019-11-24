@@ -53,6 +53,11 @@ namespace Sppd.TeamTuner.Controllers
             return Ok();
         }
 
+        /// <summary>
+        ///     Gets the pending team membership request for the user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>The <see cref="TeamMembershipRequestDto" /> if it could be found; otherwise <c>NULL</c>.</returns>
         [HttpGet]
         public async Task<ActionResult<TeamMembershipRequestResponseDto>> GetPendingTeamMembershipRequest([FromQuery] Guid userId)
         {

@@ -1,6 +1,6 @@
 import { stringHelper, axiosConfigurator } from '@/_helpers'
 import { storageKeys } from '@/_constants'
-import { UsersClient, AuthorizationRequestDto, UserAuthorizationResponseDto, UserCreateRequestDto } from '@/api'
+import { UsersClient, AuthorizationRequestDto, UserAuthorizationResponseDto, UserCreateRequestDto, EmailVerificationClient } from '@/api'
 import { BehaviorSubject } from 'rxjs'
 
 class AuthorizationService {
@@ -56,13 +56,13 @@ class AuthorizationService {
   }
 
   public async verifyEmail(code: string) {
-    const usersClient = new UsersClient()
-    return usersClient.verifyEmail(code)
+    const emailVerificationClient = new EmailVerificationClient()
+    return emailVerificationClient.verifyEmail(code)
   }
 
   public async resendVerificationEmail(code: string) {
-    const usersClient = new UsersClient()
-    return usersClient.resendVerificationMail(code)
+    const emailVerificationClient = new EmailVerificationClient()
+    return emailVerificationClient.resendVerificationEmail(code)
   }
 
   public logout() {

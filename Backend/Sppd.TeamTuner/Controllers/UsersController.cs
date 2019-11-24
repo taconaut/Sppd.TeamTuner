@@ -199,20 +199,6 @@ namespace Sppd.TeamTuner.Controllers
             return Ok(userCardDtos);
         }
 
-        [AllowAnonymous]
-        [HttpGet("email-verification/{code}/verify")]
-        public async Task<ActionResult<bool>> VerifyEmail(string code)
-        {
-            return Ok(await _userService.VerifyEmailAsync(code));
-        }
-
-        [AllowAnonymous]
-        [HttpGet("email-verification/{code}/resend")]
-        public async Task<IActionResult> ResendVerificationMail(string code)
-        {
-            return Ok(await _userService.ResendEmailVerificationAsync(code));
-        }
-
         private static void SetLevelForUserCard(UserCardResponseDto userCardDto, CardLevel cardLevel, Guid userId)
         {
             userCardDto.UserId = userId;

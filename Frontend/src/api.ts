@@ -313,6 +313,101 @@ export class CoreDataClient {
     }
 }
 
+export class EmailVerificationClient {
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * Verifies the email with the given code.
+     * @param code The code.
+     * @return Success
+     */
+    verifyEmail(code: string): Promise<boolean> {
+        let url_ = this.baseUrl + "/email-verification/{code}/verify";
+        if (code === undefined || code === null)
+            throw new Error("The parameter 'code' must be defined.");
+        url_ = url_.replace("{code}", encodeURIComponent("" + code)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processVerifyEmail(_response);
+        });
+    }
+
+    protected processVerifyEmail(response: AxiosResponse): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+
+    /**
+     * Sends a previously sent verification email.
+     * @param code The code.
+     * @return Success
+     */
+    resendVerificationEmail(code: string): Promise<void> {
+        let url_ = this.baseUrl + "/email-verification/{code}/resend";
+        if (code === undefined || code === null)
+            throw new Error("The parameter 'code' must be defined.");
+        url_ = url_.replace("{code}", encodeURIComponent("" + code)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processResendVerificationEmail(_response);
+        });
+    }
+
+    protected processResendVerificationEmail(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(<any>null);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+}
+
 export class TeamMembershipRequestsClient {
     private instance: AxiosInstance;
     private baseUrl: string;
@@ -324,7 +419,8 @@ export class TeamMembershipRequestsClient {
     }
 
     /**
-     * @param userId (optional) 
+     * Gets the pending team membership request for the user.
+     * @param userId (optional) The user identifier.
      * @return Success
      */
     getPendingTeamMembershipRequest(userId: string | null | undefined): Promise<TeamMembershipRequestResponseDto> {
@@ -813,12 +909,12 @@ export class TeamsClient {
     }
 
     /**
-     * Gets the team users
+     * Gets the team members.
      * @param id The team identifier
      * @return Success
      */
-    getTeamUsers(id: string): Promise<UserResponseDto[]> {
-        let url_ = this.baseUrl + "/teams/{id}/users";
+    getTeamMembers(id: string): Promise<UserResponseDto[]> {
+        let url_ = this.baseUrl + "/teams/{id}/members";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
@@ -833,11 +929,11 @@ export class TeamsClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetTeamUsers(_response);
+            return this.processGetTeamMembers(_response);
         });
     }
 
-    protected processGetTeamUsers(response: AxiosResponse): Promise<UserResponseDto[]> {
+    protected processGetTeamMembers(response: AxiosResponse): Promise<UserResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1324,86 +1420,6 @@ export class UsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<UserCardResponseDto[]>(<any>null);
-    }
-
-    /**
-     * @return Success
-     */
-    verifyEmail(code: string): Promise<boolean> {
-        let url_ = this.baseUrl + "/users/email-verification/{code}/verify";
-        if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code)); 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processVerifyEmail(_response);
-        });
-    }
-
-    protected processVerifyEmail(response: AxiosResponse): Promise<boolean> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<boolean>(<any>null);
-    }
-
-    /**
-     * @return Success
-     */
-    resendVerificationMail(code: string): Promise<void> {
-        let url_ = this.baseUrl + "/users/email-verification/{code}/resend";
-        if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code)); 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            method: "GET",
-            url: url_,
-            headers: {
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processResendVerificationMail(_response);
-        });
-    }
-
-    protected processResendVerificationMail(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(<any>null);
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(<any>null);
     }
 }
 
