@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.MsSql.Migrations
 {
     [DbContext(typeof(TeamTunerContextMsSql))]
-    partial class TeamTunerContextMsSqlModelSnapshot : ModelSnapshot
+    [Migration("20191124100000_Missing")]
+    partial class Missing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
