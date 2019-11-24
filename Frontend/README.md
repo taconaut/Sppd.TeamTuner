@@ -2,6 +2,8 @@
 
 The Sppd.TeamTuner frontend is a [Vue 2](https://vuejs.org/v2/guide/) application.
 
+
+
 ## UI components
 Please use components from this list if possible:
 - [BootstrapVue](https://bootstrap-vue.js.org/): Main UI components library.
@@ -11,7 +13,10 @@ Please use components from this list if possible:
 Additionally, these components are being used:
 - [vue-sidebar-menu](https://github.com/yaminncco/vue-sidebar-menu): the side bar.
 
-### Structure
+## Icons
+The free [Font Awsome](https://fontawesome.com/) icon set is included in version 5.11.2.
+
+## Structure
 - A view uses components and services
 - Services use api.ts to execute API calls
 
@@ -25,7 +30,7 @@ Additionally, these components are being used:
 - [_constats](./src/_constants): Static constants used throughout the frontend.
 - [_helpers](./src/_helpers): Helpers.
 - [_services](./src/_services): Services, usually using api.ts to access the API.
-- [components](./src/components): Vue componentns which are being used by views.
+- [components](./src/components): Vue components which are being used by views.
 - [plugins](./src/plugins): Imports external components.
 - [views](./src/views): Vue views. They must be registered with the router.
 

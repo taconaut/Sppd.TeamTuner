@@ -1,8 +1,8 @@
 # Deployment
 
-The deployment process isn't automated for the project, as the build and deployment environement can't be known beforehand. This document will show a powershell script, which is being used for nightly deploys with [Jenkins](https://jenkins.io/) to deploy the nightly build ([backend API](http://sppdteamtuner.hopto.org:1702/swagger/index.html), [frontend](http://sppdteamtuner.hopto.org:1703/)).
+The deployment process isn't automated for the project, as the build and deployment environment  can't be known beforehand. This document will show a PowerShell script, which is being used for nightly deploys with [Jenkins](https://jenkins.io/) to deploy the nightly build ([backend API](http://sppdteamtuner.hopto.org:1702/swagger/index.html), [frontend](http://sppdteamtuner.hopto.org:1703/)).
 
-## Environement
+## Environment 
 - Two IIS app pools and sites; one each for backend and frontend.
 - Jenkins is installed on the same server IIS hosts the application.
 
@@ -11,11 +11,11 @@ The deployment process isn't automated for the project, as the build and deploym
 - Stop both app pools.
 - Delete all currently deployed files in the site directories.
 - Copy the built artifacts (backend and frontend) from `.\artifacts` into the site folder.
-- Configure the backend by copying the productive `appsettings.json` and `log4net.config`, available in a dedicated directoiry of the server.
-- Configure the frontend by setting the `apiUrl` in `index.html`. Note that `index.html` can't be considerd to be a HTML file after compilation as all quotes have been stripped.
+- Configure the backend by copying the productive `appsettings.json` and `log4net.config`, available in a dedicated directory of the server.
+- Configure the frontend by setting the `apiUrl` in `index.html`. Note that `index.html` can't be considered to be a HTML file after compilation as all quotes have been stripped.
 - Restart both app pools.
 
-## Powershell script
+## PowerShell script
 ```
 # Build, test and package
 .\build.ps1 -target Zip-Package

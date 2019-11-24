@@ -1,13 +1,13 @@
 # Build automation
 
-[Cake](https://cakebuild.net/) (c# make) is being used as build automation tool. The available targets can be ran by using the powershell (`build.ps1`) on Windows and the shell script (`build.sh`) for UNIX systems.
+[Cake](https://cakebuild.net/) (c# make) is being used as build automation tool. The available targets can be ran by using the PowerShell (`build.ps1`) on Windows and the shell script (`build.sh`) for UNIX systems.
 
 Example: `.\build.ps1 -Target Zip-Package`
 
 The targets have dependencies between each other. Run a target to see the executed/dependent targets.<br>
 Note that the targets are explicitly listed in `.\build.ps1`, which allows to use autocomplete with `.\build.ps1 -Target ` and hitting the TAB key.
 # Targets
-The below chapters group the available targets by functionality.
+The below sections group the available targets by functionality.
 
 The scopes have the following meaning:
 - *Common*: Global to the project; not directly related to either the frontend or backend.
