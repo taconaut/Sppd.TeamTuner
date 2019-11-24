@@ -49,22 +49,22 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
             switch (themeName)
             {
                 case "sci-fi":
-                    return Guid.Parse(TestingConstants.Theme.SCIFI_ID);
+                    return Guid.Parse(CoreDataConstants.Theme.SCIFI_ID);
 
                 case "adventure":
-                    return Guid.Parse(TestingConstants.Theme.ADVENTURE_ID);
+                    return Guid.Parse(CoreDataConstants.Theme.ADVENTURE_ID);
 
                 case "fantasy":
-                    return Guid.Parse(TestingConstants.Theme.FANTASY_ID);
+                    return Guid.Parse(CoreDataConstants.Theme.FANTASY_ID);
 
                 case "mystical":
-                    return Guid.Parse(TestingConstants.Theme.MYSTICAL_ID);
+                    return Guid.Parse(CoreDataConstants.Theme.MYSTICAL_ID);
 
                 case "general":
-                    return Guid.Parse(TestingConstants.Theme.NEUTRAL_ID);
+                    return Guid.Parse(CoreDataConstants.Theme.NEUTRAL_ID);
 
                 case "superhero":
-                    return Guid.Parse(TestingConstants.Theme.SUPERHERO_ID);
+                    return Guid.Parse(CoreDataConstants.Theme.SUPERHERO_ID);
 
                 default:
                     throw new NotSupportedException($"Theme '{themeName}' is not supported");
@@ -76,16 +76,16 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
             switch (rarity)
             {
                 case 0:
-                    return Guid.Parse(TestingConstants.Rarity.COMMON_ID);
+                    return Guid.Parse(CoreDataConstants.Rarity.COMMON_ID);
 
                 case 1:
-                    return Guid.Parse(TestingConstants.Rarity.RARE_ID);
+                    return Guid.Parse(CoreDataConstants.Rarity.RARE_ID);
 
                 case 2:
-                    return Guid.Parse(TestingConstants.Rarity.EPIC_ID);
+                    return Guid.Parse(CoreDataConstants.Rarity.EPIC_ID);
 
                 case 3:
-                    return Guid.Parse(TestingConstants.Rarity.LEGENDARY_ID);
+                    return Guid.Parse(CoreDataConstants.Rarity.LEGENDARY_ID);
 
                 default:
                     throw new NotSupportedException($"Rarity '{rarity}' is not supported");
@@ -97,16 +97,16 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
             switch (type)
             {
                 case "spell":
-                    return Guid.Parse(TestingConstants.CardType.SPELL_ID);
+                    return Guid.Parse(CoreDataConstants.CardType.SPELL_ID);
 
                 case "character":
-                    return Guid.Parse(TestingConstants.CardType.CHARACTER_ID);
+                    return Guid.Parse(CoreDataConstants.CardType.CHARACTER_ID);
 
                 case "spawn":
-                    return Guid.Parse(TestingConstants.CardType.SPAWN_ID);
+                    return Guid.Parse(CoreDataConstants.CardType.SPAWN_ID);
 
                 case "trap":
-                    return Guid.Parse(TestingConstants.CardType.TRAP_ID);
+                    return Guid.Parse(CoreDataConstants.CardType.TRAP_ID);
 
                 default:
                     throw new NotSupportedException($"Type '{type}' is not supported");
@@ -123,19 +123,19 @@ namespace Sppd.TeamTuner.Infrastructure.Feinwaru.MappingProfiles
             switch (characterType)
             {
                 case "assassin":
-                    return Guid.Parse(TestingConstants.CharacterType.ASSASSIN_ID);
+                    return Guid.Parse(CoreDataConstants.CharacterType.ASSASSIN_ID);
 
                 case "melee":
-                    return Guid.Parse(TestingConstants.CharacterType.MELEE_ID);
+                    return Guid.Parse(CoreDataConstants.CharacterType.MELEE_ID);
 
                 case "ranged":
-                    return Guid.Parse(TestingConstants.CharacterType.RANGED_ID);
+                    return Guid.Parse(CoreDataConstants.CharacterType.RANGED_ID);
 
                 case "tank":
-                    return Guid.Parse(TestingConstants.CharacterType.TANK_ID);
+                    return Guid.Parse(CoreDataConstants.CharacterType.TANK_ID);
 
                 case "totem":
-                    return Guid.Parse(TestingConstants.CharacterType.TOTEM_ID);
+                    return Guid.Parse(CoreDataConstants.CharacterType.TOTEM_ID);
 
                 default:
                     throw new NotSupportedException($"CharacterType '{characterType}' is not supported");

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Sppd.TeamTuner.Common;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Repositories;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {
@@ -18,36 +19,41 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 
         public int Priority => SeederConstants.Priority.BASE_DATA;
 
-        public Task SeedAsync()
+        public Task SeedAsync(SeedMode seedMode)
         {
+            if (seedMode == SeedMode.None)
+            {
+                return Task.CompletedTask;
+            }
+
             _cardThemeRepository.Add(new Theme
                                      {
-                                         Id = new Guid(TestingConstants.Theme.ADVENTURE_ID),
+                                         Id = new Guid(CoreDataConstants.Theme.ADVENTURE_ID),
                                          Name = "Adventure"
                                      });
             _cardThemeRepository.Add(new Theme
                                      {
-                                         Id = new Guid(TestingConstants.Theme.SCIFI_ID),
+                                         Id = new Guid(CoreDataConstants.Theme.SCIFI_ID),
                                          Name = "Sci-Fy"
                                      });
             _cardThemeRepository.Add(new Theme
                                      {
-                                         Id = new Guid(TestingConstants.Theme.FANTASY_ID),
+                                         Id = new Guid(CoreDataConstants.Theme.FANTASY_ID),
                                          Name = "Fantasy"
                                      });
             _cardThemeRepository.Add(new Theme
                                      {
-                                         Id = new Guid(TestingConstants.Theme.MYSTICAL_ID),
+                                         Id = new Guid(CoreDataConstants.Theme.MYSTICAL_ID),
                                          Name = "Mystical"
                                      });
             _cardThemeRepository.Add(new Theme
                                      {
-                                         Id = new Guid(TestingConstants.Theme.NEUTRAL_ID),
+                                         Id = new Guid(CoreDataConstants.Theme.NEUTRAL_ID),
                                          Name = "Neutral"
                                      });
             _cardThemeRepository.Add(new Theme
                                      {
-                                         Id = new Guid(TestingConstants.Theme.SUPERHERO_ID),
+                                         Id = new Guid(CoreDataConstants.Theme.SUPERHERO_ID),
                                          Name = "Superhero"
                                      });
 

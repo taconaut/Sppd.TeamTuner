@@ -1,16 +1,10 @@
 using System;
-using System.IO;
 using System.Net.Http;
 
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
-using Sppd.TeamTuner.Core;
-
-namespace Sppd.TeamTuner.Tests.Integration.Api
+namespace Sppd.TeamTuner.Tests.Api
 {
     public class TestClientProvider
     {

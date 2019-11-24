@@ -213,7 +213,7 @@ Task ("Backend-Run-Unit-Tests")
 Task ("Backend-Run-Integration-Tests")
     .IsDependentOn ("Backend-Build")
     .DoesForEach (
-        GetFiles ("./**/*.Tests.Integration.*csproj"),
+        GetFiles ("./**/*.Tests.Integration*.csproj"),
         testProject => {
             testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-integration.xml");
             coverletSettings.CoverletOutputName = "coverage-results-integration.opencover.xml";
@@ -224,7 +224,7 @@ Task ("Backend-Run-Integration-Tests")
 Task ("Backend-Run-API-Tests")
     .IsDependentOn ("Backend-Build")
     .DoesForEach (
-        GetFiles ("./**/*.Tests.Integration.Api.csproj"),
+        GetFiles ("./**/*.Tests.Api*.csproj"),
         testProject => {
             testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-api.xml");
             coverletSettings.CoverletOutputName = "coverage-results-api.opencover.xml";

@@ -5,9 +5,9 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>Sppd.TeamTuner.Tests.Integration.Api</AssemblyName>
+    <AssemblyName>Sppd.TeamTuner.Tests.Api</AssemblyName>
 
-    <RootNamespace>Sppd.TeamTuner.Tests.Integration.Api</RootNamespace>
+    <RootNamespace>Sppd.TeamTuner.Tests.Api</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

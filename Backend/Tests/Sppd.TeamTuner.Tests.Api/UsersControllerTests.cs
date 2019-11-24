@@ -18,7 +18,7 @@ using Xunit;
 
 // ReSharper disable JoinDeclarationAndInitializer
 
-namespace Sppd.TeamTuner.Tests.Integration.Api
+namespace Sppd.TeamTuner.Tests.Api
 {
     /// <summary>
     ///     Tests the <see cref="UsersController" />

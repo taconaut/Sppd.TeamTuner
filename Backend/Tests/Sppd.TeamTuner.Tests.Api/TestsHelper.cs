@@ -3,7 +3,7 @@ using System.Text;
 
 using Newtonsoft.Json;
 
-namespace Sppd.TeamTuner.Tests.Integration.Api
+namespace Sppd.TeamTuner.Tests.Api
 {
     internal static class TestsHelper
     {

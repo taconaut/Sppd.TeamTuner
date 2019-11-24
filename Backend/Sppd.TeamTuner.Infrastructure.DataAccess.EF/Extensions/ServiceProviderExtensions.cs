@@ -69,7 +69,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Extensions
                     var seeders = scope.ServiceProvider.GetServices<IDbSeeder>().OrderBy(seeder => seeder.Priority).ToList();
                     foreach (var seeder in seeders)
                     {
-                        seedTasks.Add(seeder.SeedAsync());
+                        seedTasks.Add(seeder.SeedAsync(databaseConfig.SeedMode));
                     }
 
                     Task.WaitAll(seedTasks.ToArray());

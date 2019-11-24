@@ -51,13 +51,13 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF
                         .AddScoped<IDbSeeder, CardThemeDbSeeder>()
                         .AddScoped<IDbSeeder, CardDbSeeder>()
                         .AddScoped<IDbSeeder, CardTypeDbSeeder>()
-                        .AddScoped<IDbSeeder, CharacterTypeDbSeeder>();
+                        .AddScoped<IDbSeeder, CharacterTypeDbSeeder>()
+                        .AddScoped<IDbSeeder, TeamTunerUserSeeder>();
 
                 if (databaseConfig.SeedMode == SeedMode.Test)
                 {
                     services.AddScoped<IDbSeeder, TeamSeeder>()
-                            .AddScoped<IDbSeeder, FederationSeeder>()
-                            .AddScoped<IDbSeeder, TeamTunerUserSeeder>();
+                            .AddScoped<IDbSeeder, FederationSeeder>();
                 }
             }
         }

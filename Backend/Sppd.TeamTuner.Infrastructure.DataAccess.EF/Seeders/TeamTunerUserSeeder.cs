@@ -9,6 +9,7 @@ using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Domain.Enumerations;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {
@@ -29,8 +30,29 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 
         public int Priority => SeederConstants.Priority.TEST_DATA;
 
-        public async Task SeedAsync()
+        public async Task SeedAsync(SeedMode seedMode)
         {
+            if (seedMode == SeedMode.None)
+            {
+                return;
+            }
+
+            // Application admin user
+            await _userService.AddAsync(new TeamTunerUser
+                                        {
+                                            Id = Guid.Parse(InitializationConstants.User.ADMIN_ID),
+                                            Name = InitializationConstants.User.ADMIN_NAME,
+                                            SppdName = "App-Admin",
+                                            Email = "admin@sppdteamtuner.com",
+                                            IsEmailVerified = true,
+                                            ApplicationRole = CoreConstants.Authorization.Roles.ADMIN
+                                        }, InitializationConstants.User.ADMIN_PASSWORD_MD5);
+
+            if (seedMode != SeedMode.Test)
+            {
+                return;
+            }
+
             // System user
             // Add it using the repository so we are able to set fake password and hash so that login becomes impossible with this user
             var systemUser = new SystemUser();
@@ -45,17 +67,6 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                     Name = systemUser.Name,
                                     SppdName = systemUser.Name
                                 });
-
-            // Application admin user
-            await _userService.AddAsync(new TeamTunerUser
-                                        {
-                                            Id = Guid.Parse(TestingConstants.User.ADMIN_ID),
-                                            Name = TestingConstants.User.ADMIN_NAME,
-                                            SppdName = "App-Admin",
-                                            Email = "admin@sppdteamtuner.com",
-                                            IsEmailVerified = true,
-                                            ApplicationRole = CoreConstants.Authorization.Roles.ADMIN
-                                        }, TestingConstants.User.ADMIN_PASSWORD_MD5);
 
             // Team Holy Cow users
             await _userService.AddAsync(new TeamTunerUser

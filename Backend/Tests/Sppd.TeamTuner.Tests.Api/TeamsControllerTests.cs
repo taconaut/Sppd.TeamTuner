@@ -12,7 +12,7 @@ using Sppd.TeamTuner.DTOs;
 
 using Xunit;
 
-namespace Sppd.TeamTuner.Tests.Integration.Api
+namespace Sppd.TeamTuner.Tests.Api
 {
     public class TeamsControllerTests
     {

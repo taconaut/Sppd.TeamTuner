@@ -17,14 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6BBB30B3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructure", "Sppd.TeamTuner.Infrastructure\Sppd.TeamTuner.Infrastructure.csproj", "{2104B525-31CF-4AC1-BF49-1B2DB4BA5627}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Tests.Integration.Api", "Tests\Sppd.TeamTuner.Tests.Integration.Api\Sppd.TeamTuner.Tests.Integration.Api.csproj", "{85E21147-1B4D-4420-98D3-9C7F06ADBD7F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2104B525-31CF-4AC1-BF49-1B2DB4BA5627} = {2104B525-31CF-4AC1-BF49-1B2DB4BA5627}
-		{EE6B295C-0B6B-4A12-B147-CBB824FCC5D7} = {EE6B295C-0B6B-4A12-B147-CBB824FCC5D7}
-		{1DD6F67D-015D-44F7-AB85-94DB2163BD04} = {1DD6F67D-015D-44F7-AB85-94DB2163BD04}
-		{0CA39092-BE21-4E7C-A88F-594649AB635F} = {0CA39092-BE21-4E7C-A88F-594649AB635F}
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Tests.Unit", "Tests\Sppd.TeamTuner.Tests.Unit\Sppd.TeamTuner.Tests.Unit.csproj", "{81118848-D91B-4B1D-AD13-F0B1E2149E49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructure.DataAccess.EF", "Sppd.TeamTuner.Infrastructure.DataAccess.EF\Sppd.TeamTuner.Infrastructure.DataAccess.EF.csproj", "{1DD6F67D-015D-44F7-AB85-94DB2163BD04}"
@@ -42,9 +34,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Tests.Integration.DataAccess", "Tests\Sppd.TeamTuner.Tests.Integration.Repository\Sppd.TeamTuner.Tests.Integration.DataAccess.csproj", "{B42FF053-85AC-4B04-8491-418179084F81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sppd.TeamTuner.Infrastructure.Jobs", "Sppd.TeamTuner.Infrastructure.Jobs\Sppd.TeamTuner.Infrastructure.Jobs.csproj", "{73FF7939-ADEB-4920-AE9F-BF38890B5510}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructure.Jobs", "Sppd.TeamTuner.Infrastructure.Jobs\Sppd.TeamTuner.Infrastructure.Jobs.csproj", "{73FF7939-ADEB-4920-AE9F-BF38890B5510}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sppd.TeamTuner.Infrastructure.Feinwaru", "Sppd.Teamtuner.Infrastructure.Feinwaru\Sppd.TeamTuner.Infrastructure.Feinwaru.csproj", "{99C36427-8602-431C-823E-1880238A677C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Infrastructure.Feinwaru", "Sppd.Teamtuner.Infrastructure.Feinwaru\Sppd.TeamTuner.Infrastructure.Feinwaru.csproj", "{99C36427-8602-431C-823E-1880238A677C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sppd.TeamTuner.Tests.Api", "Tests\Sppd.TeamTuner.Tests.Api\Sppd.TeamTuner.Tests.Api.csproj", "{71C68446-2DE1-4BFD-8E70-5AFB5C7BDF34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,10 +58,6 @@ Global
 		{2104B525-31CF-4AC1-BF49-1B2DB4BA5627}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2104B525-31CF-4AC1-BF49-1B2DB4BA5627}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2104B525-31CF-4AC1-BF49-1B2DB4BA5627}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85E21147-1B4D-4420-98D3-9C7F06ADBD7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85E21147-1B4D-4420-98D3-9C7F06ADBD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85E21147-1B4D-4420-98D3-9C7F06ADBD7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85E21147-1B4D-4420-98D3-9C7F06ADBD7F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{81118848-D91B-4B1D-AD13-F0B1E2149E49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81118848-D91B-4B1D-AD13-F0B1E2149E49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81118848-D91B-4B1D-AD13-F0B1E2149E49}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -104,14 +94,18 @@ Global
 		{99C36427-8602-431C-823E-1880238A677C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99C36427-8602-431C-823E-1880238A677C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99C36427-8602-431C-823E-1880238A677C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71C68446-2DE1-4BFD-8E70-5AFB5C7BDF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C68446-2DE1-4BFD-8E70-5AFB5C7BDF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C68446-2DE1-4BFD-8E70-5AFB5C7BDF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71C68446-2DE1-4BFD-8E70-5AFB5C7BDF34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{85E21147-1B4D-4420-98D3-9C7F06ADBD7F} = {6BBB30B3-F52C-4504-8F83-6B547643BE3E}
 		{81118848-D91B-4B1D-AD13-F0B1E2149E49} = {6BBB30B3-F52C-4504-8F83-6B547643BE3E}
 		{B42FF053-85AC-4B04-8491-418179084F81} = {6BBB30B3-F52C-4504-8F83-6B547643BE3E}
+		{71C68446-2DE1-4BFD-8E70-5AFB5C7BDF34} = {6BBB30B3-F52C-4504-8F83-6B547643BE3E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A1121C1E-D86C-4DB7-B3CA-5BD5A32931EC}

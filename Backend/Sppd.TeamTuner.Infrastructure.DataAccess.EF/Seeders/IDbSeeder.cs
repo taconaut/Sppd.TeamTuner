@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
+
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {
     /// <summary>
@@ -16,6 +18,7 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
         /// <summary>
         ///     Seeds the data.
         /// </summary>
-        Task SeedAsync();
+        /// <param name="seedMode">The seed mode.</param>
+        Task SeedAsync(SeedMode seedMode);
     }
 }

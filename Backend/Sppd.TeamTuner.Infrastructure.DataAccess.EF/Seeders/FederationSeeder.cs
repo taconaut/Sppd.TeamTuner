@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Sppd.TeamTuner.Common;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Repositories;
-using Sppd.TeamTuner.Common;
+using Sppd.TeamTuner.Infrastructure.DataAccess.EF.Config;
 
 namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 {
@@ -18,8 +19,13 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
 
         public int Priority => SeederConstants.Priority.TEST_DATA;
 
-        public Task SeedAsync()
+        public Task SeedAsync(SeedMode seedMode)
         {
+            if (seedMode != SeedMode.Test)
+            {
+                return Task.CompletedTask;
+            }
+
             _federationRepository.Add(new Federation
                                       {
                                           Id = new Guid(TestingConstants.Federation.HOLY_ID),
