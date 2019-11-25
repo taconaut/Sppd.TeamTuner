@@ -15,11 +15,16 @@ The deployment process isn't automated for the project, as the build and deploym
 - Configure the frontend by setting the `apiUrl` in `index.html`. Note that `index.html` can't be considered to be a HTML file after compilation as all quotes have been stripped.
 - Restart both app pools.
 
-## PowerShell script
+## PowerShell scripts
+There is the build script, which runs `Release-Prepare` to write the version info (including the GIT commit hash it was built from) in the `*.csproj`s, before building and testing the application:
 ```
 # Build, test and package
+.\build.ps1 -target Release-Prepare
 .\build.ps1 -target Zip-Package
+```
 
+And the post build script, which is only being triggered if the build and tests were successful:
+```
 # Stop app pools
 C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:Sppd.TeamTuner-Backend-Nightly
 C:\Windows\System32\inetsrv\appcmd stop apppool /apppool.name:Sppd.TeamTuner-Frontend-Nightly

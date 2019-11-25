@@ -16,7 +16,7 @@
 
 var target = Argument ("target", "Default");
 var configuration = Argument ("configuration", "Release");
-var version = Argument("applicationVersion", "1.0.0.0");
+var version = Argument ("applicationVersion", "1.0.0.0");
 
 //////////////////////////////////////////////////////////////////////
 // Preparation
@@ -25,7 +25,7 @@ var version = Argument("applicationVersion", "1.0.0.0");
 // Directories
 
 // Existing
-var projectDir = Directory("./");
+var projectDir = Directory ("./");
 var backendDir = Directory ("./Backend");
 var frontendDir = Directory ("./Frontend");
 var frontendDistDir = MakeAbsolute (MakeAbsolute (frontendDir).Combine (Directory ("dist")));
@@ -56,20 +56,27 @@ var localApiUri = "https://localhost:44336/swagger/v1/swagger.json";
 Task ("Common-Clean")
     .Does (() => {
         CleanDirectory (artifactsDir);
+        Information ($"Deleted all content in '{artifactsDir}'");
     });
 
 Task ("Backend-Clean")
     .Does (() => {
         CleanDirectory (testOutputDir);
+        Information ($"Deleted all content in '{testOutputDir}'");
         CleanDirectory (testCoverageResultsDir);
+        Information ($"Deleted all content in '{testCoverageResultsDir}'");
         CleanDirectory (testResultsDir);
+        Information ($"Deleted all content in '{testResultsDir}'");
         CleanDirectories ($"./**/obj/{configuration}");
+        Information ($"Deleted all content for './**/obj/{configuration}'");
         CleanDirectories ($"./**/bin/{configuration}");
+        Information ($"Deleted all content for './**/bin/{configuration}'");
     });
 
 Task ("Frontend-Clean")
     .Does (() => {
         CleanDirectory (frontendDistDir);
+        Information ($"Deleted all content in '{frontendDistDir}'");
     });
 
 Task ("Clean")
@@ -77,12 +84,11 @@ Task ("Clean")
     .IsDependentOn ("Backend-Clean")
     .IsDependentOn ("Frontend-Clean");
 
-
-
 Task ("Backend-Restore-NuGet-Packages")
     .IsDependentOn ("Backend-Clean")
     .Does (() => {
         NuGetRestore (solutionPath);
+        Information ($"Restored nuget packages for solution '{solutionPath}'");
     });
 
 Task ("Backend-Build")
@@ -92,31 +98,34 @@ Task ("Backend-Build")
             solutionPath,
             new DotNetCoreBuildSettings {
                 NoRestore = true,
-                Configuration = configuration
+                    Configuration = configuration
             }
         );
+        Information ($"Finished building backend for solution '{solutionPath}'");
     });
 
 Task ("Frontend-Npm-Install")
     .Does (() => {
         var settings = new NpmInstallSettings {
-            WorkingDirectory = frontendDir,
-            Production = false
+        WorkingDirectory = frontendDir,
+        Production = false
         };
 
-        NpmInstall(settings);
+        NpmInstall (settings);
+        Information ($"Executed 'npm install' for frontend located in '{frontendDir}'");
     });
 
 Task ("Frontend-Build")
     .IsDependentOn ("Frontend-Clean")
-    .IsDependentOn("Frontend-Npm-Install")
+    .IsDependentOn ("Frontend-Npm-Install")
     .Does (() => {
         var settings = new NpmRunScriptSettings {
-            ScriptName = "build",
-            WorkingDirectory = frontendDir 
+        ScriptName = "build",
+        WorkingDirectory = frontendDir
         };
 
-        NpmRunScript(settings);
+        NpmRunScript (settings);
+        Information ($"Executed 'npm run build' for frontend located in '{frontendDir}'");
     });
 
 Task ("Build")
@@ -128,35 +137,42 @@ Task ("Build")
 //////////////////////////////////////////////////////////////////////
 
 Task ("Backend-Test-Package")
-    .IsDependentOn("Common-Clean")
-    .IsDependentOn("Backend-Run-All-Tests")
+    .IsDependentOn ("Common-Clean")
+    .IsDependentOn ("Backend-Run-All-Tests")
     .Does (() => {
+        var publishSettings = new DotNetCorePublishSettings {
+        NoBuild = true,
+        NoRestore = true,
+        Configuration = configuration,
+        OutputDirectory = $"{artifactsDir}/Backend"
+        };
         DotNetCorePublish (
             teamTunerProjectPath,
-            new DotNetCorePublishSettings {
-                NoBuild = true,
-                NoRestore = true,
-                Configuration = configuration,
-                OutputDirectory = $"{artifactsDir}/Backend"
-            }
+            publishSettings
         );
+
+        Information ($"The packaged backend is available in '{publishSettings.OutputDirectory}");
     });
 
 Task ("Frontend-Package")
-    .IsDependentOn("Common-Clean")
+    .IsDependentOn ("Common-Clean")
     .IsDependentOn ("Frontend-Build")
     .Does (() => {
-        CopyDirectory(frontendDistDir, $"{artifactsDir}/Frontend");
+        var frontendPackageDirectory = $"{artifactsDir}/Frontend";
+        CopyDirectory (frontendDistDir, frontendPackageDirectory);
+        Information ($"The packaged frontend is available in '{frontendPackageDirectory}");
     });
 
 Task ("Zip-Package")
     .IsDependentOn ("Backend-Test-Package")
     .IsDependentOn ("Frontend-Package")
     .Does (() => {
-        var gitCommitHash = GitLogTip(projectDir).Sha;
+        var gitCommitHash = GitLogTip (projectDir).Sha;
         // TODO: handle tag version once release process has been defined
-        var version = gitCommitHash?.Substring(0, 8) ?? "Unknown";
-        Zip (artifactsDir, $"{artifactsDir}/Sppd.TeameTuner-{version}.zip");
+        var version = gitCommitHash?.Substring (0, 8) ?? "Unknown";
+        var zipFilePath = $"{artifactsDir}/Sppd.TeameTuner-{version}.zip";
+        Zip (artifactsDir, zipFilePath);
+        Information ($"The zipped package is available in '{zipFilePath}");
     });
 
 //////////////////////////////////////////////////////////////////////
@@ -164,14 +180,14 @@ Task ("Zip-Package")
 //////////////////////////////////////////////////////////////////////
 
 Task ("Release-Prepare")
-    .IsDependentOn("Backend-Release-Prepare");
+    .IsDependentOn ("Backend-Release-Prepare");
 
 Task ("Backend-Release-Prepare")
     .Does (() => {
         // Compute the package version
-        var gitCommitHash = GitLogTip(projectDir)?.Sha;
-        var gitVersion = gitCommitHash?.Substring(0, 8) ?? "Unknown";
-        var currentDateTime = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+        var gitCommitHash = GitLogTip (projectDir)?.Sha;
+        var gitVersion = gitCommitHash?.Substring (0, 8) ?? "Unknown";
+        var currentDateTime = DateTime.UtcNow.ToString ("yyyyMMddHHmmss");
         var packageVersion = $"{version}-{gitVersion}-{currentDateTime}";
 
         // Versions having to be modified in *.csproj
@@ -180,19 +196,19 @@ Task ("Backend-Release-Prepare")
         var fileVersionXPath = "/Project/PropertyGroup/FileVersion";
 
         // Set versions for all projects (excpet testing)
-        var projectFilePaths = GetFiles("./**/*.csproj");
-        foreach(var projectFilePath in projectFilePaths) {
-            if(projectFilePath.FullPath.Contains("Tests")){
+        var projectFilePaths = GetFiles ("./**/*.csproj");
+        foreach (var projectFilePath in projectFilePaths) {
+            if (projectFilePath.FullPath.Contains ("Tests")) {
                 // Do not version test projects
                 continue;
             }
 
-            XmlPoke(projectFilePath, versionXPath, packageVersion);
-            XmlPoke(projectFilePath, assemblyVersionXPath, version);
-            XmlPoke(projectFilePath, fileVersionXPath, version);
+            XmlPoke (projectFilePath, versionXPath, packageVersion);
+            XmlPoke (projectFilePath, assemblyVersionXPath, version);
+            XmlPoke (projectFilePath, fileVersionXPath, version);
         }
-        
-        Information($"Updated projects with AssemblyVersion/FileVersion='{version}' and Version='{packageVersion}'");
+
+        Information ($"Updated projects with AssemblyVersion/FileVersion='{version}' and Version='{packageVersion}'");
     });
 
 //////////////////////////////////////////////////////////////////////
@@ -206,15 +222,17 @@ Task ("Frontend-Generate-API-Client")
         // 1) When trying to do this from NSwagStudio, the process hangs and never finishes.
         // 2) Cake.CodeGen.NSwag does not expose this yet.
         var settings = new TypeScriptClientGeneratorSettings {
-            ClassName = "{controller}Client",
-            Template = TypeScriptTemplate.Axios,
-            OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator(),
-            ExceptionClass = "ApiException",
-            GenerateDtoTypes = true
+        ClassName = "{controller}Client",
+        Template = TypeScriptTemplate.Axios,
+        OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator (),
+        ExceptionClass = "ApiException",
+        GenerateDtoTypes = true
         };
 
-        NSwag.FromJsonSpecification(new Uri(localApiUri))
-        .GenerateTypeScriptClient(apiClientFilePath, settings);
+        NSwag.FromJsonSpecification (new Uri (localApiUri))
+            .GenerateTypeScriptClient (apiClientFilePath, settings);
+
+        Information ($"The client API has been updated in '{apiClientFilePath}'");
     });
 
 //////////////////////////////////////////////////////////////////////

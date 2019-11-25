@@ -31,6 +31,7 @@ namespace Sppd.TeamTuner.Infrastructure
 
             // Singletons
             services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IAdministrationService, AdministrationService>();
 
             // Providers
             services.AddScoped<ITeamTunerUserProvider, TeamTunerUserProvider>();

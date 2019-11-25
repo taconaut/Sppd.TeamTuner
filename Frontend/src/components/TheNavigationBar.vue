@@ -3,11 +3,7 @@
     <router-link class="navbar-brand" to="/">Sppd.TeamTuner</router-link>
     <div class="collapse navbar-collapse" />
     <span class="navbar-button">
-      <b-button
-        v-if="!isAuthorized"
-        variant="success"
-        @click="emitShowLoginDialogEvent"
-      >Login</b-button>
+      <b-button v-if="!isAuthorized" variant="success" @click="emitShowLoginDialogEvent">Login</b-button>
       <b-button
         v-if="!isAuthorized"
         class="ml-1"
@@ -22,6 +18,8 @@
         <b-dropdown-item>Team profile</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
         <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+        <b-dropdown-divider></b-dropdown-divider>
+        <b-dropdown-item class="system-info">{{systemInfoText}}</b-dropdown-item>
       </b-dropdown>
     </span>
   </b-navbar>
@@ -29,14 +27,15 @@
 
 <script>
 import { eventBus } from '@/_helpers'
-import { authorizationService } from '@/_services'
+import { authorizationService, administrationService } from '@/_services'
 import { eventIdentifiers } from '@/_constants'
 
 export default {
   name: 'TheNavigationBar',
   data: function() {
     return {
-      currentUser: null
+      currentUser: null,
+      systemInfoText: null
     }
   },
   computed: {
@@ -65,12 +64,24 @@ export default {
     },
     setCurrentUser(user) {
       this.currentUser = user
+    },
+    setSystemInfo(systemInfo) {
+      var systemInfoText = systemInfo.version
+      if (systemInfo.gitCommitHash) {
+        systemInfoText += ', ' + systemInfo.gitCommitHash
+      }
+      if (systemInfo.buildTimeUtc) {
+        systemInfoText += ', ' + systemInfo.buildTimeUtc.toLocaleDateString()
+      }
+
+      this.systemInfoText = systemInfoText
     }
   },
-  mounted() {
+  async mounted() {
     authorizationService.currentUser.subscribe(user =>
       this.setCurrentUser(user)
     )
+    this.setSystemInfo(await administrationService.getSystemInfo())
   }
 }
 </script>
@@ -79,5 +90,9 @@ export default {
 .avatar {
   height: 30px;
   width: 30px;
+}
+.system-info {
+  text-align: right;
+  font-size: 10px;
 }
 </style>

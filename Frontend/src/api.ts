@@ -9,6 +9,57 @@
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
+export class AdministrationClient {
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * Gets the system information containing the version, GIT commit hash and build time.
+     * @return Success
+     */
+    getSystemInfo(): Promise<SystemInfoDto> {
+        let url_ = this.baseUrl + "/administration/system-info";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processGetSystemInfo(_response);
+        });
+    }
+
+    protected processGetSystemInfo(response: AxiosResponse): Promise<SystemInfoDto> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = SystemInfoDto.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<SystemInfoDto>(<any>null);
+    }
+}
+
 export class CardLevelsClient {
     private instance: AxiosInstance;
     private baseUrl: string;
@@ -1421,6 +1472,50 @@ export class UsersClient {
         }
         return Promise.resolve<UserCardResponseDto[]>(<any>null);
     }
+}
+
+export class SystemInfoDto implements ISystemInfoDto {
+    version!: string;
+    gitCommitHash?: string | undefined;
+    buildTimeUtc?: Date | undefined;
+
+    constructor(data?: ISystemInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.version = data["version"];
+            this.gitCommitHash = data["gitCommitHash"];
+            this.buildTimeUtc = data["buildTimeUtc"] ? new Date(data["buildTimeUtc"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SystemInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SystemInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["version"] = this.version;
+        data["gitCommitHash"] = this.gitCommitHash;
+        data["buildTimeUtc"] = this.buildTimeUtc ? this.buildTimeUtc.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ISystemInfoDto {
+    version: string;
+    gitCommitHash?: string | undefined;
+    buildTimeUtc?: Date | undefined;
 }
 
 export class CardLevelUpdateRequestDto implements ICardLevelUpdateRequestDto {
