@@ -86,22 +86,26 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.TERRANCE_AND_PHILLIP_ID),
-                                                                 Level = 6
+                                                                 Level = 6,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_LEADER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.POISON_ID),
-                                                                 Level = 5
+                                                                 Level = 5,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_LEADER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
-                                                                 Level = 5
+                                                                 Level = 5,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_LEADER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.AWESOMO_ID),
-                                                                 Level = 4
+                                                                 Level = 4,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_LEADER_ID)
                                                              }
                                                          }
                                         }, TestingConstants.User.HOLY_COW_TEAM_LEADER_PASSWORD_MD5);
@@ -122,22 +126,26 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.TERRANCE_AND_PHILLIP_ID),
-                                                                 Level = 3
+                                                                 Level = 3,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.POISON_ID),
-                                                                 Level = 1
+                                                                 Level = 1,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
-                                                                 Level = 6
+                                                                 Level = 6,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.AWESOMO_ID),
-                                                                 Level = 3
+                                                                 Level = 3,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_ID)
                                                              }
                                                          }
                                         }, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_PASSWORD_MD5);
@@ -158,22 +166,26 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Seeders
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.TERRANCE_AND_PHILLIP_ID),
-                                                                 Level = 6
+                                                                 Level = 6,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_MEMBER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.POISON_ID),
-                                                                 Level = 4
+                                                                 Level = 4,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_MEMBER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.BLOOD_ELF_BEBE_ID),
-                                                                 Level = 1
+                                                                 Level = 1,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_MEMBER_ID)
                                                              },
                                                              new CardLevel
                                                              {
                                                                  CardId = Guid.Parse(TestingConstants.Card.AWESOMO_ID),
-                                                                 Level = 1
+                                                                 Level = 1,
+                                                                 UserId = Guid.Parse(TestingConstants.User.HOLY_COW_TEAM_MEMBER_ID)
                                                              }
                                                          }
                                         }, TestingConstants.User.HOLY_COW_TEAM_MEMBER_PASSWORD_MD5);
