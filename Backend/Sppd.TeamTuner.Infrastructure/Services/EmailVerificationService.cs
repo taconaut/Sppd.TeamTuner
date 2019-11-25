@@ -25,9 +25,9 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         private readonly IRegistrationRequestRepository _registrationRequestRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<EmailVerificationService> _logger;
-        private readonly Lazy<GeneralConfig> _generalConfig;
+        private readonly Lazy<EmailConfig> _emailConfig;
 
-        public EmailVerificationService(IEmailService emailService, ITeamTunerUserRepository userRepository, IConfigProvider<GeneralConfig> generalConfigProvider,
+        public EmailVerificationService(IEmailService emailService, ITeamTunerUserRepository userRepository, IConfigProvider<EmailConfig> emailConfig,
             IRegistrationRequestRepository registrationRequestRepository, IUnitOfWork unitOfWork, ILogger<EmailVerificationService> logger)
         {
             _emailService = emailService;
@@ -35,7 +35,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             _registrationRequestRepository = registrationRequestRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _generalConfig = new Lazy<GeneralConfig>(() => generalConfigProvider.Config);
+            _emailConfig = new Lazy<EmailConfig>(() => emailConfig.Config);
         }
 
         public async Task<bool> VerifyEmailAsync(string code)
@@ -122,7 +122,7 @@ Your Sppd.TeamTuner team.";
 
         private string GetConfirmationLink(TeamTunerUserRegistrationRequest registrationRequest)
         {
-            var emailVerificationUrl = _generalConfig.Value.EmailVerificationUrl;
+            var emailVerificationUrl = _emailConfig.Value.EmailVerificationUrl;
             var codeString = string.Join(DELIMITER.ToString(), registrationRequest.User.Email, registrationRequest.RegistrationCode.ToString());
             var code = HttpUtility.UrlEncode(Base64Encode(codeString));
             return emailVerificationUrl.Replace(CODE_PLACEHOLDER, code);

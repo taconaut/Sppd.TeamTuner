@@ -27,6 +27,11 @@
         /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the email verification URL.
+        /// </summary>
+        public string EmailVerificationUrl { get; set; }
+
         public string SectionKey => "Email";
     }
 }
