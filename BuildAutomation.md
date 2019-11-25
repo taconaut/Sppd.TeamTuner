@@ -56,6 +56,11 @@ The scopes have the following meaning:
 | -------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Frontend | Frontend-Generate-API-Client | Generates [api.ts](./Frontend/src/api.ts) from the swagger definition. Note that the backend must be running to have the swagger.json available at  https://localhost:44336/swagger/v1/swagger.json |
 
+## Versioning
+| Scope   | Target name             | Description                                                                                                                                                                         |
+| ------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend | Backend-Release-Prepare | Sets the file `AssemblyVersion`, `FileVersion` and `Version` in the `*.csproj` files. It can be used like this: `.\build.ps1 -Target=Backend-Release-Prepare --applicationVersion=2.2.2.2` |
+
 ## Codecov
 | Scope   | Target name                  | Description                                                                                                 |
 | ------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------- |

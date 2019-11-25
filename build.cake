@@ -16,6 +16,7 @@
 
 var target = Argument ("target", "Default");
 var configuration = Argument ("configuration", "Release");
+var version = Argument("applicationVersion", "1.0.0.0");
 
 //////////////////////////////////////////////////////////////////////
 // Preparation
@@ -153,9 +154,45 @@ Task ("Zip-Package")
     .IsDependentOn ("Frontend-Package")
     .Does (() => {
         var gitCommitHash = GitLogTip(projectDir).Sha;
-        // TODO: handle tag version once release rpocess has been defined
+        // TODO: handle tag version once release process has been defined
         var version = gitCommitHash?.Substring(0, 8) ?? "Unknown";
         Zip (artifactsDir, $"{artifactsDir}/Sppd.TeameTuner-{version}.zip");
+    });
+
+//////////////////////////////////////////////////////////////////////
+// Versioning
+//////////////////////////////////////////////////////////////////////
+
+Task ("Release-Prepare")
+    .IsDependentOn("Backend-Release-Prepare");
+
+Task ("Backend-Release-Prepare")
+    .Does (() => {
+        // Compute the package version
+        var gitCommitHash = GitLogTip(projectDir)?.Sha;
+        var gitVersion = gitCommitHash?.Substring(0, 8) ?? "Unknown";
+        var currentDateTime = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+        var packageVersion = $"{version}-{gitVersion}-{currentDateTime}";
+
+        // Versions having to be modified in *.csproj
+        var versionXPath = "/Project/PropertyGroup/Version";
+        var assemblyVersionXPath = "/Project/PropertyGroup/AssemblyVersion";
+        var fileVersionXPath = "/Project/PropertyGroup/FileVersion";
+
+        // Set versions for all projects (excpet testing)
+        var projectFilePaths = GetFiles("./**/*.csproj");
+        foreach(var projectFilePath in projectFilePaths) {
+            if(projectFilePath.FullPath.Contains("Tests")){
+                // Do not version test projects
+                continue;
+            }
+
+            XmlPoke(projectFilePath, versionXPath, packageVersion);
+            XmlPoke(projectFilePath, assemblyVersionXPath, version);
+            XmlPoke(projectFilePath, fileVersionXPath, version);
+        }
+        
+        Information($"Updated projects with AssemblyVersion/FileVersion='{version}' and Version='{packageVersion}'");
     });
 
 //////////////////////////////////////////////////////////////////////
