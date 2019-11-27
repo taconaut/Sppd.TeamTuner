@@ -72,8 +72,34 @@ class AuthorizationService {
     axiosConfigurator.setCurrentUser(null)
   }
 
-  public isCurrentUserInRole(role: string) {
+  public isCurrentUserInApplicationRoles(roles: string[]) {
+    for (var i = 0; i < roles.length; i++) {
+      var role = roles[i]
+      if (this.isCurrentUserInApplicationRole(role)) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  public isCurrentUserInApplicationRole(role: string) {
     return this.currentUserValue !== null && this.currentUserValue.applicationRole === role
+  }
+
+  public isCurrentUserInTeamRoles(roles: string[]) {
+    for (var i = 0; i < roles.length; i++) {
+      var role = roles[i]
+      if (this.isCurrentUserInTeamRole(role)) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  public isCurrentUserInTeamRole(role: string) {
+    return this.currentUserValue !== null && this.currentUserValue.teamRole === role
   }
 
   private getCurrentUserFromLocalStorage() {

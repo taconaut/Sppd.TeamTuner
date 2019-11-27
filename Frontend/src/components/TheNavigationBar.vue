@@ -14,12 +14,12 @@
         <template v-slot:button-content>
           <img class="avatar" :src="currentUserAvatar" />
         </template>
-        <b-dropdown-item :to="this.currentUserProfileUrl">User profile</b-dropdown-item>
-        <b-dropdown-item>Team profile</b-dropdown-item>
+        <b-dropdown-item :to="this.currentUserProfileUrl">My profile</b-dropdown-item>
+        <b-dropdown-item :to="this.currentTeamProfileUrl" v-if="canEditTeam">Team profile</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
         <b-dropdown-item @click="logout">Logout</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
-        <b-dropdown-item class="system-info">{{systemInfoText}}</b-dropdown-item>
+        <b-dropdown-text class="system-info">{{systemInfoText}}</b-dropdown-text>
       </b-dropdown>
     </span>
   </b-navbar>
@@ -28,14 +28,15 @@
 <script>
 import { eventBus } from '@/_helpers'
 import { authorizationService, administrationService } from '@/_services'
-import { eventIdentifiers } from '@/_constants'
+import { eventIdentifiers, roles } from '@/_constants'
 
 export default {
   name: 'TheNavigationBar',
   data: function() {
     return {
       currentUser: null,
-      systemInfoText: null
+      systemInfoText: null,
+      canEditTeam: false
     }
   },
   computed: {
@@ -50,6 +51,9 @@ export default {
     },
     currentUserProfileUrl() {
       return '/user/' + this.currentUser.id + '/profile'
+    },
+    currentTeamProfileUrl() {
+      return '/team/' + this.currentUser.teamId + '/profile'
     }
   },
   methods: {
@@ -64,14 +68,15 @@ export default {
     },
     setCurrentUser(user) {
       this.currentUser = user
+      this.canEditTeam = authorizationService.isCurrentUserInTeamRoles([roles.TeamLeader, roles.TeamCoLeader])
     },
     setSystemInfo(systemInfo) {
       var systemInfoText = systemInfo.version
       if (systemInfo.gitCommitHash) {
-        systemInfoText += ', ' + systemInfo.gitCommitHash
+        systemInfoText += '-' + systemInfo.gitCommitHash
       }
       if (systemInfo.buildTimeUtc) {
-        systemInfoText += ', ' + systemInfo.buildTimeUtc.toLocaleDateString()
+        systemInfoText += '\n' + systemInfo.buildTimeUtc.toLocaleDateString()
       }
 
       this.systemInfoText = systemInfoText

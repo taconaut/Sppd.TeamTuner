@@ -148,6 +148,7 @@ import {
 import { roles } from '@/_constants'
 
 export default {
+  name: 'UserProfile',
   data: function() {
     return {
       show: false,
@@ -222,7 +223,7 @@ export default {
       )
     },
     updateIsCurrentUserAdmin() {
-      this.isCurrentUserAdmin = authorizationService.isCurrentUserInRole(
+      this.isCurrentUserAdmin = authorizationService.isCurrentUserInApplicationRole(
         roles.Admin
       )
     },

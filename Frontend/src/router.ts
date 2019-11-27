@@ -5,6 +5,7 @@ import Router from 'vue-router'
 import Home from '@/views/Home.vue'
 import UserCards from '@/views/UserCards.vue'
 import UserProfile from '@/views/UserProfile.vue'
+import TeamProfile from '@/views/TeamProfile.vue'
 import EmailVerification from '@/views/EmailVerification.vue'
 
 Vue.use(Router)
@@ -33,6 +34,13 @@ export default new Router({
       path: '/user/email-verification/:code',
       name: 'email-verification',
       component: EmailVerification
+    },
+
+    // Team,
+    {
+      path: '/team/:teamId/profile',
+      name: 'team-profile',
+      component: TeamProfile
     }
   ]
 })
