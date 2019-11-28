@@ -17,9 +17,11 @@ namespace Sppd.TeamTuner.Infrastructure.DataAccess.EF.Repositories
         {
         }
 
-        public async Task<IEnumerable<TEntity>> SearchByNameAsync(string containName, IEnumerable<string> includeProperties = null)
+        public async Task<IEnumerable<TEntity>> SearchByNameAsync(string containName, IEnumerable<string> includeProperties = null, bool isCaseSensitive = false)
         {
-            return await GetQueryableWithIncludes(includeProperties).Where(e => e.Name.Contains(containName))
+            return await GetQueryableWithIncludes(includeProperties).Where(e => isCaseSensitive
+                                                                        ? e.Name.Contains(containName)
+                                                                        : e.Name.ToLower().Contains(containName.ToLower()))
                                                                     .ToListAsync();
         }
     }

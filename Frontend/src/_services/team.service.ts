@@ -33,6 +33,11 @@ class TeamService {
     const teamsClient = new TeamsClient()
     return teamsClient.updateTeam(request)
   }
+
+  async getPendingMembershipRequests(teamId: string) {
+    const teamsClient = new TeamsClient()
+    return teamsClient.getTeamMembershipRequests(teamId)
+  }
 }
 
 export const teamService = new TeamService()

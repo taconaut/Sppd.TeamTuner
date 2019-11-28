@@ -21,6 +21,16 @@ class TeamMembershipRequestService {
     var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
     return teamMembershipRequestsClient.abortMembershipRequest(membershiprequestId)
   }
+
+  async acceptTeamMembershipRequest(membershipRequestId: string) {
+    var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
+    return teamMembershipRequestsClient.acceptMembershipRequest(membershipRequestId)
+  }
+
+  async rejectTeamMembershipRequest(membershipRequestId: string) {
+    var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
+    return teamMembershipRequestsClient.rejectMembershipRequest(membershipRequestId)
+  }
 }
 
 export const teamMembershipRequestService = new TeamMembershipRequestService()
