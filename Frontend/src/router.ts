@@ -3,9 +3,9 @@ import Router from 'vue-router'
 
 // Views
 import Home from '@/views/Home.vue'
-import UserCards from '@/views/UserCards.vue'
-import UserProfile from '@/views/UserProfile.vue'
-import TeamProfile from '@/views/TeamProfile.vue'
+import UserCards from '@/views/user/Cards.vue'
+import UserProfile from '@/views/user/Profile.vue'
+import TeamProfile from '@/views/team/Profile.vue'
 import EmailVerification from '@/views/EmailVerification.vue'
 
 Vue.use(Router)

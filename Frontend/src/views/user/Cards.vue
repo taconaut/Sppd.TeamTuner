@@ -244,6 +244,7 @@ import { userService, cardLevelService } from '@/_services'
 import { cardIdentifiers } from '@/_constants'
 
 export default {
+  name: 'UserCards',
   data: function() {
     return {
       userCards: null,
