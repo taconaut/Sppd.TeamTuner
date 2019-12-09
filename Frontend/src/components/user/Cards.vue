@@ -42,7 +42,7 @@
 <script>
 import { userService, cardLevelService } from '@/_services'
 import { cardIdentifiers } from '@/_constants'
-import { cardsHelper } from "@/_helpers";
+import { cardsHelper } from '@/_helpers'
 
 export default {
   name: 'Cards',

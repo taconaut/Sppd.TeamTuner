@@ -237,8 +237,7 @@ export default {
       cardIdentifiers: cardIdentifiers
     }
   },
-  mounted()
-  {
+  mounted() {
     this.emitFilterChanged()
   },
   methods: {
