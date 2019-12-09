@@ -114,6 +114,12 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         public async Task<TeamTunerUser> LeaveTeam(Guid userId)
         {
             var user = await GetByIdAsync(userId);
+
+            if (user.TeamRole == CoreConstants.Authorization.Roles.LEADER)
+            {
+                throw new BusinessException("The team leader can't leave the team");
+            }
+
             user.TeamId = null;
             user.Team = null;
             user.TeamRole = null;

@@ -135,7 +135,16 @@ export default {
       this.user = await userService.getUser(this.userId)
     },
     async leaveTeam() {
-      this.user = await userService.leaveTeam(this.userId)
+      await userService.leaveTeam(this.userId).then(
+        updatedUser => (this.user = updatedUser),
+        error => {
+          this.$toasted.show(error.response.data.error, {
+            type: 'error',
+            position: 'top-center',
+            duration: 5000
+          })
+        }
+      )
     },
     abortTeamMembershipRequest() {
       teamMembershipRequestService
