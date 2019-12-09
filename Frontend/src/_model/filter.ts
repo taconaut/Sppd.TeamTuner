@@ -10,7 +10,7 @@ type ThemeFilter = {
   scifi: boolean
   mystical: boolean
   neutral: boolean
-  superheroe: boolean
+  superhero: boolean
 }
 
 type TypeFilter = {

@@ -75,7 +75,7 @@ function matchesThemeFilter(card: CardResponseDto, filter: Filter) {
     return true
   }
   if (
-    filter.theme.superheroe &&
+    filter.theme.superhero &&
     card.themeId.toUpperCase() === cardIdentifiers.themeSuperheroId
   ) {
     return true
