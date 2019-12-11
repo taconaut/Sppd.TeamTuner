@@ -23,7 +23,7 @@ export class AdministrationClient {
      * Gets the system information containing the version, GIT commit hash and build time.
      * @return Success
      */
-    getSystemInfo(): Promise<SystemInfoDto> {
+    systemInfo(): Promise<SystemInfoDto> {
         let url_ = this.baseUrl + "/administration/system-info";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -31,16 +31,16 @@ export class AdministrationClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetSystemInfo(_response);
+            return this.processSystemInfo(_response);
         });
     }
 
-    protected processGetSystemInfo(response: AxiosResponse): Promise<SystemInfoDto> {
+    protected processSystemInfo(response: AxiosResponse): Promise<SystemInfoDto> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -72,31 +72,31 @@ export class CardLevelsClient {
 
     /**
      * Sets the card level for the given user and card
-     * @param cardLevelUpdateDto (optional) The card level update
+     * @param body (optional) The card level update
      * @return Success
      */
-    setCardLevel(cardLevelUpdateDto: CardLevelUpdateRequestDto | null | undefined): Promise<CardLevelResponseDto> {
+    cardLevels(body: CardLevelUpdateRequestDto | undefined): Promise<CardLevelResponseDto> {
         let url_ = this.baseUrl + "/card-levels";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(cardLevelUpdateDto);
+        const content_ = JSON.stringify(body);
 
         let options_ = <AxiosRequestConfig>{
             data: content_,
             method: "PUT",
             url: url_,
             headers: {
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processSetCardLevel(_response);
+            return this.processCardLevels(_response);
         });
     }
 
-    protected processSetCardLevel(response: AxiosResponse): Promise<CardLevelResponseDto> {
+    protected processCardLevels(response: AxiosResponse): Promise<CardLevelResponseDto> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -136,7 +136,7 @@ export class CardsClient {
      * Gets all the cards
      * @return Success
      */
-    getAllCards(): Promise<CardResponseDto[]> {
+    cardsAll(): Promise<CardResponseDto[]> {
         let url_ = this.baseUrl + "/cards";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -144,16 +144,16 @@ export class CardsClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetAllCards(_response);
+            return this.processCardsAll(_response);
         });
     }
 
-    protected processGetAllCards(response: AxiosResponse): Promise<CardResponseDto[]> {
+    protected processCardsAll(response: AxiosResponse): Promise<CardResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -191,7 +191,7 @@ export class CoreDataClient {
      * Gets all card types (Spell, Spawn, Character)
      * @return Success
      */
-    getCardTypes(): Promise<CardTypeResponseDto[]> {
+    cardTypes(): Promise<CardTypeResponseDto[]> {
         let url_ = this.baseUrl + "/core-data/card-types";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -199,16 +199,16 @@ export class CoreDataClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetCardTypes(_response);
+            return this.processCardTypes(_response);
         });
     }
 
-    protected processGetCardTypes(response: AxiosResponse): Promise<CardTypeResponseDto[]> {
+    protected processCardTypes(response: AxiosResponse): Promise<CardTypeResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -235,7 +235,7 @@ export class CoreDataClient {
      * Gets all character types (Assassin, Melee...)
      * @return Success
      */
-    getCharacterTypes(): Promise<CharacterTypeResponseDto[]> {
+    characterTypes(): Promise<CharacterTypeResponseDto[]> {
         let url_ = this.baseUrl + "/core-data/character-types";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -243,16 +243,16 @@ export class CoreDataClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetCharacterTypes(_response);
+            return this.processCharacterTypes(_response);
         });
     }
 
-    protected processGetCharacterTypes(response: AxiosResponse): Promise<CharacterTypeResponseDto[]> {
+    protected processCharacterTypes(response: AxiosResponse): Promise<CharacterTypeResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -279,7 +279,7 @@ export class CoreDataClient {
      * Gets all rarities (Common, Rare...)
      * @return Success
      */
-    getRarities(): Promise<RarityResponseDto[]> {
+    rarities(): Promise<RarityResponseDto[]> {
         let url_ = this.baseUrl + "/core-data/rarities";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -287,16 +287,16 @@ export class CoreDataClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetRarities(_response);
+            return this.processRarities(_response);
         });
     }
 
-    protected processGetRarities(response: AxiosResponse): Promise<RarityResponseDto[]> {
+    protected processRarities(response: AxiosResponse): Promise<RarityResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -323,7 +323,7 @@ export class CoreDataClient {
      * Gets all themes (Sci-fy, Fantasy...)
      * @return Success
      */
-    getThemes(): Promise<ThemeResponseDto[]> {
+    themes(): Promise<ThemeResponseDto[]> {
         let url_ = this.baseUrl + "/core-data/themes";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -331,16 +331,16 @@ export class CoreDataClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetThemes(_response);
+            return this.processThemes(_response);
         });
     }
 
-    protected processGetThemes(response: AxiosResponse): Promise<ThemeResponseDto[]> {
+    protected processThemes(response: AxiosResponse): Promise<ThemeResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -379,7 +379,7 @@ export class EmailVerificationClient {
      * @param code The code.
      * @return Success
      */
-    verifyEmail(code: string): Promise<boolean> {
+    verify(code: string): Promise<boolean> {
         let url_ = this.baseUrl + "/email-verification/{code}/verify";
         if (code === undefined || code === null)
             throw new Error("The parameter 'code' must be defined.");
@@ -390,16 +390,16 @@ export class EmailVerificationClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processVerifyEmail(_response);
+            return this.processVerify(_response);
         });
     }
 
-    protected processVerifyEmail(response: AxiosResponse): Promise<boolean> {
+    protected processVerify(response: AxiosResponse): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -423,7 +423,7 @@ export class EmailVerificationClient {
      * @param code The code.
      * @return Success
      */
-    resendVerificationEmail(code: string): Promise<void> {
+    resend(code: string): Promise<void> {
         let url_ = this.baseUrl + "/email-verification/{code}/resend";
         if (code === undefined || code === null)
             throw new Error("The parameter 'code' must be defined.");
@@ -438,11 +438,11 @@ export class EmailVerificationClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processResendVerificationEmail(_response);
+            return this.processResend(_response);
         });
     }
 
-    protected processResendVerificationEmail(response: AxiosResponse): Promise<void> {
+    protected processResend(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -470,13 +470,62 @@ export class TeamMembershipRequestsClient {
     }
 
     /**
+     * Requests membership in a team for a user
+     * @param body (optional) The membership request for a user to join a team
+     * @return Success
+     */
+    teamMembershipRequests(body: TeamMembershipRequestDto | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/team-membership-requests";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json-patch+json", 
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processTeamMembershipRequests(_response);
+        });
+    }
+
+    protected processTeamMembershipRequests(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(<any>null);
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    /**
      * Gets the pending team membership request for the user.
      * @param userId (optional) The user identifier.
      * @return Success
      */
-    getPendingTeamMembershipRequest(userId: string | null | undefined): Promise<TeamMembershipRequestResponseDto> {
+    teamMembershipRequests2(userId: string | undefined): Promise<TeamMembershipRequestResponseDto> {
         let url_ = this.baseUrl + "/team-membership-requests?";
-        if (userId !== undefined)
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
             url_ += "userId=" + encodeURIComponent("" + userId) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
@@ -484,16 +533,16 @@ export class TeamMembershipRequestsClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetPendingTeamMembershipRequest(_response);
+            return this.processTeamMembershipRequests2(_response);
         });
     }
 
-    protected processGetPendingTeamMembershipRequest(response: AxiosResponse): Promise<TeamMembershipRequestResponseDto> {
+    protected processTeamMembershipRequests2(response: AxiosResponse): Promise<TeamMembershipRequestResponseDto> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -519,58 +568,11 @@ export class TeamMembershipRequestsClient {
     }
 
     /**
-     * Requests membership in a team for a user
-     * @param membershipRequest (optional) The membership request for a user to join a team
-     * @return Success
-     */
-    requestMembership(membershipRequest: TeamMembershipRequestDto | null | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/team-membership-requests";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(membershipRequest);
-
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
-            method: "POST",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json", 
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processRequestMembership(_response);
-        });
-    }
-
-    protected processRequestMembership(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(<any>null);
-        } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(<any>null);
-    }
-
-    /**
      * Accepts the membership request
      * @param id The membership request identifier
      * @return Success
      */
-    acceptMembershipRequest(id: string): Promise<void> {
+    accept(id: string): Promise<void> {
         let url_ = this.baseUrl + "/team-membership-requests/{id}/accept";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -585,11 +587,11 @@ export class TeamMembershipRequestsClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processAcceptMembershipRequest(_response);
+            return this.processAccept(_response);
         });
     }
 
-    protected processAcceptMembershipRequest(response: AxiosResponse): Promise<void> {
+    protected processAccept(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -616,7 +618,7 @@ export class TeamMembershipRequestsClient {
      * @param id The membership request identifier
      * @return Success
      */
-    rejectMembershipRequest(id: string): Promise<void> {
+    reject(id: string): Promise<void> {
         let url_ = this.baseUrl + "/team-membership-requests/{id}/reject";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -631,11 +633,11 @@ export class TeamMembershipRequestsClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processRejectMembershipRequest(_response);
+            return this.processReject(_response);
         });
     }
 
-    protected processRejectMembershipRequest(response: AxiosResponse): Promise<void> {
+    protected processReject(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -662,7 +664,7 @@ export class TeamMembershipRequestsClient {
      * @param id The membership request identifier
      * @return Success
      */
-    abortMembershipRequest(id: string): Promise<void> {
+    abort(id: string): Promise<void> {
         let url_ = this.baseUrl + "/team-membership-requests/{id}/abort";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -677,11 +679,11 @@ export class TeamMembershipRequestsClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processAbortMembershipRequest(_response);
+            return this.processAbort(_response);
         });
     }
 
-    protected processAbortMembershipRequest(response: AxiosResponse): Promise<void> {
+    protected processAbort(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -715,13 +717,117 @@ export class TeamsClient {
     }
 
     /**
+     * Creates a new team
+     * @param body (optional) The team creation request
+     * @return Success
+     */
+    teams(body: TeamCreateRequestDto | undefined): Promise<TeamResponseDto> {
+        let url_ = this.baseUrl + "/teams";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processTeams(_response);
+        });
+    }
+
+    protected processTeams(response: AxiosResponse): Promise<TeamResponseDto> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = TeamResponseDto.fromJS(resultData200);
+            return result200;
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<TeamResponseDto>(<any>null);
+    }
+
+    /**
+     * Updates the team
+     * @param body (optional) The team update request
+     * @return Success
+     */
+    teams2(body: TeamUpdateRequestDto | undefined): Promise<TeamResponseDto> {
+        let url_ = this.baseUrl + "/teams";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "PUT",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processTeams2(_response);
+        });
+    }
+
+    protected processTeams2(response: AxiosResponse): Promise<TeamResponseDto> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = TeamResponseDto.fromJS(resultData200);
+            return result200;
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<TeamResponseDto>(<any>null);
+    }
+
+    /**
      * Get all teams containing the specified name in their name.
      * @param name (optional) The name having to be contained in the team name.
      * @return Success
      */
-    searchTeamByName(name: string | null | undefined): Promise<TeamResponseDto[]> {
+    teamsAll(name: string | undefined): Promise<TeamResponseDto[]> {
         let url_ = this.baseUrl + "/teams?";
-        if (name !== undefined)
+        if (name === null)
+            throw new Error("The parameter 'name' cannot be null.");
+        else if (name !== undefined)
             url_ += "name=" + encodeURIComponent("" + name) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
@@ -729,16 +835,16 @@ export class TeamsClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processSearchTeamByName(_response);
+            return this.processTeamsAll(_response);
         });
     }
 
-    protected processSearchTeamByName(response: AxiosResponse): Promise<TeamResponseDto[]> {
+    protected processTeamsAll(response: AxiosResponse): Promise<TeamResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -762,163 +868,11 @@ export class TeamsClient {
     }
 
     /**
-     * Updates the team
-     * @param teamUpdateRequestDto (optional) The team update request
-     * @return Success
-     */
-    updateTeam(teamUpdateRequestDto: TeamUpdateRequestDto | null | undefined): Promise<TeamResponseDto> {
-        let url_ = this.baseUrl + "/teams";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(teamUpdateRequestDto);
-
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
-            method: "PUT",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processUpdateTeam(_response);
-        });
-    }
-
-    protected processUpdateTeam(response: AxiosResponse): Promise<TeamResponseDto> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = TeamResponseDto.fromJS(resultData200);
-            return result200;
-        } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<TeamResponseDto>(<any>null);
-    }
-
-    /**
-     * Creates a new team
-     * @param teamCreateRequestDto (optional) The team creation request
-     * @return Success
-     */
-    createTeam(teamCreateRequestDto: TeamCreateRequestDto | null | undefined): Promise<TeamResponseDto> {
-        let url_ = this.baseUrl + "/teams";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(teamCreateRequestDto);
-
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
-            method: "POST",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processCreateTeam(_response);
-        });
-    }
-
-    protected processCreateTeam(response: AxiosResponse): Promise<TeamResponseDto> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = TeamResponseDto.fromJS(resultData200);
-            return result200;
-        } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<TeamResponseDto>(<any>null);
-    }
-
-    /**
-     * Gets the team
-     * @param id The team identifier
-     * @return Success
-     */
-    getTeamById(id: string): Promise<TeamResponseDto> {
-        let url_ = this.baseUrl + "/teams/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetTeamById(_response);
-        });
-    }
-
-    protected processGetTeamById(response: AxiosResponse): Promise<TeamResponseDto> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = TeamResponseDto.fromJS(resultData200);
-            return result200;
-        } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<TeamResponseDto>(<any>null);
-    }
-
-    /**
      * Deletes the team
      * @param id The team identifier
      * @return Success
      */
-    deleteTeam(id: string): Promise<void> {
+    teams3(id: string): Promise<void> {
         let url_ = this.baseUrl + "/teams/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -933,11 +887,11 @@ export class TeamsClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processDeleteTeam(_response);
+            return this.processTeams3(_response);
         });
     }
 
-    protected processDeleteTeam(response: AxiosResponse): Promise<void> {
+    protected processTeams3(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -960,11 +914,61 @@ export class TeamsClient {
     }
 
     /**
+     * Gets the team
+     * @param id The team identifier
+     * @return Success
+     */
+    teams4(id: string): Promise<TeamResponseDto> {
+        let url_ = this.baseUrl + "/teams/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processTeams4(_response);
+        });
+    }
+
+    protected processTeams4(response: AxiosResponse): Promise<TeamResponseDto> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = TeamResponseDto.fromJS(resultData200);
+            return result200;
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<TeamResponseDto>(<any>null);
+    }
+
+    /**
      * Gets the team members.
      * @param id The team identifier
      * @return Success
      */
-    getTeamMembers(id: string): Promise<UserResponseDto[]> {
+    members(id: string): Promise<UserResponseDto[]> {
         let url_ = this.baseUrl + "/teams/{id}/members";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -975,16 +979,16 @@ export class TeamsClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetTeamMembers(_response);
+            return this.processMembers(_response);
         });
     }
 
-    protected processGetTeamMembers(response: AxiosResponse): Promise<UserResponseDto[]> {
+    protected processMembers(response: AxiosResponse): Promise<UserResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1018,7 +1022,7 @@ export class TeamsClient {
      * @param id The team identifier
      * @return Success
      */
-    getTeamMembershipRequests(id: string): Promise<TeamMembershipRequestResponseDto[]> {
+    membershipRequests(id: string): Promise<TeamMembershipRequestResponseDto[]> {
         let url_ = this.baseUrl + "/teams/{id}/membership-requests";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1029,16 +1033,16 @@ export class TeamsClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetTeamMembershipRequests(_response);
+            return this.processMembershipRequests(_response);
         });
     }
 
-    protected processGetTeamMembershipRequests(response: AxiosResponse): Promise<TeamMembershipRequestResponseDto[]> {
+    protected processMembershipRequests(response: AxiosResponse): Promise<TeamMembershipRequestResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1079,32 +1083,77 @@ export class UsersClient {
     }
 
     /**
-     * Updates the user
-     * @param userRequestDto (optional) The user update request
+     * Creates a new user
+     * @param body (optional) The user creation request
      * @return Success
      */
-    updateUser(userRequestDto: UserUpdateRequestDto | null | undefined): Promise<UserResponseDto> {
+    users(body: UserCreateRequestDto | undefined): Promise<UserResponseDto> {
         let url_ = this.baseUrl + "/users";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(userRequestDto);
+        const content_ = JSON.stringify(body);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processUsers(_response);
+        });
+    }
+
+    protected processUsers(response: AxiosResponse): Promise<UserResponseDto> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = UserResponseDto.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<UserResponseDto>(<any>null);
+    }
+
+    /**
+     * Updates the user
+     * @param body (optional) The user update request
+     * @return Success
+     */
+    users2(body: UserUpdateRequestDto | undefined): Promise<UserResponseDto> {
+        let url_ = this.baseUrl + "/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
 
         let options_ = <AxiosRequestConfig>{
             data: content_,
             method: "PUT",
             url: url_,
             headers: {
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processUpdateUser(_response);
+            return this.processUsers2(_response);
         });
     }
 
-    protected processUpdateUser(response: AxiosResponse): Promise<UserResponseDto> {
+    protected processUsers2(response: AxiosResponse): Promise<UserResponseDto> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1130,51 +1179,6 @@ export class UsersClient {
     }
 
     /**
-     * Creates a new user
-     * @param userCreateRequestDto (optional) The user creation request
-     * @return Success
-     */
-    registerUser(userCreateRequestDto: UserCreateRequestDto | null | undefined): Promise<UserResponseDto> {
-        let url_ = this.baseUrl + "/users";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(userCreateRequestDto);
-
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
-            method: "POST",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processRegisterUser(_response);
-        });
-    }
-
-    protected processRegisterUser(response: AxiosResponse): Promise<UserResponseDto> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = UserResponseDto.fromJS(resultData200);
-            return result200;
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<UserResponseDto>(<any>null);
-    }
-
-    /**
      * Leave the team the user is currently in.
      * @param id The user identifier.
      * @return Success
@@ -1190,7 +1194,7 @@ export class UsersClient {
             method: "PUT",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
@@ -1226,31 +1230,31 @@ export class UsersClient {
 
     /**
      * Authorizes the user
-     * @param authorizationRequestDto (optional) The authorization request
+     * @param body (optional) The authorization request
      * @return Success
      */
-    authorizeUser(authorizationRequestDto: AuthorizationRequestDto | null | undefined): Promise<UserAuthorizationResponseDto> {
+    authorize(body: AuthorizationRequestDto | undefined): Promise<UserAuthorizationResponseDto> {
         let url_ = this.baseUrl + "/users/authorize";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(authorizationRequestDto);
+        const content_ = JSON.stringify(body);
 
         let options_ = <AxiosRequestConfig>{
             data: content_,
             method: "POST",
             url: url_,
             headers: {
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processAuthorizeUser(_response);
+            return this.processAuthorize(_response);
         });
     }
 
-    protected processAuthorizeUser(response: AxiosResponse): Promise<UserAuthorizationResponseDto> {
+    protected processAuthorize(response: AxiosResponse): Promise<UserAuthorizationResponseDto> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1270,11 +1274,57 @@ export class UsersClient {
     }
 
     /**
+     * Deletes the user
+     * @param id The user identifier
+     * @return Success
+     */
+    users3(id: string): Promise<void> {
+        let url_ = this.baseUrl + "/users/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "DELETE",
+            url: url_,
+            headers: {
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processUsers3(_response);
+        });
+    }
+
+    protected processUsers3(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(<any>null);
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    /**
      * Gets the user
      * @param id The user identifier
      * @return Success
      */
-    getUserByUserId(id: string): Promise<UserResponseDto> {
+    users4(id: string): Promise<UserResponseDto> {
         let url_ = this.baseUrl + "/users/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1285,16 +1335,16 @@ export class UsersClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetUserByUserId(_response);
+            return this.processUsers4(_response);
         });
     }
 
-    protected processGetUserByUserId(response: AxiosResponse): Promise<UserResponseDto> {
+    protected processUsers4(response: AxiosResponse): Promise<UserResponseDto> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1320,57 +1370,11 @@ export class UsersClient {
     }
 
     /**
-     * Deletes the user
-     * @param id The user identifier
-     * @return Success
-     */
-    deleteUser(id: string): Promise<void> {
-        let url_ = this.baseUrl + "/users/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            method: "DELETE",
-            url: url_,
-            headers: {
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processDeleteUser(_response);
-        });
-    }
-
-    protected processDeleteUser(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(<any>null);
-        } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(<any>null);
-    }
-
-    /**
      * Gets all card levels having been set for the user
      * @param id The user identifier
      * @return Success
      */
-    getUserCardLevels(id: string): Promise<CardLevelResponseDto[]> {
+    cardLevelsAll(id: string): Promise<CardLevelResponseDto[]> {
         let url_ = this.baseUrl + "/users/{id}/card-levels";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1381,16 +1385,16 @@ export class UsersClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetUserCardLevels(_response);
+            return this.processCardLevelsAll(_response);
         });
     }
 
-    protected processGetUserCardLevels(response: AxiosResponse): Promise<CardLevelResponseDto[]> {
+    protected processCardLevelsAll(response: AxiosResponse): Promise<CardLevelResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1424,7 +1428,7 @@ export class UsersClient {
      * @param id The user identifier
      * @return Success
      */
-    getCardsWithUserLevels(id: string): Promise<UserCardResponseDto[]> {
+    cards(id: string): Promise<UserCardResponseDto[]> {
         let url_ = this.baseUrl + "/users/{id}/cards";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1435,16 +1439,16 @@ export class UsersClient {
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGetCardsWithUserLevels(_response);
+            return this.processCards(_response);
         });
     }
 
-    protected processGetCardsWithUserLevels(response: AxiosResponse): Promise<UserCardResponseDto[]> {
+    protected processCards(response: AxiosResponse): Promise<UserCardResponseDto[]> {
         const status = response.status;
         let _headers: any = {}; 
         if (response.headers && response.headers.forEach) { 
@@ -1475,7 +1479,7 @@ export class UsersClient {
 }
 
 export class SystemInfoDto implements ISystemInfoDto {
-    version!: string;
+    version!: string | undefined;
     gitCommitHash?: string | undefined;
     buildTimeUtc?: Date | undefined;
 
@@ -1513,7 +1517,7 @@ export class SystemInfoDto implements ISystemInfoDto {
 }
 
 export interface ISystemInfoDto {
-    version: string;
+    version: string | undefined;
     gitCommitHash?: string | undefined;
     buildTimeUtc?: Date | undefined;
 }
@@ -1645,7 +1649,7 @@ export class CardResponseDto implements ICardResponseDto {
     /** The character type identifier. */
     characterTypeId?: string | undefined;
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -1653,7 +1657,7 @@ export class CardResponseDto implements ICardResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: ICardResponseDto) {
         if (data) {
@@ -1721,7 +1725,7 @@ export interface ICardResponseDto {
     /** The character type identifier. */
     characterTypeId?: string | undefined;
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -1729,13 +1733,13 @@ export interface ICardResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 /** Specifies a card type (e.g. Spell, Ranged, Fighter) */
 export class CardTypeResponseDto implements ICardTypeResponseDto {
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -1743,7 +1747,7 @@ export class CardTypeResponseDto implements ICardTypeResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: ICardTypeResponseDto) {
         if (data) {
@@ -1785,7 +1789,7 @@ export class CardTypeResponseDto implements ICardTypeResponseDto {
 /** Specifies a card type (e.g. Spell, Ranged, Fighter) */
 export interface ICardTypeResponseDto {
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -1793,13 +1797,13 @@ export interface ICardTypeResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 /** Specifies a card type (e.g. Assassin, Melee, Ranged) */
 export class CharacterTypeResponseDto implements ICharacterTypeResponseDto {
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -1807,7 +1811,7 @@ export class CharacterTypeResponseDto implements ICharacterTypeResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: ICharacterTypeResponseDto) {
         if (data) {
@@ -1849,7 +1853,7 @@ export class CharacterTypeResponseDto implements ICharacterTypeResponseDto {
 /** Specifies a card type (e.g. Assassin, Melee, Ranged) */
 export interface ICharacterTypeResponseDto {
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -1857,13 +1861,13 @@ export interface ICharacterTypeResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 /** Specifies a rarity (e.g. Common, Legendary) */
 export class RarityResponseDto implements IRarityResponseDto {
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -1871,7 +1875,7 @@ export class RarityResponseDto implements IRarityResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: IRarityResponseDto) {
         if (data) {
@@ -1913,7 +1917,7 @@ export class RarityResponseDto implements IRarityResponseDto {
 /** Specifies a rarity (e.g. Common, Legendary) */
 export interface IRarityResponseDto {
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -1921,13 +1925,13 @@ export interface IRarityResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 /** Specifies a theme (e.g. Sci-Fy, Adventure) */
 export class ThemeResponseDto implements IThemeResponseDto {
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -1935,7 +1939,7 @@ export class ThemeResponseDto implements IThemeResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: IThemeResponseDto) {
         if (data) {
@@ -1977,7 +1981,7 @@ export class ThemeResponseDto implements IThemeResponseDto {
 /** Specifies a theme (e.g. Sci-Fy, Adventure) */
 export interface IThemeResponseDto {
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -1985,7 +1989,7 @@ export interface IThemeResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 export class TeamMembershipRequestDto implements ITeamMembershipRequestDto {
@@ -2044,12 +2048,12 @@ export class TeamMembershipRequestResponseDto implements ITeamMembershipRequestR
     /** The user identifier */
     userId!: string;
     /** The name of the user */
-    userName!: string;
+    userName!: string | undefined;
     /** The comment */
     comment?: string | undefined;
     teamId!: string;
-    teamName!: string;
-    requestDateUtc?: Date | undefined;
+    teamName!: string | undefined;
+    requestDateUtc?: Date;
 
     constructor(data?: ITeamMembershipRequestResponseDto) {
         if (data) {
@@ -2098,17 +2102,17 @@ export interface ITeamMembershipRequestResponseDto {
     /** The user identifier */
     userId: string;
     /** The name of the user */
-    userName: string;
+    userName: string | undefined;
     /** The comment */
     comment?: string | undefined;
     teamId: string;
-    teamName: string;
-    requestDateUtc?: Date | undefined;
+    teamName: string | undefined;
+    requestDateUtc?: Date;
 }
 
 export class TeamCreateRequestDto implements ITeamCreateRequestDto {
     /** The team name */
-    name!: string;
+    name!: string | undefined;
 
     constructor(data?: ITeamCreateRequestDto) {
         if (data) {
@@ -2141,7 +2145,7 @@ export class TeamCreateRequestDto implements ITeamCreateRequestDto {
 
 export interface ITeamCreateRequestDto {
     /** The team name */
-    name: string;
+    name: string | undefined;
 }
 
 export class TeamResponseDto implements ITeamResponseDto {
@@ -2152,7 +2156,7 @@ export class TeamResponseDto implements ITeamResponseDto {
     /** The description */
     description?: string | undefined;
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -2160,7 +2164,7 @@ export class TeamResponseDto implements ITeamResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: ITeamResponseDto) {
         if (data) {
@@ -2213,7 +2217,7 @@ export interface ITeamResponseDto {
     /** The description */
     description?: string | undefined;
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -2221,7 +2225,7 @@ export interface ITeamResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 export class TeamUpdateRequestDto implements ITeamUpdateRequestDto {
@@ -2238,7 +2242,7 @@ export class TeamUpdateRequestDto implements ITeamUpdateRequestDto {
     /** Only the properties specified in this list will be updated. If NULL or empty, all properties will be updated. */
     propertiesToUpdate?: string[] | undefined;
     /** The entity version */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: ITeamUpdateRequestDto) {
         if (data) {
@@ -2303,16 +2307,22 @@ export interface ITeamUpdateRequestDto {
     /** Only the properties specified in this list will be updated. If NULL or empty, all properties will be updated. */
     propertiesToUpdate?: string[] | undefined;
     /** The entity version */
-    version: string;
+    version: string | undefined;
+}
+
+export enum UserProfileVisibility {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
 }
 
 export class UserResponseDto implements IUserResponseDto {
     /** The South Park Phone Destroyer in-game user name */
-    sppdName!: string;
+    sppdName!: string | undefined;
     /** The email address */
-    email!: string;
+    email!: string | undefined;
     /** The application role the current user has */
-    applicationRole!: string;
+    applicationRole!: string | undefined;
     /** The team identifier */
     teamId?: string | undefined;
     /** The name of the team. */
@@ -2323,14 +2333,13 @@ export class UserResponseDto implements IUserResponseDto {
     federationId?: string | undefined;
     /** The federation role */
     federationRole?: string | undefined;
-    /** The profile visibility determining who will be able to see the user profile */
-    profileVisibility!: UserResponseDtoProfileVisibility;
+    profileVisibility!: UserProfileVisibility;
     /** The avatar */
     avatar?: string | undefined;
     /** The description */
     description?: string | undefined;
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -2338,7 +2347,7 @@ export class UserResponseDto implements IUserResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: IUserResponseDto) {
         if (data) {
@@ -2401,11 +2410,11 @@ export class UserResponseDto implements IUserResponseDto {
 
 export interface IUserResponseDto {
     /** The South Park Phone Destroyer in-game user name */
-    sppdName: string;
+    sppdName: string | undefined;
     /** The email address */
-    email: string;
+    email: string | undefined;
     /** The application role the current user has */
-    applicationRole: string;
+    applicationRole: string | undefined;
     /** The team identifier */
     teamId?: string | undefined;
     /** The name of the team. */
@@ -2416,14 +2425,13 @@ export interface IUserResponseDto {
     federationId?: string | undefined;
     /** The federation role */
     federationRole?: string | undefined;
-    /** The profile visibility determining who will be able to see the user profile */
-    profileVisibility: UserResponseDtoProfileVisibility;
+    profileVisibility: UserProfileVisibility;
     /** The avatar */
     avatar?: string | undefined;
     /** The description */
     description?: string | undefined;
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -2431,18 +2439,18 @@ export interface IUserResponseDto {
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 export class UserCreateRequestDto implements IUserCreateRequestDto {
     /** The user name */
-    name!: string;
+    name!: string | undefined;
     /** The South Park Phone Destroyer in-game user name */
-    sppdName!: string;
+    sppdName!: string | undefined;
     /** The email address */
-    email!: string;
+    email!: string | undefined;
     /** MD5 hash of the user password */
-    passwordMd5!: string;
+    passwordMd5!: string | undefined;
 
     constructor(data?: IUserCreateRequestDto) {
         if (data) {
@@ -2481,13 +2489,13 @@ export class UserCreateRequestDto implements IUserCreateRequestDto {
 
 export interface IUserCreateRequestDto {
     /** The user name */
-    name: string;
+    name: string | undefined;
     /** The South Park Phone Destroyer in-game user name */
-    sppdName: string;
+    sppdName: string | undefined;
     /** The email address */
-    email: string;
+    email: string | undefined;
     /** MD5 hash of the user password */
-    passwordMd5: string;
+    passwordMd5: string | undefined;
 }
 
 export class UserUpdateRequestDto implements IUserUpdateRequestDto {
@@ -2503,14 +2511,13 @@ export class UserUpdateRequestDto implements IUserUpdateRequestDto {
     description?: string | undefined;
     /** MD5 hash of the user password */
     passwordMd5?: string | undefined;
-    /** The profile visibility determining who will be able to see the user profile. 0=User, 1=Team, 2=Federation */
-    profileVisibility?: UserUpdateRequestDtoProfileVisibility | undefined;
+    profileVisibility?: UserProfileVisibility;
     /** The identifier of the entity to update */
     id!: string;
     /** Only the properties specified in this list will be updated. If NULL or empty, all properties will be updated. */
     propertiesToUpdate?: string[] | undefined;
     /** The entity version */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: IUserUpdateRequestDto) {
         if (data) {
@@ -2580,21 +2587,20 @@ export interface IUserUpdateRequestDto {
     description?: string | undefined;
     /** MD5 hash of the user password */
     passwordMd5?: string | undefined;
-    /** The profile visibility determining who will be able to see the user profile. 0=User, 1=Team, 2=Federation */
-    profileVisibility?: UserUpdateRequestDtoProfileVisibility | undefined;
+    profileVisibility?: UserProfileVisibility;
     /** The identifier of the entity to update */
     id: string;
     /** Only the properties specified in this list will be updated. If NULL or empty, all properties will be updated. */
     propertiesToUpdate?: string[] | undefined;
     /** The entity version */
-    version: string;
+    version: string | undefined;
 }
 
 export class AuthorizationRequestDto implements IAuthorizationRequestDto {
     /** User name */
-    name!: string;
+    name!: string | undefined;
     /** MD5 hash of the user password */
-    passwordMd5!: string;
+    passwordMd5!: string | undefined;
 
     constructor(data?: IAuthorizationRequestDto) {
         if (data) {
@@ -2629,21 +2635,21 @@ export class AuthorizationRequestDto implements IAuthorizationRequestDto {
 
 export interface IAuthorizationRequestDto {
     /** User name */
-    name: string;
+    name: string | undefined;
     /** MD5 hash of the user password */
-    passwordMd5: string;
+    passwordMd5: string | undefined;
 }
 
 export class UserAuthorizationResponseDto implements IUserAuthorizationResponseDto {
     /** The token which will have to be set as bearer in the HTTP authorization header for subsequent calls requiring
 authentication */
-    token!: string;
+    token!: string | undefined;
     /** The South Park Phone Destroyer in-game user name */
-    sppdName!: string;
+    sppdName!: string | undefined;
     /** The email address */
-    email!: string;
+    email!: string | undefined;
     /** The application role the current user has */
-    applicationRole!: string;
+    applicationRole!: string | undefined;
     /** The team identifier */
     teamId?: string | undefined;
     /** The name of the team. */
@@ -2654,14 +2660,13 @@ authentication */
     federationId?: string | undefined;
     /** The federation role */
     federationRole?: string | undefined;
-    /** The profile visibility determining who will be able to see the user profile */
-    profileVisibility!: UserAuthorizationResponseDtoProfileVisibility;
+    profileVisibility!: UserProfileVisibility;
     /** The avatar */
     avatar?: string | undefined;
     /** The description */
     description?: string | undefined;
     /** The entity name */
-    name!: string;
+    name!: string | undefined;
     /** The entity identifier */
     id!: string;
     /** The UTC time, when the entity has been created */
@@ -2669,7 +2674,7 @@ authentication */
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc!: Date;
     /** The entity version. */
-    version!: string;
+    version!: string | undefined;
 
     constructor(data?: IUserAuthorizationResponseDto) {
         if (data) {
@@ -2735,13 +2740,13 @@ authentication */
 export interface IUserAuthorizationResponseDto {
     /** The token which will have to be set as bearer in the HTTP authorization header for subsequent calls requiring
 authentication */
-    token: string;
+    token: string | undefined;
     /** The South Park Phone Destroyer in-game user name */
-    sppdName: string;
+    sppdName: string | undefined;
     /** The email address */
-    email: string;
+    email: string | undefined;
     /** The application role the current user has */
-    applicationRole: string;
+    applicationRole: string | undefined;
     /** The team identifier */
     teamId?: string | undefined;
     /** The name of the team. */
@@ -2752,14 +2757,13 @@ authentication */
     federationId?: string | undefined;
     /** The federation role */
     federationRole?: string | undefined;
-    /** The profile visibility determining who will be able to see the user profile */
-    profileVisibility: UserAuthorizationResponseDtoProfileVisibility;
+    profileVisibility: UserProfileVisibility;
     /** The avatar */
     avatar?: string | undefined;
     /** The description */
     description?: string | undefined;
     /** The entity name */
-    name: string;
+    name: string | undefined;
     /** The entity identifier */
     id: string;
     /** The UTC time, when the entity has been created */
@@ -2767,14 +2771,14 @@ authentication */
     /** The UTC time, when the entity has been last updated */
     modifiedOnUtc: Date;
     /** The entity version. */
-    version: string;
+    version: string | undefined;
 }
 
 export class UserCardResponseDto implements IUserCardResponseDto {
     /** The card identifier */
     cardId!: string;
     /** The name of the card */
-    cardName!: string;
+    cardName!: string | undefined;
     /** The user identifier */
     userId!: string;
     /** The theme identifier */
@@ -2784,7 +2788,7 @@ export class UserCardResponseDto implements IUserCardResponseDto {
     /** The type identifier. */
     typeId!: string;
     /** The character type identifier. */
-    characterTypeId!: string;
+    characterTypeId!: string | undefined;
     /** The level (NULL if not set) */
     level?: number | undefined;
     /** When the level has been last modified. */
@@ -2839,7 +2843,7 @@ export interface IUserCardResponseDto {
     /** The card identifier */
     cardId: string;
     /** The name of the card */
-    cardName: string;
+    cardName: string | undefined;
     /** The user identifier */
     userId: string;
     /** The theme identifier */
@@ -2849,29 +2853,11 @@ export interface IUserCardResponseDto {
     /** The type identifier. */
     typeId: string;
     /** The character type identifier. */
-    characterTypeId: string;
+    characterTypeId: string | undefined;
     /** The level (NULL if not set) */
     level?: number | undefined;
     /** When the level has been last modified. */
     levelLastModified?: Date | undefined;
-}
-
-export enum UserResponseDtoProfileVisibility {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-}
-
-export enum UserUpdateRequestDtoProfileVisibility {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-}
-
-export enum UserAuthorizationResponseDtoProfileVisibility {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
 }
 
 export class ApiException extends Error {

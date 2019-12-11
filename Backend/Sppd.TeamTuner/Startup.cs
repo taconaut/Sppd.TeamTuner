@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 using Sppd.TeamTuner.Authorization;
 using Sppd.TeamTuner.Core;
@@ -33,7 +34,6 @@ using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Extensions;
 
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Sppd.TeamTuner
 {
@@ -145,7 +145,7 @@ namespace Sppd.TeamTuner
                 // Make SwaggerUI available
                 services.AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc("v1", new Info {Title = "Sppd.TeamTuner", Version = "v1"});
+                    options.SwaggerDoc("v1", new OpenApiInfo {Title = "Sppd.TeamTuner", Version = "v1"});
 
                     // Set the path to the XML file containing comments for the Swagger JSON and UI.
                     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -153,12 +153,12 @@ namespace Sppd.TeamTuner
                     options.IncludeXmlComments(xmlPath);
 
                     // Below two options are being set to allow specifying the bearer token in SwaggerUI. This allows to authenticate using SwaggerUI.
-                    options.AddSecurityDefinition("oauth2", new ApiKeyScheme
+                    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                                                             {
                                                                 Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
-                                                                In = "header",
+                                                                In = ParameterLocation.Header,
                                                                 Name = "Authorization",
-                                                                Type = "apiKey"
+                                                                Type = SecuritySchemeType.ApiKey
                                                             });
                     options.OperationFilter<SecurityRequirementsOperationFilter>();
                 });

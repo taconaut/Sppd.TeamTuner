@@ -222,11 +222,14 @@ Task ("Frontend-Generate-API-Client")
         // 1) When trying to do this from NSwagStudio, the process hangs and never finishes.
         // 2) Cake.CodeGen.NSwag does not expose this yet.
         var settings = new TypeScriptClientGeneratorSettings {
-        ClassName = "{controller}Client",
-        Template = TypeScriptTemplate.Axios,
-        OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator (),
-        ExceptionClass = "ApiException",
-        GenerateDtoTypes = true
+            ClassName = "{controller}Client",
+            Template = TypeScriptTemplate.Axios,
+            OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator(),
+            ExceptionClass = "ApiException",
+            GenerateDtoTypes = true,
+            CodeGeneratorSettings = {
+                SchemaType = NJsonSchema.SchemaType.OpenApi3
+            }
         };
 
         NSwag.FromJsonSpecification (new Uri (localApiUri))
