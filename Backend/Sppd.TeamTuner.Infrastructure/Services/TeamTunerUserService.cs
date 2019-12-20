@@ -9,6 +9,7 @@ using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Exceptions;
+using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Core.Utils.Extensions;
@@ -24,11 +25,13 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         private readonly IRegistrationRequestRepository _registrationRequestRepository;
         private readonly IEmailVerificationService _emailVerificationService;
         private readonly ITeamMembershipRequestRepository _teamMembershipRequestRepository;
+        private readonly ITeamTunerUserProvider _userProvider;
         private readonly Lazy<EmailConfig> _emailConfig;
 
         public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, ICardLevelRepository cardLevelRepository,
             IRegistrationRequestRepository registrationRequestRepository, IEmailVerificationService emailVerificationService,
-            ITeamMembershipRequestRepository teamMembershipRequestRepository, IUnitOfWork unitOfWork, IConfigProvider<EmailConfig> emailConfigProvider)
+            ITeamMembershipRequestRepository teamMembershipRequestRepository, IUnitOfWork unitOfWork, ITeamTunerUserProvider userProvider,
+            IConfigProvider<EmailConfig> emailConfigProvider)
             : base(teamTunerUserRepository, unitOfWork)
         {
             _teamTunerUserRepository = teamTunerUserRepository;
@@ -36,6 +39,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             _registrationRequestRepository = registrationRequestRepository;
             _emailVerificationService = emailVerificationService;
             _teamMembershipRequestRepository = teamMembershipRequestRepository;
+            _userProvider = userProvider;
             _emailConfig = new Lazy<EmailConfig>(() => emailConfigProvider.Config);
         }
 
@@ -127,6 +131,22 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             await UnitOfWork.CommitAsync();
 
             return user;
+        }
+
+        public async Task UpdateTeamRoleAsync(Guid userId, string role)
+        {
+            var user = await GetByIdAsync(userId);
+
+            if (role == CoreConstants.Authorization.Roles.LEADER)
+            {
+                // Demote the current leader to CoLeader when setting a new leader (as there can only be a single team leader at any given time).
+                var currentLeader = await GetByIdAsync(_userProvider.CurrentUser.Id);
+                currentLeader.TeamRole = CoreConstants.Authorization.Roles.CO_LEADER;
+            }
+
+            user.TeamRole = role;
+
+            await UnitOfWork.CommitAsync();
         }
 
         public async Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)

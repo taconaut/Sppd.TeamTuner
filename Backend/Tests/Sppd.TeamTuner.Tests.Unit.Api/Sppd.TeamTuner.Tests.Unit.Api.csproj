@@ -4,15 +4,22 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>Sppd.TeamTuner.Tests.Unit.Api</AssemblyName>
+
+    <RootNamespace>Sppd.TeamTuner.Tests.Unit.Api</RootNamespace>
+
+    <UserSecretsId>85dc0b05-116b-49d3-a330-099930dfb505</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.6.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PackageReference Include="coverlet.msbuild" Version="2.7.0">
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
-    <PackageReference Include="Moq" Version="4.10.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
@@ -21,8 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Sppd.TeamTuner.Common\Sppd.TeamTuner.Common.csproj" />
     <ProjectReference Include="..\..\Sppd.TeamTuner.Core\Sppd.TeamTuner.Core.csproj" />
-    <ProjectReference Include="..\..\Sppd.TeamTuner.Infrastructure\Sppd.TeamTuner.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Sppd.TeamTuner\Sppd.TeamTuner.csproj" />
   </ItemGroup>
 
 </Project>

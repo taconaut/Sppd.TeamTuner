@@ -7,7 +7,7 @@ using Sppd.TeamTuner.Core.Validation;
 
 using Xunit;
 
-namespace Sppd.TeamTuner.Tests.Unit
+namespace Sppd.TeamTuner.Tests.Unit.Infrastructure
 {
     public class ValidationTests
     {

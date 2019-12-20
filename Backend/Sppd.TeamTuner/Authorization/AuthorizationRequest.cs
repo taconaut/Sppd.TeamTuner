@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +13,10 @@ namespace Sppd.TeamTuner.Authorization
     /// <summary>
     ///     Used for every call to
     ///     <see
-    ///         cref="IAuthorizationService.AuthorizeAsync(System.Security.Claims.ClaimsPrincipal,object,System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Authorization.IAuthorizationRequirement})" />
+    ///         cref="IAuthorizationService.AuthorizeAsync(ClaimsPrincipal,object,System.Collections.Generic.IEnumerable{IAuthorizationRequirement})" />
     ///     uses this object as a resource.
     /// </summary>
-    public class AuthorizationRequest
+    public class AuthorizationRequest<TResource>
     {
         /// <summary>
         ///     The service provider which can be used to resolve any required service while authorizing.
@@ -35,9 +36,9 @@ namespace Sppd.TeamTuner.Authorization
         /// <summary>
         ///     Gets the resource.
         /// </summary>
-        public object Resource { get; }
+        public TResource Resource { get; }
 
-        public AuthorizationRequest(IServiceProvider serviceProvider, object resource)
+        public AuthorizationRequest(IServiceProvider serviceProvider, TResource resource)
         {
             ServiceProvider = serviceProvider;
             CurrentUser = serviceProvider.GetService<ITeamTunerUserProvider>().CurrentUser;

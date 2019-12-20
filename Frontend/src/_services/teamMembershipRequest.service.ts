@@ -1,35 +1,39 @@
 import { TeamMembershipRequestsClient, TeamMembershipRequestDto } from '@/api'
 
 class TeamMembershipRequestService {
+  private teamMembershipRequestsClient: TeamMembershipRequestsClient | undefined
+
   async sendTeamMembershipRequest(teamId: string, userId: string, comment?: string | undefined) {
-    var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
 
     var request = new TeamMembershipRequestDto()
     request.teamId = teamId
     request.userId = userId
     request.comment = comment
 
-    return teamMembershipRequestsClient.requestMembership(request)
+    return this.getTeamMembershipRequestsClient().requestMembership(request)
   }
 
   async getPendingTeamMembershipRequest(userId: string) {
-    var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
-    return teamMembershipRequestsClient.getPendingTeamMembershipRequest(userId)
+    return this.getTeamMembershipRequestsClient().getPendingTeamMembershipRequest(userId)
   }
 
   async abortTeamMembershipRequest(membershiprequestId: string) {
-    var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
-    return teamMembershipRequestsClient.abortMembershipRequest(membershiprequestId)
+    return this.getTeamMembershipRequestsClient().abortMembershipRequest(membershiprequestId)
   }
 
   async acceptTeamMembershipRequest(membershipRequestId: string) {
-    var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
-    return teamMembershipRequestsClient.acceptMembershipRequest(membershipRequestId)
+    return this.getTeamMembershipRequestsClient().acceptMembershipRequest(membershipRequestId)
   }
 
   async rejectTeamMembershipRequest(membershipRequestId: string) {
-    var teamMembershipRequestsClient = new TeamMembershipRequestsClient()
-    return teamMembershipRequestsClient.rejectMembershipRequest(membershipRequestId)
+    return this.getTeamMembershipRequestsClient().rejectMembershipRequest(membershipRequestId)
+  }
+
+  private getTeamMembershipRequestsClient() {
+    if (!this.teamMembershipRequestsClient) {
+      this.teamMembershipRequestsClient = new TeamMembershipRequestsClient();
+    }
+    return this.teamMembershipRequestsClient
   }
 }
 

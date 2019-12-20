@@ -1,9 +1,17 @@
 import { AdministrationClient } from '@/api'
 
 class AdministrationService {
+  private administrationClient: AdministrationClient | undefined
+  
   async getSystemInfo() {
-    const administrationClient = new AdministrationClient()
-    return administrationClient.getSystemInfo()
+    return this.getAdministrationClient().getSystemInfo()
+  }
+
+  private getAdministrationClient() {
+    if (!this.administrationClient) {
+      this.administrationClient = new AdministrationClient()
+    }
+    return this.administrationClient
   }
 }
 

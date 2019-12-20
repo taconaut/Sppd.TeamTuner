@@ -1,5 +1,8 @@
 export class roles {
-  static AppAdmin: string = 'Admin'
-  static TeamLeader: string = 'Leader'
-  static TeamCoLeader: string = 'CoLeader'
+  static appAdmin: string = 'Admin'
+  static appUser: string = 'User'
+
+  static teamLeader: string = 'Leader'
+  static teamCoLeader: string = 'CoLeader'
+  static teamMember: string = 'Member'
 }

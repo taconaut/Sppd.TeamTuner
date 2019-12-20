@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
+using Sppd.TeamTuner.Authorization.Resources;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
@@ -76,7 +77,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPut]
         public async Task<ActionResult<UserResponseDto>> UpdateUser([FromBody] UserUpdateRequestDto userRequestDto)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, userRequestDto.Id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, new CanUpdateUserResource {UserId = userRequestDto.Id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -85,23 +86,6 @@ namespace Sppd.TeamTuner.Controllers
             var user = _mapper.Map<TeamTunerUser>(userRequestDto);
             var updatedUser = await _userService.UpdateAsync(user, userRequestDto.PropertiesToUpdate);
             return Ok(_mapper.Map<UserResponseDto>(updatedUser));
-        }
-
-        /// <summary>
-        ///     Leave the team the user is currently in.
-        /// </summary>
-        /// <param name="id">The user identifier.</param>
-        /// <returns>The updates <see cref="UserResponseDto" />.</returns>
-        [HttpPut("{id}/leaveTeam")]
-        public async Task<ActionResult<UserResponseDto>> LeaveTeam(Guid id)
-        {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, id);
-            if (!authorizationResult.Succeeded)
-            {
-                return Forbid();
-            }
-
-            return _mapper.Map<UserResponseDto>(await _userService.LeaveTeam(id));
         }
 
         /// <summary>
@@ -129,7 +113,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_USER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_USER, new CanDeleteUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -146,7 +130,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserResponseDto>> GetUserByUserId(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, new CanReadUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -163,7 +147,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/card-levels")]
         public async Task<ActionResult<IEnumerable<CardLevelResponseDto>>> GetUserCardLevels(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, new CanReadUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -180,7 +164,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpGet("{id}/cards")]
         public async Task<ActionResult<IEnumerable<UserCardResponseDto>>> GetCardsWithUserLevels(Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, new CanReadUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();

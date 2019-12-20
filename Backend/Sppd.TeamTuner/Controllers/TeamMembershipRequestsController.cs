@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
+using Sppd.TeamTuner.Authorization.Resources;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
 
@@ -73,12 +74,13 @@ namespace Sppd.TeamTuner.Controllers
         ///     Accepts the membership request
         /// </summary>
         /// <param name="id">The membership request identifier</param>
-        [HttpPost("{id}/accept")]
+        [HttpPut("{id}/accept")]
         public async Task<IActionResult> AcceptMembershipRequest(Guid id)
         {
             var membershipRequest = await _teamService.GetMembershipRequestAsync(id);
 
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS, membershipRequest.TeamId);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_MANAGE_TEAM_MEMBERSHIP_REQUESTS,
+                new CanManageTeamMembershipRequestsResource {TeamId = membershipRequest.TeamId});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -92,12 +94,13 @@ namespace Sppd.TeamTuner.Controllers
         ///     Rejects the membership request
         /// </summary>
         /// <param name="id">The membership request identifier</param>
-        [HttpPost("{id}/reject")]
+        [HttpPut("{id}/reject")]
         public async Task<IActionResult> RejectMembershipRequest(Guid id)
         {
             var membershipRequest = await _teamService.GetMembershipRequestAsync(id);
 
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS, membershipRequest.TeamId);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_MANAGE_TEAM_MEMBERSHIP_REQUESTS,
+                new CanManageTeamMembershipRequestsResource {TeamId = membershipRequest.TeamId});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -111,12 +114,13 @@ namespace Sppd.TeamTuner.Controllers
         ///     Aborts the membership request
         /// </summary>
         /// <param name="id">The membership request identifier</param>
-        [HttpPost("{id}/abort")]
+        [HttpPut("{id}/abort")]
         public async Task<IActionResult> AbortMembershipRequest(Guid id)
         {
             var membershipRequest = await _teamService.GetMembershipRequestAsync(id);
 
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ABORT_TEAM_MEMBERSHIP_REQUESTS, membershipRequest.UserId);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ABORT_TEAM_MEMBERSHIP_REQUESTS,
+                new CanAbortTeamMembershipResource {UserId = membershipRequest.UserId});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();

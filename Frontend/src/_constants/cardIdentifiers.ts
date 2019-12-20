@@ -1,28 +1,28 @@
 export class cardIdentifiers {
     // Themes
-    static themeAdventureId: string = '4AF29C4A-282A-4FB8-8691-9D44398A97F2'
-    static themeScifiId: string = '5AA42BEE-0C1C-49E7-B402-CC58B19C0DDD'
-    static themeMysticalId: string = 'BF148B37-4E92-446F-9AB6-B80BF6BA7D05'
-    static themeFantasyId: string = '2A0C0C38-97F1-4CD7-8072-89113FA738DA'
-    static themeNeutralId: string = 'EA08E01B-1418-43B7-B7D1-926FCAED2A66'
-    static themeSuperheroId: string = '2584122B-4A69-486B-8CBC-8FC55015B738'
+    static themeAdventureId: string = '4af29c4a-282a-4fb8-8691-9d44398a97f2'
+    static themeScifiId: string = '5aa42bee-0c1c-49e7-b402-cc58b19c0ddd'
+    static themeMysticalId: string = 'bf148b37-4e92-446f-9ab6-b80bf6ba7d05'
+    static themeFantasyId: string = '2a0c0c38-97f1-4cd7-8072-89113fa738da'
+    static themeNeutralId: string = 'ea08e01b-1418-43b7-b7d1-926fcaed2a66'
+    static themeSuperheroId: string = '2584122b-4a69-486b-8cbc-8fc55015b738'
 
     // Rarities
-    static rarityCommonId: string = '7A8C1943-4CE5-4801-8E05-9D376B9152AD'
-    static rarityRareId: string = 'C548B645-7F80-4D65-A7EB-24B3C2179DB6'
-    static rarityEpicId: string = 'B699ED14-F672-46F5-885E-460EE8381802'
-    static rarityLegendaryId: string = 'D4A7E01F-C1BB-431C-8687-B4946345DB29'
+    static rarityCommonId: string = '7a8c1943-4ce5-4801-8e05-9d376b9152ad'
+    static rarityRareId: string = 'c548b645-7f80-4d65-a7eb-24b3c2179db6'
+    static rarityEpicId: string = 'b699ed14-f672-46f5-885e-460ee8381802'
+    static rarityLegendaryId: string = 'd4a7e01f-c1bb-431c-8687-b4946345db29'
 
     // Card types
-    static cardTypeSpellId: string = '59F49F99-0548-46EC-8F7A-955E8BC057AE'
-    static cardTypeSpawnId: string = '423F055B-581E-4EBC-8B11-14E5E9DDE890'
-    static cardTypeCharacterId: string = 'D4E2E80B-E56E-4D30-9A1C-0AD1944B1B34'
-    static cardTypeTrapId: string = '9B8BCF5E-3757-47CC-AAA0-4B9E77DCF2A7'
+    static cardTypeSpellId: string = '59f49f99-0548-46ec-8f7a-955e8bc057ae'
+    static cardTypeSpawnId: string = '423f055b-581e-4ebc-8b11-14e5e9dde890'
+    static cardTypeCharacterId: string = 'd4e2e80b-e56e-4d30-9a1c-0ad1944b1b34'
+    static cardTypeTrapId: string = '9b8bcf5e-3757-47cc-aaa0-4b9e77dcf2a7'
 
     // Character types
-    static characterTypeTankId: string = '6C457448-50A9-4181-B643-D695F74018E1'
-    static characterTypeMeleeId: string = '0E70F6F6-FF96-48A2-8DA4-AD8798C61FC9'
-    static characterTypeAssassinId: string = 'B43590BB-CE86-450D-B5DD-A6297B11F884'
-    static characterTypeRangedId: string = 'BB881B6D-1C1E-4C08-8DD5-E3E528397416'
-    static characterTypeTotemId: string = '9F114687-F240-4116-B5BD-6CD167A08C1D'
+    static characterTypeTankId: string = '6c457448-50a9-4181-b643-d695f74018e1'
+    static characterTypeMeleeId: string = '0e70f6f6-ff96-48a2-8da4-ad8798c61fc9'
+    static characterTypeAssassinId: string = 'b43590bb-ce86-450d-b5dd-a6297b11f884'
+    static characterTypeRangedId: string = 'bb881b6d-1c1e-4c08-8dd5-e3e528397416'
+    static characterTypeTotemId: string = '9f114687-f240-4116-b5bd-6cd167a08c1d'
 }

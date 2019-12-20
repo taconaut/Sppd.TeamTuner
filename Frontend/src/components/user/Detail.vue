@@ -45,7 +45,7 @@
           <div class="col-sm-10">
             <b-input
               type="password"
-              v-model="editedUser.passwordFirst"
+              v-model="passwordFirst"
               autocomplete="new-password"
               placeholder="Enter password"
             />
@@ -56,7 +56,7 @@
           <div class="col-sm-10">
             <b-input
               type="password"
-              v-model="editedUser.passwordSecond"
+              v-model="passwordSecond"
               autocomplete="new-password"
               placeholder="Confirm password"
             />
@@ -72,17 +72,25 @@
   </b-form>
 </template>
 
-<script>
-import { userService, authorizationService } from '@/_services'
-import { roles } from '@/_constants'
+<script lang="ts">
+import Vue from 'vue'
 
-export default {
-  name: 'UserDetail',
+// @ts-ignore
+import { userService, authorizationService } from '@/_services'
+// @ts-ignore
+import { roles } from '@/_constants'
+// @ts-ignore
+import { UserResponseDto } from '@/api'
+
+export default Vue.extend({
+  name: 'UserDetailComponent',
   data: function() {
     return {
       show: false,
-      editedUser: {},
-      originalUser: null,
+      editedUser: null as UserResponseDto,
+      originalUser: null as UserResponseDto,
+      passwordFirst: null as string,
+      passwordSecond: null as string,
       isChangePassword: false,
       isCurrentUserAdmin: false
     }
@@ -97,13 +105,10 @@ export default {
     this.refreshOriginalUser()
   },
   methods: {
-    async onSubmit(evt) {
-      evt.preventDefault()
-
-      // TODO: validate before submit
-
+    async onSubmit() {
+      // TODO: validate password
       var password = this.isChangePassword
-        ? this.editedUser.passwordFirst
+        ? this.passwordFirst
         : null
 
       this.originalUser = await userService.updateUser(
@@ -111,16 +116,8 @@ export default {
         password
       )
     },
-    onReset(evt) {
-      evt.preventDefault()
-
+    onReset() {
       this.setOriginalUserAsEditedUser()
-
-      // Trick to reset/clear native browser form validation state
-      this.show = false
-      this.$nextTick(() => {
-        this.show = true
-      })
     },
     setOriginalUserAsEditedUser() {
       // deep clone the user
@@ -128,7 +125,7 @@ export default {
     },
     updateIsCurrentUserAdmin() {
       this.isCurrentUserAdmin = authorizationService.isCurrentUserInApplicationRole(
-        roles.Admin
+        roles.appAdmin
       )
     },
     async refreshOriginalUser() {
@@ -140,5 +137,5 @@ export default {
       this.show = true
     }
   }
-}
+})
 </script>

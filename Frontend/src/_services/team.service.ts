@@ -1,22 +1,21 @@
 import { TeamsClient, TeamCreateRequestDto, TeamResponseDto, TeamUpdateRequestDto } from '@/api'
 
 class TeamService {
+  private teamsClient: TeamsClient | undefined;
+
   async searchTeamByName(name: string) {
-    const teamsClient = new TeamsClient()
-    return teamsClient.searchTeamByName(name)
+    return this.getTeamsClient().searchTeamByName(name)
   }
 
   async createTeam(name: string) {
     var createRequest = new TeamCreateRequestDto()
     createRequest.name = name
 
-    const teamsClient = new TeamsClient()
-    return teamsClient.createTeam(createRequest)
+    return this.getTeamsClient().createTeam(createRequest)
   }
 
   async getTeam(teamId: string) {
-    const teamsClient = new TeamsClient()
-    return teamsClient.getTeamById(teamId)
+    return this.getTeamsClient().getTeamById(teamId)
   }
 
   async updateTeam(team: TeamResponseDto) {
@@ -30,13 +29,30 @@ class TeamService {
 
     request.propertiesToUpdate = propertiesToUpdate
 
-    const teamsClient = new TeamsClient()
-    return teamsClient.updateTeam(request)
+    return this.getTeamsClient().updateTeam(request)
   }
 
   async getPendingMembershipRequests(teamId: string) {
-    const teamsClient = new TeamsClient()
-    return teamsClient.getTeamMembershipRequests(teamId)
+    return this.getTeamsClient().getTeamMembershipRequests(teamId)
+  }
+
+  async getMembers(teamId: string) {
+    return this.getTeamsClient().getTeamMembers(teamId)
+  }
+
+  async updateUserTeamRole(teamId: string, userId: string, role: string) {
+    return this.getTeamsClient().updateMemberTeamRole(teamId, userId, role)
+  }
+
+  async removeMember(teamId: string, userId: string) {
+    await this.getTeamsClient().removeMember(teamId, userId)
+  }
+
+  private getTeamsClient() {
+    if (!this.teamsClient) {
+      this.teamsClient = new TeamsClient()
+    }
+    return this.teamsClient
   }
 }
 

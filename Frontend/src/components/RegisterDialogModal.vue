@@ -66,10 +66,13 @@
   </transition>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
+// @ts-ignore
 import { authorizationService } from '@/_services'
 
-export default {
+export default Vue.extend({
   name: 'registerDialogModal',
   data: function() {
     return {
@@ -152,7 +155,7 @@ export default {
       this.loading = false
     }
   }
-}
+})
 </script>
 
 <style scoped>

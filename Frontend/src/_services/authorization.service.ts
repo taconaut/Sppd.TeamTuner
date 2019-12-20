@@ -6,6 +6,9 @@ import { BehaviorSubject } from 'rxjs'
 class AuthorizationService {
   private currentUserSubject: BehaviorSubject<UserAuthorizationResponseDto | null>
 
+  private usersClient: UsersClient | undefined
+  private emailVerificationClient: EmailVerificationClient | undefined
+
   public constructor() {
     var currentUserJson = this.getCurrentUserFromLocalStorage()
     var currentUser = currentUserJson == null ? null : JSON.parse(currentUserJson) as UserAuthorizationResponseDto
@@ -33,10 +36,7 @@ class AuthorizationService {
     userCreateRequest.email = email
     userCreateRequest.passwordMd5 = stringHelper.md5hash(password)
 
-    const usersClient = new UsersClient()
-    const userCreateResponse = await usersClient.registerUser(userCreateRequest)
-
-    return userCreateResponse
+    return this.getUsersClient().registerUser(userCreateRequest)
   }
 
   public async login(userName: string, password: string) {
@@ -44,8 +44,7 @@ class AuthorizationService {
     authorizationRequest.name = userName
     authorizationRequest.passwordMd5 = stringHelper.md5hash(password)
 
-    const usersClient = new UsersClient()
-    const authorizationResponse = await usersClient.authorizeUser(authorizationRequest)
+    const authorizationResponse = await this.getUsersClient().authorizeUser(authorizationRequest)
 
     localStorage.setItem(storageKeys.currentUser, JSON.stringify(authorizationResponse))
     this.currentUserSubject.next(authorizationResponse)
@@ -56,18 +55,18 @@ class AuthorizationService {
   }
 
   public async verifyEmail(code: string) {
-    const emailVerificationClient = new EmailVerificationClient()
-    return emailVerificationClient.verifyEmail(code)
+    return this.getEmailVerificationClient().verifyEmail(code)
   }
 
   public async resendVerificationEmail(code: string) {
-    const emailVerificationClient = new EmailVerificationClient()
-    return emailVerificationClient.resendVerificationEmail(code)
+    return this.getEmailVerificationClient().resendVerificationEmail(code)
   }
 
   public logout() {
     localStorage.removeItem(storageKeys.currentUser)
     this.currentUserSubject.next(null)
+
+    // TODO: Log out on the server
 
     axiosConfigurator.setCurrentUser(null)
   }
@@ -104,6 +103,20 @@ class AuthorizationService {
 
   private getCurrentUserFromLocalStorage() {
     return localStorage.getItem(storageKeys.currentUser)
+  }
+
+  private getUsersClient() {
+    if (!this.usersClient) {
+      this.usersClient = new UsersClient()
+    }
+    return this.usersClient
+  }
+
+  private getEmailVerificationClient() {
+    if (!this.emailVerificationClient) {
+      this.emailVerificationClient = new EmailVerificationClient()
+    }
+    return this.emailVerificationClient
   }
 }
 

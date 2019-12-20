@@ -33,14 +33,14 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="policyName">Name of the policy.</param>
         /// <param name="parameter">The parameter.</param>
-        protected async Task<AuthorizationResult> AuthorizeAsync(string policyName, object parameter)
+        protected async Task<AuthorizationResult> AuthorizeAsync<TResource>(string policyName, TResource parameter)
         {
             return await _authorizationService.AuthorizeAsync(User, GetAuthorizationRequest(parameter), policyName);
         }
 
-        private AuthorizationRequest GetAuthorizationRequest(object parameter)
+        private AuthorizationRequest<TResource> GetAuthorizationRequest<TResource>(TResource parameter)
         {
-            return new AuthorizationRequest(_serviceProvider, parameter);
+            return new AuthorizationRequest<TResource>(_serviceProvider, parameter);
         }
     }
 }

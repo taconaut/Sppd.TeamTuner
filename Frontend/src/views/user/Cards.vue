@@ -1,29 +1,30 @@
 <template>
   <div>
     <CardsFilter @filter="applyFilter" />
-    <Cards :filter="cardsFilter" />
+    <UserCards :filter="cardsFilter" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import CardsFilter from '@/components/cards/Filter.vue'
-import Cards from '@/components/user/Cards.vue'
+import UserCards from '@/components/user/Cards.vue'
 
-export default {
-  name: 'UserCards',
+export default Vue.extend({
+  name: 'UserCardsView',
   components: {
     CardsFilter,
-    Cards
+    UserCards
   },
   data: function() {
     return {
-      cardsFilter: null
+      cardsFilter: null as Filter
     }
   },
   methods: {
-    applyFilter(cardsFilter) {
+    applyFilter(cardsFilter: Filter) {
       this.cardsFilter = cardsFilter
     }
   }
-}
+})
 </script>

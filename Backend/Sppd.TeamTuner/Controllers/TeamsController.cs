@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
+using Sppd.TeamTuner.Authorization.Resources;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
@@ -49,7 +51,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="teamCreateRequestDto">The team creation request</param>
         [HttpPost]
-        public async Task<ActionResult<TeamResponseDto>> CreateTeam([FromBody] TeamCreateRequestDto teamCreateRequestDto)
+        public async Task<ActionResult<TeamResponseDto>> CreateTeam([Required] [FromBody] TeamCreateRequestDto teamCreateRequestDto)
         {
             var team = _mapper.Map<Team>(teamCreateRequestDto);
             await _teamService.CreateAsync(team);
@@ -62,9 +64,9 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="teamUpdateRequestDto">The team update request</param>
         [HttpPut]
-        public async Task<ActionResult<TeamResponseDto>> UpdateTeam([FromBody] TeamUpdateRequestDto teamUpdateRequestDto)
+        public async Task<ActionResult<TeamResponseDto>> UpdateTeam([Required] [FromBody] TeamUpdateRequestDto teamUpdateRequestDto)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_TEAM, teamUpdateRequestDto.Id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_TEAM, new CanUpdateTeamResource {TeamId = teamUpdateRequestDto.Id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -80,9 +82,9 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTeam(Guid id)
+        public async Task<IActionResult> DeleteTeam([Required] Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_TEAM, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_DELETE_TEAM, new CanDeleteTeamResource {TeamId = id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -97,9 +99,9 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TeamResponseDto>> GetTeamById(Guid id)
+        public async Task<ActionResult<TeamResponseDto>> GetTeamById([Required] Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, new CanReadTeamResource {TeamId = id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -115,7 +117,7 @@ namespace Sppd.TeamTuner.Controllers
         /// <param name="name">The name having to be contained in the team name.</param>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TeamResponseDto>>> SearchTeamByName([FromQuery] string name)
+        public async Task<ActionResult<IEnumerable<TeamResponseDto>>> SearchTeamByName([Required] [FromQuery] string name)
         {
             var teams = await _teamService.SearchByNameAsync(name);
             return Ok(_mapper.Map<IEnumerable<TeamResponseDto>>(teams));
@@ -126,9 +128,9 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpGet("{id}/members")]
-        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetTeamMembers(Guid id)
+        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetTeamMembers([Required] Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, new CanReadTeamResource {TeamId = id});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -139,20 +141,70 @@ namespace Sppd.TeamTuner.Controllers
         }
 
         /// <summary>
-        ///     Gets the membership requests.
+        ///     Gets the team membership requests.
         /// </summary>
         /// <param name="id">The team identifier</param>
         [HttpGet("{id}/membership-requests")]
-        public async Task<ActionResult<IEnumerable<TeamMembershipRequestResponseDto>>> GetTeamMembershipRequests(Guid id)
+        public async Task<ActionResult<IEnumerable<TeamMembershipRequestResponseDto>>> GetTeamMembershipRequests([Required] Guid id)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS, id);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_MANAGE_TEAM_MEMBERSHIP_REQUESTS,
+                new CanManageTeamMembershipRequestsResource {TeamId = id});
             if (!authorizationResult.Succeeded)
             {
+                var tt = authorizationResult.Failure.FailedRequirements;
                 return Forbid();
             }
 
             var membershipRequests = await _teamService.GetMembershipRequestsAsync(id);
             return Ok(_mapper.Map<IEnumerable<TeamMembershipRequestResponseDto>>(membershipRequests));
+        }
+
+        /// <summary>
+        ///     Updates the team role for the user.
+        /// </summary>
+        /// <param name="id">The team identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="role">The role.</param>
+        /// <returns><see cref="OkResult" /> if the member could be removed.</returns>
+        [HttpPut("{id}/members/{userId}/role")]
+        public async Task<ActionResult<string>> UpdateMemberTeamRole([Required] Guid id, [Required] Guid userId, [Required] [FromBody] string role)
+        {
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER_TEAM_ROLE, new CanUpdateMemberTeamRoleResource
+                                                                                                                      {
+                                                                                                                          TeamId = id,
+                                                                                                                          UserId = userId,
+                                                                                                                          Role = role
+                                                                                                                      });
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            await _userService.UpdateTeamRoleAsync(userId, role);
+
+            return Ok();
+        }
+
+        /// <summary>
+        ///     Removes the member from the team.
+        /// </summary>
+        /// <param name="id">The team identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns><see cref="OkResult" /> if the member could be removed.</returns>
+        [HttpPut("{id}/members/{userId}/remove")]
+        public async Task<IActionResult> RemoveMember([Required] Guid id, [Required] Guid userId)
+        {
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_REMOVE_TEAM_MEMBER, new CanRemoveTeamMemberResource {TeamId = id, UserId = userId});
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            // It is not necessary to pass the team id to the service as it has been validated during authorization
+            // that the user is being removed from the team he is currently part of.
+            await _userService.LeaveTeam(userId);
+
+            return Ok();
         }
     }
 }

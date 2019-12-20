@@ -6,13 +6,14 @@ using Moq;
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Repositories;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.Infrastructure.Services;
 
 using Xunit;
 
-namespace Sppd.TeamTuner.Tests.Unit
+namespace Sppd.TeamTuner.Tests.Unit.Infrastructure
 {
     public class TeamTunerUserServiceTests
     {
@@ -35,8 +36,11 @@ namespace Sppd.TeamTuner.Tests.Unit
             // Services
             var emailServiceMock = new Mock<IEmailVerificationService>();
 
+            // Providers
+            var userProviderMock = new Mock<ITeamTunerUserProvider>();
+
             _userService = new TeamTunerUserService(teamTunerRepositoryMock.Object, cardLevelRepositoryMock.Object, registrationRequestRepositoryMock.Object,
-                emailServiceMock.Object, teamMembershipRequestRepositoryMock.Object, unitOfWorkMock.Object, emailConfigProviderMock.Object);
+                emailServiceMock.Object, teamMembershipRequestRepositoryMock.Object, unitOfWorkMock.Object, userProviderMock.Object, emailConfigProviderMock.Object);
         }
 
         private readonly TeamTunerUser _testUser;

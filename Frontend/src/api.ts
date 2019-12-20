@@ -578,7 +578,7 @@ export class TeamMembershipRequestsClient {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <AxiosRequestConfig>{
-            method: "POST",
+            method: "PUT",
             url: url_,
             headers: {
             }
@@ -624,7 +624,7 @@ export class TeamMembershipRequestsClient {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <AxiosRequestConfig>{
-            method: "POST",
+            method: "PUT",
             url: url_,
             headers: {
             }
@@ -670,7 +670,7 @@ export class TeamMembershipRequestsClient {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <AxiosRequestConfig>{
-            method: "POST",
+            method: "PUT",
             url: url_,
             headers: {
             }
@@ -716,12 +716,14 @@ export class TeamsClient {
 
     /**
      * Get all teams containing the specified name in their name.
-     * @param name (optional) The name having to be contained in the team name.
+     * @param name The name having to be contained in the team name.
      * @return Success
      */
-    searchTeamByName(name: string | null | undefined): Promise<TeamResponseDto[]> {
+    searchTeamByName(name: string): Promise<TeamResponseDto[]> {
         let url_ = this.baseUrl + "/teams?";
-        if (name !== undefined)
+        if (name === undefined || name === null)
+            throw new Error("The parameter 'name' must be defined and cannot be null.");
+        else
             url_ += "name=" + encodeURIComponent("" + name) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
@@ -763,10 +765,10 @@ export class TeamsClient {
 
     /**
      * Updates the team
-     * @param teamUpdateRequestDto (optional) The team update request
+     * @param teamUpdateRequestDto The team update request
      * @return Success
      */
-    updateTeam(teamUpdateRequestDto: TeamUpdateRequestDto | null | undefined): Promise<TeamResponseDto> {
+    updateTeam(teamUpdateRequestDto: TeamUpdateRequestDto): Promise<TeamResponseDto> {
         let url_ = this.baseUrl + "/teams";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -814,10 +816,10 @@ export class TeamsClient {
 
     /**
      * Creates a new team
-     * @param teamCreateRequestDto (optional) The team creation request
+     * @param teamCreateRequestDto The team creation request
      * @return Success
      */
-    createTeam(teamCreateRequestDto: TeamCreateRequestDto | null | undefined): Promise<TeamResponseDto> {
+    createTeam(teamCreateRequestDto: TeamCreateRequestDto): Promise<TeamResponseDto> {
         let url_ = this.baseUrl + "/teams";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1066,6 +1068,115 @@ export class TeamsClient {
         }
         return Promise.resolve<TeamMembershipRequestResponseDto[]>(<any>null);
     }
+
+    /**
+     * Updates the team role for the user.
+     * @param id The team identifier.
+     * @param userId The user identifier.
+     * @param role The role.
+     * @return Success
+     */
+    updateMemberTeamRole(id: string, userId: string, role: string): Promise<string> {
+        let url_ = this.baseUrl + "/teams/{id}/members/{userId}/role";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(role);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "PUT",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processUpdateMemberTeamRole(_response);
+        });
+    }
+
+    protected processUpdateMemberTeamRole(response: AxiosResponse): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<string>(<any>null);
+    }
+
+    /**
+     * Removes the member from the team.
+     * @param id The team identifier.
+     * @param userId The user identifier.
+     * @return Success
+     */
+    removeMember(id: string, userId: string): Promise<void> {
+        let url_ = this.baseUrl + "/teams/{id}/members/{userId}/remove";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "PUT",
+            url: url_,
+            headers: {
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processRemoveMember(_response);
+        });
+    }
+
+    protected processRemoveMember(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; 
+        if (response.headers && response.headers.forEach) { 
+            response.headers.forEach((v: any, k: any) => _headers[k] = v);
+        };
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(<any>null);
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("A server error occurred.", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(<any>null);
+    }
 }
 
 export class UsersClient {
@@ -1167,56 +1278,6 @@ export class UsersClient {
             let resultData200  = _responseText;
             result200 = UserResponseDto.fromJS(resultData200);
             return result200;
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<UserResponseDto>(<any>null);
-    }
-
-    /**
-     * Leave the team the user is currently in.
-     * @param id The user identifier.
-     * @return Success
-     */
-    leaveTeam(id: string): Promise<UserResponseDto> {
-        let url_ = this.baseUrl + "/users/{id}/leaveTeam";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            method: "PUT",
-            url: url_,
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processLeaveTeam(_response);
-        });
-    }
-
-    protected processLeaveTeam(response: AxiosResponse): Promise<UserResponseDto> {
-        const status = response.status;
-        let _headers: any = {}; 
-        if (response.headers && response.headers.forEach) { 
-            response.headers.forEach((v: any, k: any) => _headers[k] = v);
-        };
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = UserResponseDto.fromJS(resultData200);
-            return result200;
-        } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
-        } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("A server error occurred.", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);

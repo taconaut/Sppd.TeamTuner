@@ -202,11 +202,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
+// @ts-ignore
 import { cardIdentifiers } from '@/_constants'
 
-export default {
-  name: 'CardsFilter',
+export default Vue.extend({
+  name: 'CardsFilterComponent',
   data: function() {
     return {
       filter: {
@@ -233,7 +236,7 @@ export default {
           epic: true,
           legendary: true
         }
-      },
+      } as Filter,
       cardIdentifiers: cardIdentifiers
     }
   },
@@ -247,7 +250,7 @@ export default {
     clearFilter() {
       this.setAllFilters(false)
     },
-    setAllFilters(isEnabled) {
+    setAllFilters(isEnabled: boolean) {
       // Rarity
       this.filter.rarity.common = isEnabled
       this.filter.rarity.rare = isEnabled
@@ -277,7 +280,7 @@ export default {
       this.$emit('filter', { ...this.filter })
     }
   }
-}
+})
 </script>
 
 <style>

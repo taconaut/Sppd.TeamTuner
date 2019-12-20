@@ -4,6 +4,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ using Sppd.TeamTuner.Extensions;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 
+[assembly: InternalsVisibleTo("Sppd.TeamTuner.Tests.Unit.Api")]
 namespace Sppd.TeamTuner
 {
     public class Startup

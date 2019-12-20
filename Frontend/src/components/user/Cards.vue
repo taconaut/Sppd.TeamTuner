@@ -9,13 +9,13 @@
       sort-icon-left
     >
       <template v-slot:cell(rarityId)="data">
-        <img height="20px" :src="getRarityIcon(data.item)" />
+        <img height="20px" :src="cardsHelper.getRarityIcon(data.item)" />
       </template>
       <template v-slot:cell(characterTypeId)="data">
-        <img height="20px" :src="getTypeIcon(data.item)" />
+        <img height="20px" :src="cardsHelper.getTypeIcon(data.item)" />
       </template>
       <template v-slot:cell(themeId)="data">
-        <img height="20px" :src="getThemeIcon(data.item)" />
+        <img height="20px" :src="cardsHelper.getThemeIcon(data.item)" />
       </template>
       <template v-slot:cell(cardName)="data">{{ data.item.cardName }}</template>
       <template v-slot:cell(level)="data">
@@ -39,22 +39,29 @@
   </div>
 </template>
 
-<script>
-import { userService, cardLevelService } from '@/_services'
-import { cardIdentifiers } from '@/_constants'
-import { cardsHelper } from '@/_helpers'
+<script lang="ts">
+import Vue from 'vue'
 
-export default {
-  name: 'Cards',
+// @ts-ignore
+import { userService, cardLevelService } from '@/_services'
+// @ts-ignore
+import { cardIdentifiers } from '@/_constants'
+// @ts-ignore
+import { cardsHelper } from '@/_helpers'
+// @ts-ignore
+import { UserResponseCardDto } from '@/api'
+
+export default Vue.extend({
+  name: 'UserCardsComponent',
   props: {
     filter: {
-      type: Object
+      type: Object as () => Filter
     }
   },
   data: function() {
     return {
-      userCards: null,
-      filteredCards: null,
+      userCards: null as UserResponseCardDto[],
+      filteredCards: null as UserResponseCardDto[],
       sortBy: 'themeId',
       fields: [
         {
@@ -78,7 +85,13 @@ export default {
         },
         { key: 'level', sortable: true, tdClass: 'card-row-slim' },
         { key: 'levelLastModified', label: 'Last updated', sortable: true }
-      ]
+      ],
+      cardsHelper: cardsHelper
+    }
+  },
+  computed: {
+    userId: function(): string {
+      return this.$route.params.userId
     }
   },
   watch: {
@@ -87,61 +100,29 @@ export default {
     }
   },
   async mounted() {
-    var userId = this.$route.params.userId
-    this.userCards = await userService.getCards(userId)
+    this.userCards = await userService.getCards(this.userId)
     this.applyFilter()
   },
   methods: {
-    async updateLevel(card, level) {
-      var userId = this.$route.params.userId
+    async updateLevel(card: UserResponseCardDto, level: number) {
       var updateResult = await cardLevelService.setCardLevel(
-        userId,
+        this.userId,
         card.cardId,
         level
       )
       card.level = updateResult.level
       card.levelLastModified = updateResult.levelLastModified
     },
-    getRarityIcon(card) {
-      if (card.rarityId.toUpperCase() === cardIdentifiers.rarityCommonId) {
-        return '/img/cards/theme-stones/common/' + card.themeId + '.png'
-      } else {
-        return '/img/cards/theme-stones/special/' + card.rarityId + '.png'
-      }
-    },
-    getThemeIcon(card) {
-      return '/img/cards/theme-icons/' + card.themeId + '.png'
-    },
-    getTypeIcon(card) {
-      var typeId =
-        card.typeId.toUpperCase() === cardIdentifiers.cardTypeSpellId ||
-        card.typeId.toUpperCase() === cardIdentifiers.cardTypeTrapId
-          ? card.typeId
-          : card.characterTypeId
-      if (card.rarityId.toUpperCase() === cardIdentifiers.rarityCommonId) {
-        return (
-          '/img/cards/type-icons/' + typeId + '/common/' + card.themeId + '.png'
-        )
-      } else {
-        return (
-          '/img/cards/type-icons/' +
-          typeId +
-          '/special/' +
-          card.rarityId +
-          '.png'
-        )
-      }
-    },
     applyFilter() {
       if (this.filter && this.userCards) {
         this.filteredCards = this.userCards.filter(this.cardMatchesFilter)
       }
     },
-    cardMatchesFilter(card) {
+    cardMatchesFilter(card: UserResponseCardDto): boolean {
       return cardsHelper.cardMatchesFilter(card, this.filter)
     }
   }
-}
+})
 </script>
 
 <style>

@@ -1,6 +1,6 @@
 <template>
-  <b-card title="Membership Requests" class="m-2">
-    <div v-if="!hasPendingRequests" class="m-2">No pending requests.</div>
+  <div>
+    <div v-if="!hasPendingRequests" class="m-2">No pending membership requests.</div>
     <b-table v-else-if="showTable" :items="pendingMembershipRequests" :fields="tableFields" striped>
       <template v-slot:cell(userName)="data">{{ data.item.userName }}</template>
       <template v-slot:cell(comment)="data">{{ data.item.comment }}</template>
@@ -12,17 +12,26 @@
         <b-button variant="outline-secondary" @click="rejectMembershipRequest(data.item.id)">Reject</b-button>
       </template>
     </b-table>
-  </b-card>
+  </div>
 </template>
 
-<script>
-import { teamService, teamMembershipRequestService } from '@/_services'
+<script lang="ts">
+import Vue from 'vue'
 
-export default {
-  name: 'TeamPendingMembershipRequests',
+// @ts-ignore
+import { teamService, teamMembershipRequestService } from '@/_services'
+// @ts-ignore
+import { eventBus } from '@/_helpers'
+// @ts-ignore
+import { eventIdentifiers } from '@/_constants'
+// @ts-ignore
+import { TeamMembershipRequestResponseDto } from '@/api'
+
+export default Vue.extend({
+  name: 'TeamPendingMembershipRequestsComponent',
   data: function() {
     return {
-      pendingMembershipRequests: null,
+      pendingMembershipRequests: null as TeamMembershipRequestResponseDto[],
       hasPendingRequests: false,
       showTable: false,
       tableFields: [
@@ -57,7 +66,7 @@ export default {
     }
   },
   computed: {
-    teamId: function() {
+    teamId: function(): string {
       return this.$route.params.teamId
     }
   },
@@ -65,13 +74,14 @@ export default {
     this.refreshPendingMembershipRequests()
   },
   methods: {
-    async acceptMembershipRequest(membershipRequestId) {
+    async acceptMembershipRequest(membershipRequestId: string) {
       await teamMembershipRequestService.acceptTeamMembershipRequest(
         membershipRequestId
       )
       await this.refreshPendingMembershipRequests()
+      eventBus.$emit(eventIdentifiers.teamMembersChanged)
     },
-    async rejectMembershipRequest(membershipRequestId) {
+    async rejectMembershipRequest(membershipRequestId: string) {
       await teamMembershipRequestService.rejectTeamMembershipRequest(
         membershipRequestId
       )
@@ -86,7 +96,7 @@ export default {
       this.showTable = true
     }
   }
-}
+})
 </script>
 
 <style>

@@ -222,11 +222,11 @@ Task ("Frontend-Generate-API-Client")
         // 1) When trying to do this from NSwagStudio, the process hangs and never finishes.
         // 2) Cake.CodeGen.NSwag does not expose this yet.
         var settings = new TypeScriptClientGeneratorSettings {
-        ClassName = "{controller}Client",
-        Template = TypeScriptTemplate.Axios,
-        OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator (),
-        ExceptionClass = "ApiException",
-        GenerateDtoTypes = true
+            ClassName = "{controller}Client",
+            Template = TypeScriptTemplate.Axios,
+            OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator(),
+            ExceptionClass = "ApiException",
+            GenerateDtoTypes = true
         };
 
         NSwag.FromJsonSpecification (new Uri (localApiUri))
@@ -239,7 +239,31 @@ Task ("Frontend-Generate-API-Client")
 ////// Tests
 //////////////////////////////////////////////////////////////////////
 
-var coverletSettings = new CoverletSettings {
+Task ("Backend-Run-All-Tests")
+    .IsDependentOn ("Backend-Build")
+    .IsDependentOn ("Backend-Run-Unit-Tests")
+    .IsDependentOn ("Backend-Run-Integration-Tests")
+    .IsDependentOn ("Backend-Run-API-Tests");
+
+Task ("Backend-Run-Unit-Tests")
+    .IsDependentOn ("Backend-Build")
+    .Does (() => {
+        RunTests(GetFiles("./**/Sppd.TeamTuner.Tests.Unit*.csproj"));
+    });
+
+Task ("Backend-Run-Integration-Tests")
+    .IsDependentOn ("Backend-Build")
+    .Does (() => {
+        RunTests(GetFiles("./**/Sppd.TeamTuner.Tests.Integration*.csproj"));
+    });
+
+Task ("Backend-Run-API-Tests")
+    .IsDependentOn ("Backend-Build")
+    .Does (() => {
+        RunTests(GetFiles("./**/Sppd.TeamTuner.Tests.Api*.csproj"));
+    });
+
+var _coverletSettings = new CoverletSettings {
     CollectCoverage = true,
     CoverletOutputFormat = CoverletOutputFormat.opencover,
     CoverletOutputDirectory = testCoverageResultsDir,
@@ -247,51 +271,25 @@ var coverletSettings = new CoverletSettings {
     Include = new List<string> { "[Sppd.TeamTuner*]*" }
 };
 
-var testSettings = new DotNetCoreTestSettings {
+var _testSettings = new DotNetCoreTestSettings {
     NoBuild = true,
     NoRestore = true,
     Configuration = configuration,
     ResultsDirectory = testResultsDir
 };
 
-Task ("Backend-Run-Unit-Tests")
-    .IsDependentOn ("Backend-Build")
-    .DoesForEach (
-        GetFiles ("./**/*.Tests.Unit.csproj"),
-        testProject => {
-            testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-unit.xml");
-            coverletSettings.CoverletOutputName = "coverage-results-unit.opencover.xml";
+private void RunTests(FilePathCollection projectFiles){
+    foreach(var projectFile in projectFiles)
+    {
+        var projectFilePath = projectFile.Segments.Last();
+        var testResultFileName = $"test-results-{projectFilePath}.xml";
+        var coverageResultFileName = $"coverage-results-{projectFilePath}.opencover.xml";
+        _testSettings.ArgumentCustomization = args => args.Append ($"--logger:trx;LogFileName={testResultFileName}");
+        _coverletSettings.CoverletOutputName = coverageResultFileName;
 
-            DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
-        });
-
-Task ("Backend-Run-Integration-Tests")
-    .IsDependentOn ("Backend-Build")
-    .DoesForEach (
-        GetFiles ("./**/*.Tests.Integration*.csproj"),
-        testProject => {
-            testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-integration.xml");
-            coverletSettings.CoverletOutputName = "coverage-results-integration.opencover.xml";
-
-            DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
-        });
-
-Task ("Backend-Run-API-Tests")
-    .IsDependentOn ("Backend-Build")
-    .DoesForEach (
-        GetFiles ("./**/*.Tests.Api*.csproj"),
-        testProject => {
-            testSettings.ArgumentCustomization = args => args.Append ("--logger:trx;LogFileName=test-results-api.xml");
-            coverletSettings.CoverletOutputName = "coverage-results-api.opencover.xml";
-
-            DotNetCoreTest (testProject.FullPath, testSettings, coverletSettings);
-        });
-
-Task ("Backend-Run-All-Tests")
-    .IsDependentOn ("Backend-Build")
-    .IsDependentOn ("Backend-Run-Unit-Tests")
-    .IsDependentOn ("Backend-Run-Integration-Tests")
-    .IsDependentOn ("Backend-Run-API-Tests");
+        DotNetCoreTest (projectFile.FullPath, _testSettings, _coverletSettings);
+    }
+}
 
 //////////////////////////////////////////////////////////////////////
 // Codecov
@@ -299,9 +297,11 @@ Task ("Backend-Run-All-Tests")
 
 Task ("Backend-Upload-Codecov")
     .Does (() => {
-        Codecov ($"{testCoverageResultsDir}/{unitTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
-        Codecov ($"{testCoverageResultsDir}/{integrationTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
-        Codecov ($"{testCoverageResultsDir}/{apiTestResultsFileName}", "4983ef47-a570-4002-b7bf-3e102d8d9011");
+        var coverageFiles = GetFiles($"{testCoverageResultsDir}/*");
+        foreach(var coverageFile in coverageFiles)
+        {
+            Codecov (coverageFile.ToString(), "4983ef47-a570-4002-b7bf-3e102d8d9011");
+        }
     });
 
 Task ("Backend-Run-Upload-All-Tests")

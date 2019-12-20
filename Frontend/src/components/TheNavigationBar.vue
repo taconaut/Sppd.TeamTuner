@@ -68,7 +68,7 @@ export default {
     },
     setCurrentUser(user) {
       this.currentUser = user
-      this.canEditTeam = authorizationService.isCurrentUserInTeamRoles([roles.TeamLeader, roles.TeamCoLeader])
+      this.canEditTeam = authorizationService.isCurrentUserInTeamRoles([roles.teamLeader, roles.teamCoLeader])
     },
     setSystemInfo(systemInfo) {
       var systemInfoText = systemInfo.version

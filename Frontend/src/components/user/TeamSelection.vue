@@ -64,32 +64,44 @@
   </b-card>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
 import {
   userService,
   teamService,
   teamMembershipRequestService
+  // @ts-ignore
 } from '@/_services'
-import { roles } from '@/_constants'
+// @ts-ignore
+import { eventBus } from '@/_helpers'
+// @ts-ignore
+import { eventIdentifiers } from '@/_constants'
+import {
+  TeamResponseDto,
+  UserResponseDto,
+  TeamMembershipRequestResponseDto
+  // @ts-ignore
+} from '@/api'
 
-export default {
-  name: 'UserTeamSelection',
+export default Vue.extend({
+  name: 'UserTeamSelectionComponent',
   data: function() {
     return {
       show: false,
-      user: {},
-      teams: [],
+      user: null as UserResponseDto,
+      teams: [] as TeamResponseDto[],
       teamSearch: '',
-      selectedTeam: null,
-      pendingTeamMembershipRequest: null,
+      selectedTeam: null as TeamResponseDto,
+      pendingTeamMembershipRequest: null as TeamMembershipRequestResponseDto,
       newTeamName: ''
     }
   },
   computed: {
-    userId: function() {
+    userId: function(): string {
       return this.$route.params.userId
     },
-    isInTeam: function() {
+    isInTeam: function(): boolean {
       return this.user !== null && this.user.teamId !== null
     }
   },
@@ -97,7 +109,7 @@ export default {
     this.refresh()
   },
   watch: {
-    teamSearch(teamName) {
+    teamSearch(teamName: string) {
       if (this.teamSearch.length < 3) {
         // Require a minimum of 3 chars to execute a query
         return
@@ -135,8 +147,12 @@ export default {
       this.user = await userService.getUser(this.userId)
     },
     async leaveTeam() {
-      await userService.leaveTeam(this.userId).then(
-        updatedUser => (this.user = updatedUser),
+      await userService.leaveTeam(this.user.teamId, this.userId).then(
+        () => {
+          this.refresh().then(() =>
+            eventBus.$emit(eventIdentifiers.teamMembersChanged)
+          )
+        },
         error => {
           this.$toasted.show(error.response.data.error, {
             type: 'error',
@@ -149,7 +165,9 @@ export default {
     abortTeamMembershipRequest() {
       teamMembershipRequestService
         .abortTeamMembershipRequest(this.pendingTeamMembershipRequest.id)
-        .then(() => (this.pendingTeamMembershipRequest = null))
+        .then(() => {
+          this.pendingTeamMembershipRequest = null
+        })
     },
     sendTeamMembershipRequest() {
       // TODO: add comment
@@ -160,12 +178,12 @@ export default {
           this.updatePendingTeamMembershipRequest()
         })
     },
-    clearSelectedTeam(team) {
+    clearSelectedTeam() {
       this.selectedTeam = null
     },
-    setSelectedTeam(team) {
+    setSelectedTeam(team: TeamResponseDto) {
       this.selectedTeam = team
     }
   }
-}
+})
 </script>

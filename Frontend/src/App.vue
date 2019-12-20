@@ -11,16 +11,27 @@
   </div>
 </template>
 
-<script>
-import TheNavigationBar from '@/components/TheNavigationBar'
-import TheSideBar from '@/components/TheSideBar'
-import LoginDialogModal from '@/components/LoginDialogModal'
-import RegisterDialogModal from '@/components/RegisterDialogModal'
-import { authorizationService } from '@/_services'
-import { eventBus, axiosConfigurator } from '@/_helpers'
-import { eventIdentifiers } from '@/_constants'
+<script lang="ts">
+import Vue from 'vue'
 
-export default {
+// @ts-ignore
+import TheNavigationBar from '@/components/TheNavigationBar'
+// @ts-ignore
+import TheSideBar from '@/components/TheSideBar'
+// @ts-ignore
+import LoginDialogModal from '@/components/LoginDialogModal'
+// @ts-ignore
+import RegisterDialogModal from '@/components/RegisterDialogModal'
+// @ts-ignore
+import { authorizationService } from '@/_services'
+// @ts-ignore
+import { eventBus, axiosConfigurator } from '@/_helpers'
+// @ts-ignore
+import { eventIdentifiers } from '@/_constants'
+// @ts-ignore
+import { UserResponseDto, UserAuthorizationResponseDto } from '@/api'
+
+export default Vue.extend({
   name: 'App',
   components: {
     TheNavigationBar,
@@ -35,6 +46,35 @@ export default {
       isAuthorized: false,
       contentLeftPadding: 0
     }
+  },
+  created() {
+    axiosConfigurator.configureDefaults()
+  },
+  mounted() {
+    eventBus.$on(eventIdentifiers.showLoginDialog, (isVisible: Boolean) => {
+      if (isVisible) {
+        this.showLoginDialog()
+      } else {
+        this.hideLoginDialog()
+      }
+    })
+    eventBus.$on(eventIdentifiers.showRegisterDialog, (isVisible: Boolean) => {
+      if (isVisible) {
+        this.showRegisterDialog()
+      } else {
+        this.hideRegisterDialog()
+      }
+    })
+
+    // TODO: specify the type of user. Currently, api.ts does not allow this, as UserResponseDto and UserAuthorizationResponseDto
+    // do not have any relationship in regards to the frontend, as they have in the backend.
+    authorizationService.currentUser.subscribe(user => {
+      this.setCurrentUser(user)
+    })
+  },
+  destroyed() {
+    eventBus.$off(eventIdentifiers.showLoginDialog)
+    eventBus.$off(eventIdentifiers.showRegisterDialog)
   },
   methods: {
     showLoginDialog() {
@@ -52,7 +92,7 @@ export default {
     updateContentLeftPadding() {
       this.contentLeftPadding = this.isAuthorized ? 250 : 0
     },
-    setCurrentUser(user) {
+    setCurrentUser(user: UserResponseDto) {
       this.isAuthorized = user != null
       if (
         !this.isAuthorized &&
@@ -64,35 +104,8 @@ export default {
       }
       this.updateContentLeftPadding()
     }
-  },
-  created() {
-    axiosConfigurator.configureDefaults()
-  },
-  mounted() {
-    eventBus.$on(eventIdentifiers.showLoginDialog, isVisible => {
-      if (isVisible) {
-        this.showLoginDialog()
-      } else {
-        this.hideLoginDialog()
-      }
-    })
-    eventBus.$on(eventIdentifiers.showRegisterDialog, isVisible => {
-      if (isVisible) {
-        this.showRegisterDialog()
-      } else {
-        this.hideRegisterDialog()
-      }
-    })
-
-    authorizationService.currentUser.subscribe(user => {
-      this.setCurrentUser(user)
-    })
-  },
-  destroyed() {
-    eventBus.$off(eventIdentifiers.showLoginDialog)
-    eventBus.$off(eventIdentifiers.showRegisterDialog)
   }
-}
+})
 </script>
 
 <style>

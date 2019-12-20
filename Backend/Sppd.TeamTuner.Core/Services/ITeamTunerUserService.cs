@@ -83,5 +83,12 @@ namespace Sppd.TeamTuner.Core.Services
         /// <param name="userId">The user identifier.</param>
         /// <returns>The updated <see cref="TeamTunerUser" />.</returns>
         Task<TeamTunerUser> LeaveTeam(Guid userId);
+
+        /// <summary>
+        ///     Updates the team role for the user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="role">The role.</param>
+        Task UpdateTeamRoleAsync(Guid userId, string role);
     }
 }

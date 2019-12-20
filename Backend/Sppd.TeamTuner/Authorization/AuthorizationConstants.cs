@@ -4,9 +4,6 @@
     {
         public struct Policies
         {
-            // Application
-            public const string IS_ADMIN = "IsAdmin";
-
             // User
             public const string CAN_READ_USER = "CanReadUser";
             public const string CAN_UPDATE_USER = "CanUpdateUser";
@@ -16,15 +13,12 @@
             public const string CAN_READ_TEAM = "CanReadTeam";
             public const string CAN_UPDATE_TEAM = "CanUpdateTeam";
             public const string CAN_DELETE_TEAM = "CanDeleteTeam";
+            public const string CAN_UPDATE_USER_TEAM_ROLE = "CanUpdateUserTeamRole";
+            public const string CAN_REMOVE_TEAM_MEMBER = "CanRemoveTeamMember";
 
             // Team membership requests
-            public const string CAN_ACCEPT_TEAM_MEMBERSHIP_REQUESTS = "CanAcceptTeamMembershipRequests";
+            public const string CAN_MANAGE_TEAM_MEMBERSHIP_REQUESTS = "CanAcceptTeamMembershipRequests";
             public const string CAN_ABORT_TEAM_MEMBERSHIP_REQUESTS = "CanAbortTeamMembershipRequests";
-
-            // Federation
-            public const string CAN_READ_FEDERATION = "CanReadFederation";
-            public const string CAN_UPDATE_FEDERATION = "CanUpdateFederation";
-            public const string CAN_DELETE_FEDERATION = "CanDeleteFederation";
         }
 
         public struct StringLength

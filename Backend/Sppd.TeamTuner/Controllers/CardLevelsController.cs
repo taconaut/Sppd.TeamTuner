@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Sppd.TeamTuner.Authorization;
+using Sppd.TeamTuner.Authorization.Resources;
 using Sppd.TeamTuner.Core.Domain.Entities;
 using Sppd.TeamTuner.Core.Services;
 using Sppd.TeamTuner.DTOs;
@@ -46,7 +47,7 @@ namespace Sppd.TeamTuner.Controllers
         [HttpPut]
         public async Task<ActionResult<CardLevelResponseDto>> SetCardLevel([FromBody] CardLevelUpdateRequestDto cardLevelUpdateDto)
         {
-            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, cardLevelUpdateDto.UserId);
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_UPDATE_USER, new CanUpdateUserResource {UserId = cardLevelUpdateDto.UserId});
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();

@@ -88,7 +88,7 @@ namespace Sppd.TeamTuner.Tests.Api
             // Accept membership request as co-leader
             var membershipRequestId = membershipRequests.Single().Id;
             var acceptMembershipRequestResponse =
-                await Client.PostAsync(s_acceptMembershipRequestRoute.Replace(s_teamMembershipRequestIdPlaceholder, membershipRequestId.ToString()), null);
+                await Client.PutAsync(s_acceptMembershipRequestRoute.Replace(s_teamMembershipRequestIdPlaceholder, membershipRequestId.ToString()), null);
 
             // Get team membership requests after having accepted the only one; it should be empty
             var getEmptyMembershipRequestsResponse = await Client.GetAsync(s_getTeamHolyCowMembershipRequestsRoute.Replace(s_teamIdPlaceholder, TestingConstants.Team.HOLY_COW_ID));

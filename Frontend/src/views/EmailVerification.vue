@@ -12,11 +12,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
+// @ts-ignore
 import { authorizationService } from '@/_services'
 
-export default {
-  name: 'EmailVerification',
+export default Vue.extend({
+  name: 'EmailVerificationView',
   data: function() {
     return {
       isEmailVerifying: true,
@@ -32,17 +35,20 @@ export default {
     this.isEmailVerified = await authorizationService.verifyEmail(this.code)
     this.isEmailVerifying = false
   },
-  mehtods: {
+  methods: {
     async resendVerificationEmail() {
-      await authorizationService.resend.resendVerificationEmail(this.code)
-      this.$toasted.show('We\'ve sent you an email. Please check your inbox and click on the link to confirm it.', {
-        type: 'success',
-        position: 'top-center',
-        duration: 5000
-      })
+      await authorizationService.resendVerificationEmail(this.code)
+      this.$toasted.show(
+        "We've sent you an email. Please check your inbox and click on the link to confirm it.",
+        {
+          type: 'success',
+          position: 'top-center',
+          duration: 5000
+        }
+      )
     }
   }
-}
+})
 </script>
 
 <style scoped>

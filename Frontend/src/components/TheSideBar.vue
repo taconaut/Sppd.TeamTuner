@@ -2,12 +2,17 @@
   <sidebar-menu :menu="menu" :show-one-child="true" :hideToggle="true" />
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
+// @ts-ignore
 import { SidebarMenu } from 'vue-sidebar-menu'
+// @ts-ignore
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+// @ts-ignore
 import { authorizationService } from '@/_services'
 
-export default {
+export default Vue.extend({
   components: {
     SidebarMenu
   },
@@ -19,7 +24,8 @@ export default {
           icon: 'fa fa-user',
           child: [
             {
-              href: '/user/' + authorizationService.currentUserValue.id + '/cards',
+              href:
+                '/user/' + authorizationService.currentUserValue.id + '/cards',
               title: 'Cards',
               icon: 'fa fa-hat-wizard'
             }
@@ -44,5 +50,5 @@ export default {
       ]
     }
   }
-}
+})
 </script>

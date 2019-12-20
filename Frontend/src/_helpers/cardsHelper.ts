@@ -9,7 +9,7 @@ export const cardsHelper = {
 }
 
 function getRarityIcon(card: CardResponseDto) {
-  if (card.rarityId.toUpperCase() === cardIdentifiers.rarityCommonId) {
+  if (card.rarityId === cardIdentifiers.rarityCommonId) {
     return '/img/cards/theme-stones/common/' + card.themeId + '.png'
   } else {
     return '/img/cards/theme-stones/special/' + card.rarityId + '.png'
@@ -22,11 +22,11 @@ function getThemeIcon(card: CardResponseDto) {
 
 function getTypeIcon(card: CardResponseDto) {
   var typeId =
-    card.typeId.toUpperCase() === cardIdentifiers.cardTypeSpellId ||
-      card.typeId.toUpperCase() === cardIdentifiers.cardTypeTrapId
+    card.typeId === cardIdentifiers.cardTypeSpellId ||
+      card.typeId === cardIdentifiers.cardTypeTrapId
       ? card.typeId
       : card.characterTypeId
-  if (card.rarityId.toUpperCase() === cardIdentifiers.rarityCommonId) {
+  if (card.rarityId === cardIdentifiers.rarityCommonId) {
     return (
       '/img/cards/type-icons/' + typeId + '/common/' + card.themeId + '.png'
     )
@@ -50,40 +50,22 @@ function cardMatchesFilter(card: CardResponseDto, filter: Filter) {
 }
 
 function matchesThemeFilter(card: CardResponseDto, filter: Filter) {
-  if (
-    filter.theme.adventure &&
-    card.themeId.toUpperCase() === cardIdentifiers.themeAdventureId
-  ) {
+  if (filter.theme.adventure && card.themeId === cardIdentifiers.themeAdventureId) {
     return true
   }
-  if (
-    filter.theme.fantasy &&
-    card.themeId.toUpperCase() === cardIdentifiers.themeFantasyId
-  ) {
+  if (filter.theme.fantasy && card.themeId === cardIdentifiers.themeFantasyId) {
     return true
   }
-  if (
-    filter.theme.scifi &&
-    card.themeId.toUpperCase() === cardIdentifiers.themeScifiId
-  ) {
+  if (filter.theme.scifi && card.themeId === cardIdentifiers.themeScifiId) {
     return true
   }
-  if (
-    filter.theme.mystical &&
-    card.themeId.toUpperCase() === cardIdentifiers.themeMysticalId
-  ) {
+  if (filter.theme.mystical && card.themeId === cardIdentifiers.themeMysticalId) {
     return true
   }
-  if (
-    filter.theme.superhero &&
-    card.themeId.toUpperCase() === cardIdentifiers.themeSuperheroId
-  ) {
+  if (filter.theme.superhero && card.themeId === cardIdentifiers.themeSuperheroId) {
     return true
   }
-  if (
-    filter.theme.neutral &&
-    card.themeId.toUpperCase() === cardIdentifiers.themeNeutralId
-  ) {
+  if (filter.theme.neutral && card.themeId === cardIdentifiers.themeNeutralId) {
     return true
   }
   return false
@@ -93,7 +75,7 @@ function matchesTypeFilter(card: CardResponseDto, filter: Filter) {
   if (
     filter.type.tank &&
     card.characterTypeId != null &&
-    card.characterTypeId.toUpperCase() ===
+    card.characterTypeId ===
     cardIdentifiers.characterTypeTankId
   ) {
     return true
@@ -101,7 +83,7 @@ function matchesTypeFilter(card: CardResponseDto, filter: Filter) {
   if (
     filter.type.melee &&
     card.characterTypeId != null &&
-    card.characterTypeId.toUpperCase() ===
+    card.characterTypeId ===
     cardIdentifiers.characterTypeMeleeId
   ) {
     return true
@@ -109,7 +91,7 @@ function matchesTypeFilter(card: CardResponseDto, filter: Filter) {
   if (
     filter.type.assassin &&
     card.characterTypeId != null &&
-    card.characterTypeId.toUpperCase() ===
+    card.characterTypeId ===
     cardIdentifiers.characterTypeAssassinId
   ) {
     return true
@@ -117,7 +99,7 @@ function matchesTypeFilter(card: CardResponseDto, filter: Filter) {
   if (
     filter.type.ranged &&
     card.characterTypeId != null &&
-    card.characterTypeId.toUpperCase() ===
+    card.characterTypeId ===
     cardIdentifiers.characterTypeRangedId
   ) {
     return true
@@ -125,49 +107,31 @@ function matchesTypeFilter(card: CardResponseDto, filter: Filter) {
   if (
     filter.type.totem &&
     card.characterTypeId != null &&
-    card.characterTypeId.toUpperCase() ===
+    card.characterTypeId ===
     cardIdentifiers.characterTypeTotemId
   ) {
     return true
   }
-  if (
-    filter.type.spell &&
-    card.typeId.toUpperCase() === cardIdentifiers.cardTypeSpellId
-  ) {
+  if (filter.type.spell && card.typeId === cardIdentifiers.cardTypeSpellId) {
     return true
   }
-  if (
-    filter.type.trap &&
-    card.typeId.toUpperCase() === cardIdentifiers.cardTypeTrapId
-  ) {
+  if (filter.type.trap && card.typeId === cardIdentifiers.cardTypeTrapId) {
     return true
   }
   return false
 }
 
 function matchesRarityFilter(card: CardResponseDto, filter: Filter) {
-  if (
-    filter.rarity.common &&
-    card.rarityId.toUpperCase() === cardIdentifiers.rarityCommonId
-  ) {
+  if (filter.rarity.common && card.rarityId === cardIdentifiers.rarityCommonId) {
     return true
   }
-  if (
-    filter.rarity.rare &&
-    card.rarityId.toUpperCase() === cardIdentifiers.rarityRareId
-  ) {
+  if (filter.rarity.rare && card.rarityId === cardIdentifiers.rarityRareId) {
     return true
   }
-  if (
-    filter.rarity.epic &&
-    card.rarityId.toUpperCase() === cardIdentifiers.rarityEpicId
-  ) {
+  if (filter.rarity.epic && card.rarityId === cardIdentifiers.rarityEpicId) {
     return true
   }
-  if (
-    filter.rarity.legendary &&
-    card.rarityId.toUpperCase() === cardIdentifiers.rarityLegendaryId
-  ) {
+  if (filter.rarity.legendary && card.rarityId === cardIdentifiers.rarityLegendaryId) {
     return true
   }
   return false
