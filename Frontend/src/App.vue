@@ -66,10 +66,8 @@ export default Vue.extend({
       }
     })
 
-    // TODO: specify the type of user. Currently, api.ts does not allow this, as UserResponseDto and UserAuthorizationResponseDto
-    // do not have any relationship in regards to the frontend, as they have in the backend.
     authorizationService.currentUser.subscribe(user => {
-      this.setCurrentUser(user)
+      this.setIsAuthorized(user != null)
     })
   },
   destroyed() {
@@ -92,8 +90,8 @@ export default Vue.extend({
     updateContentLeftPadding() {
       this.contentLeftPadding = this.isAuthorized ? 250 : 0
     },
-    setCurrentUser(user: UserResponseDto) {
-      this.isAuthorized = user != null
+    setIsAuthorized(isAuthorized: boolean) {
+      this.isAuthorized = isAuthorized
       if (
         !this.isAuthorized &&
         this.$router.currentRoute.name !== 'home' &&

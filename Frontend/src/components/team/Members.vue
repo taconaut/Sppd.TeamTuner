@@ -106,10 +106,10 @@ export default Vue.extend({
       )
     },
     canKickMember(user: UserResponseDto) {
-      if(this.currentUser.id === user.id){
+      if (this.currentUser.id === user.id) {
         return false
       }
-      
+
       if (this.currentUser.applicationRole === this.roles.appAdmin) {
         return true
       }
