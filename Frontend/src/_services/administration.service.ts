@@ -2,7 +2,7 @@ import { AdministrationClient } from '@/api'
 
 class AdministrationService {
   private administrationClient: AdministrationClient | undefined
-  
+
   async getSystemInfo() {
     return this.getAdministrationClient().getSystemInfo()
   }

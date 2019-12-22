@@ -4,7 +4,6 @@ class TeamMembershipRequestService {
   private teamMembershipRequestsClient: TeamMembershipRequestsClient | undefined
 
   async sendTeamMembershipRequest(teamId: string, userId: string, comment?: string | undefined) {
-
     var request = new TeamMembershipRequestDto()
     request.teamId = teamId
     request.userId = userId
@@ -31,7 +30,7 @@ class TeamMembershipRequestService {
 
   private getTeamMembershipRequestsClient() {
     if (!this.teamMembershipRequestsClient) {
-      this.teamMembershipRequestsClient = new TeamMembershipRequestsClient();
+      this.teamMembershipRequestsClient = new TeamMembershipRequestsClient()
     }
     return this.teamMembershipRequestsClient
   }
