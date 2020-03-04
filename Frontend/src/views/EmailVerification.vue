@@ -27,16 +27,16 @@ export default Vue.extend({
     }
   },
   computed: {
-    code: function() {
+    code: function(): string {
       return this.$route.params.code
     }
   },
-  async mounted() {
+  async mounted(): Promise<void> {
     this.isEmailVerified = await authorizationService.verifyEmail(this.code)
     this.isEmailVerifying = false
   },
   methods: {
-    async resendVerificationEmail() {
+    async resendVerificationEmail(): Promise<void> {
       await authorizationService.resendVerificationEmail(this.code)
       this.$toasted.show(
         "We've sent you an email. Please check your inbox and click on the link to confirm it.",

@@ -1,9 +1,9 @@
-import { CardLevelsClient, CardLevelUpdateRequestDto } from '@/api'
+import { CardLevelsClient, CardLevelUpdateRequestDto, CardLevelResponseDto } from '@/api'
 
 class CardLevelService {
   private cardLevelsClient: CardLevelsClient | undefined
 
-  async setCardLevel(userId: string, cardId: string, level: number) {
+  async setCardLevel(userId: string, cardId: string, level: number): Promise<CardLevelResponseDto> {
     var cardLevelUpdateRequest = new CardLevelUpdateRequestDto()
     cardLevelUpdateRequest.userId = userId
     cardLevelUpdateRequest.cardId = cardId
@@ -12,7 +12,7 @@ class CardLevelService {
     return this.getCardLevelsClient().setCardLevel(cardLevelUpdateRequest)
   }
 
-  private getCardLevelsClient() {
+  private getCardLevelsClient(): CardLevelsClient {
     if (!this.cardLevelsClient) {
       this.cardLevelsClient = new CardLevelsClient()
     }

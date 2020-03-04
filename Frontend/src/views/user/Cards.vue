@@ -1,7 +1,7 @@
 <template>
   <div>
-    <CardsFilter @filter="applyFilter" />
-    <UserCards :filter="cardsFilter" />
+    <cards-filter @filter="applyFilter" />
+    <user-cards :filter="cardsFilter" />
   </div>
 </template>
 

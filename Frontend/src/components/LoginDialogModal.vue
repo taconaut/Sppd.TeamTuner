@@ -65,19 +65,19 @@ export default Vue.extend({
     }
   },
   methods: {
-    close() {
+    close(): void {
       this.$emit('close')
     },
-    doLogin() {
+    doLogin(): void {
       this.isDoLogin = true
     },
-    updateIsUsernameValid() {
+    updateIsUsernameValid(): void {
       this.isUsernameValid = this.username !== ''
     },
-    updateIsPasswordValid() {
+    updateIsPasswordValid(): void {
       this.isPasswordValid = this.password !== ''
     },
-    async handleSubmit() {
+    async handleSubmit(): Promise<void> {
       if (!this.isDoLogin) {
         return
       }

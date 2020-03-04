@@ -105,11 +105,11 @@ export default Vue.extend({
       return this.user !== null && this.user.teamId !== null
     }
   },
-  async created() {
+  async created(): Promise<void> {
     this.refresh()
   },
   watch: {
-    teamSearch(teamName: string) {
+    teamSearch(teamName: string): void {
       if (this.teamSearch.length < 3) {
         // Require a minimum of 3 chars to execute a query
         return
@@ -121,7 +121,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    async refresh() {
+    async refresh(): Promise<void> {
       this.show = false
 
       this.user = await userService.getUser(this.userId)
@@ -129,14 +129,14 @@ export default Vue.extend({
 
       this.show = true
     },
-    async updatePendingTeamMembershipRequest() {
+    async updatePendingTeamMembershipRequest(): Promise<void> {
       if (!this.isInTeam) {
         this.pendingTeamMembershipRequest = await teamMembershipRequestService.getPendingTeamMembershipRequest(
           this.userId
         )
       }
     },
-    async createTeam() {
+    async createTeam(): Promise<void> {
       if (this.newTeamName == null || this.newTeamName.length < 3) {
         // TODO: show validation error
         return
@@ -146,7 +146,7 @@ export default Vue.extend({
 
       this.user = await userService.getUser(this.userId)
     },
-    async leaveTeam() {
+    async leaveTeam(): Promise<void> {
       await userService.leaveTeam(this.user.teamId, this.userId).then(
         () => {
           this.refresh().then(() =>
@@ -162,14 +162,14 @@ export default Vue.extend({
         }
       )
     },
-    abortTeamMembershipRequest() {
+    async abortTeamMembershipRequest(): Promise<void> {
       teamMembershipRequestService
         .abortTeamMembershipRequest(this.pendingTeamMembershipRequest.id)
         .then(() => {
           this.pendingTeamMembershipRequest = null
         })
     },
-    sendTeamMembershipRequest() {
+    async sendTeamMembershipRequest(): Promise<void> {
       // TODO: add comment
       teamMembershipRequestService
         .sendTeamMembershipRequest(this.selectedTeam.id, this.userId)
@@ -178,10 +178,10 @@ export default Vue.extend({
           this.updatePendingTeamMembershipRequest()
         })
     },
-    clearSelectedTeam() {
+    clearSelectedTeam(): void {
       this.selectedTeam = null
     },
-    setSelectedTeam(team: TeamResponseDto) {
+    setSelectedTeam(team: TeamResponseDto): void {
       this.selectedTeam = team
     }
   }

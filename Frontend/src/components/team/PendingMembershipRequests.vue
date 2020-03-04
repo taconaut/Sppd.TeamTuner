@@ -70,24 +70,24 @@ export default Vue.extend({
       return this.$route.params.teamId
     }
   },
-  async created() {
+  async created(): Promise<void> {
     this.refreshPendingMembershipRequests()
   },
   methods: {
-    async acceptMembershipRequest(membershipRequestId: string) {
+    async acceptMembershipRequest(membershipRequestId: string): Promise<void> {
       await teamMembershipRequestService.acceptTeamMembershipRequest(
         membershipRequestId
       )
       await this.refreshPendingMembershipRequests()
       eventBus.$emit(eventIdentifiers.teamMembersChanged)
     },
-    async rejectMembershipRequest(membershipRequestId: string) {
+    async rejectMembershipRequest(membershipRequestId: string): Promise<void> {
       await teamMembershipRequestService.rejectTeamMembershipRequest(
         membershipRequestId
       )
       await this.refreshPendingMembershipRequests()
     },
-    async refreshPendingMembershipRequests() {
+    async refreshPendingMembershipRequests(): Promise<void> {
       this.showTable = false
       this.pendingMembershipRequests = await teamService.getPendingMembershipRequests(
         this.teamId

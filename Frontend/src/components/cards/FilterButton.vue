@@ -17,7 +17,7 @@ export default Vue.extend({
     imgSrc: String
   },
   methods: {
-    emitToggleIsActive() {
+    emitToggleIsActive(): void {
       this.$emit('isActive', !this.isActive)
     }
   }

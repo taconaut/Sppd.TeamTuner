@@ -1,13 +1,13 @@
 <template>
   <div>
     <b-card title="Team" class="m-2">
-      <TeamDetail />
+      <team-detail />
     </b-card>
     <b-card title="Requests" class="m-2">
-      <TeamPendingMembershipRequests />
+      <team-pending-membership-requests />
     </b-card>
     <b-card title="Members" class="m-2">
-      <TeamMembers />
+      <team-members />
     </b-card>
   </div>
 </template>

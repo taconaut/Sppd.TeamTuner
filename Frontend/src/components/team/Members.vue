@@ -70,7 +70,7 @@ export default Vue.extend({
       return authorizationService.currentUserValue
     }
   },
-  async mounted() {
+  async mounted(): Promise<void> {
     await this.refreshMembers()
 
     eventBus.$on(eventIdentifiers.teamMembersChanged, () => {
@@ -78,10 +78,10 @@ export default Vue.extend({
     })
   },
   methods: {
-    async refreshMembers() {
+    async refreshMembers(): Promise<void> {
       this.teamMembers = await teamService.getMembers(this.teamId)
     },
-    async updateRole(user: UserResponseDto, role: string) {
+    async updateRole(user: UserResponseDto, role: string): Promise<void> {
       await teamService.updateUserTeamRole(this.teamId, user.id, role).then(
         () => this.refreshMembers(),
         error => {
@@ -93,7 +93,7 @@ export default Vue.extend({
         }
       )
     },
-    async kickMember(user: UserResponseDto) {
+    async kickMember(user: UserResponseDto): Promise<void> {
       teamService.removeMember(this.teamId, user.id).then(
         () => this.refreshMembers(),
         error => {
@@ -105,7 +105,7 @@ export default Vue.extend({
         }
       )
     },
-    canKickMember(user: UserResponseDto) {
+    canKickMember(user: UserResponseDto): boolean {
       if (this.currentUser.id === user.id) {
         return false
       }

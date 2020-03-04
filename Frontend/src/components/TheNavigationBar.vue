@@ -25,52 +25,63 @@
   </b-navbar>
 </template>
 
-<script>
-import { eventBus } from '@/_helpers'
-import { authorizationService, administrationService } from '@/_services'
-import { eventIdentifiers, roles } from '@/_constants'
+<script lang="ts">
+import Vue from 'vue'
 
-export default {
+// @ts-ignore
+import { eventBus } from '@/_helpers'
+// @ts-ignore
+import { authorizationService, administrationService } from '@/_services'
+// @ts-ignore
+import { eventIdentifiers, roles } from '@/_constants'
+// @ts-ignore
+import {
+  UserResponseDto,
+  SystemInfoDto,
+  UserAuthorizationResponseDto
+} from '../api'
+
+export default Vue.extend({
   name: 'TheNavigationBar',
   data: function() {
     return {
-      currentUser: null,
-      systemInfoText: null,
+      currentUser: null as UserResponseDto,
+      systemInfoText: null as string,
       canEditTeam: false
     }
   },
   computed: {
-    isAuthorized() {
+    isAuthorized(): boolean {
       return this.currentUser != null
     },
-    currentUserAvatar() {
+    currentUserAvatar(): string {
       // TODO: use the user avatar instead of this.
       return (
         'https://api.adorable.io/avatars/36/' + this.currentUser.id + '.png'
       )
     },
-    currentUserProfileUrl() {
+    currentUserProfileUrl(): string {
       return '/user/' + this.currentUser.id + '/profile'
     },
-    currentTeamProfileUrl() {
+    currentTeamProfileUrl(): string {
       return '/team/' + this.currentUser.teamId + '/profile'
     }
   },
   methods: {
-    emitShowLoginDialogEvent() {
+    emitShowLoginDialogEvent(): void {
       eventBus.$emit(eventIdentifiers.showLoginDialog, true)
     },
-    emitShowRegisterDialogEvent() {
+    emitShowRegisterDialogEvent(): void {
       eventBus.$emit(eventIdentifiers.showRegisterDialog, true)
     },
-    logout() {
+    logout(): void {
       authorizationService.logout()
     },
-    setCurrentUser(user) {
+    setCurrentUser(user: UserResponseDto): void {
       this.currentUser = user
-      this.canEditTeam = authorizationService.isCurrentUserInTeamRoles([roles.teamLeader, roles.teamCoLeader])
+      this.canEditTeam = authorizationService.canEditTeam(user.teamId)
     },
-    setSystemInfo(systemInfo) {
+    setSystemInfo(systemInfo: SystemInfoDto): void {
       var systemInfoText = systemInfo.version
       if (systemInfo.gitCommitHash) {
         systemInfoText += '-' + systemInfo.gitCommitHash
@@ -82,13 +93,15 @@ export default {
       this.systemInfoText = systemInfoText
     }
   },
-  async mounted() {
-    authorizationService.currentUser.subscribe(user =>
-      this.setCurrentUser(user)
+  async mounted(): Promise<void> {
+    authorizationService.currentUser.subscribe(
+      (user: UserAuthorizationResponseDto) =>
+      // TODO: remove this fishy cast to unknown, once object hierarchy issue has been solved
+        this.setCurrentUser((user as unknown) as UserResponseDto)
     )
     this.setSystemInfo(await administrationService.getSystemInfo())
   }
-}
+})
 </script>
 
 <style scoped>

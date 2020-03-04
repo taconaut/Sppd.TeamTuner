@@ -95,16 +95,16 @@ export default Vue.extend({
     }
   },
   watch: {
-    filter: function() {
+    filter: function(): void {
       this.applyFilter()
     }
   },
-  async mounted() {
+  async mounted(): Promise<void> {
     this.userCards = await userService.getCards(this.userId)
     this.applyFilter()
   },
   methods: {
-    async updateLevel(card: UserResponseCardDto, level: number) {
+    async updateLevel(card: UserResponseCardDto, level: number): Promise<void> {
       var updateResult = await cardLevelService.setCardLevel(
         this.userId,
         card.cardId,
@@ -113,7 +113,7 @@ export default Vue.extend({
       card.level = updateResult.level
       card.levelLastModified = updateResult.levelLastModified
     },
-    applyFilter() {
+    applyFilter(): void {
       if (this.filter && this.userCards) {
         this.filteredCards = this.userCards.filter(this.cardMatchesFilter)
       }

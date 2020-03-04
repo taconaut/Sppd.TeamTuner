@@ -45,23 +45,23 @@ export default Vue.extend({
       return this.$route.params.teamId
     }
   },
-  async created() {
+  async created(): Promise<void> {
     this.originalTeam = await teamService.getTeam(this.teamId)
     this.refreshOriginalTeam()
   },
   methods: {
-    async onSubmit() {
+    async onSubmit(): Promise<void> {
       // TODO: validate before submit
       this.originalTeam = await teamService.updateTeam(this.editedTeam)
     },
-    onReset() {
+    onReset(): void {
       this.setOriginalTeamAsEditedTeam()
     },
-    setOriginalTeamAsEditedTeam() {
+    setOriginalTeamAsEditedTeam(): void {
       // deep clone the team
       this.editedTeam = JSON.parse(JSON.stringify(this.originalTeam))
     },
-    async refreshOriginalTeam() {
+    async refreshOriginalTeam(): Promise<void> {
       this.show = false
       this.setOriginalTeamAsEditedTeam()
       this.show = true

@@ -73,7 +73,7 @@ import Vue from 'vue'
 import { authorizationService } from '@/_services'
 
 export default Vue.extend({
-  name: 'registerDialogModal',
+  name: 'RegisterDialogModal',
   data: function() {
     return {
       username: '',
@@ -91,25 +91,25 @@ export default Vue.extend({
     }
   },
   methods: {
-    close() {
+    close(): void {
       this.$emit('close')
     },
-    doRegister() {
+    doRegister(): void {
       this.isDoRegister = true
     },
-    updateIsUsernameValid() {
+    updateIsUsernameValid(): void {
       this.isUsernameValid = this.username !== ''
     },
-    updateIsEmailValid() {
+    updateIsEmailValid(): void {
       this.isEmailValid = this.email !== ''
     },
-    updateIsPasswordFirstValid() {
+    updateIsPasswordFirstValid(): void {
       this.isPasswordFirstValid = this.passwordFirst !== ''
     },
-    updateIsPasswordSecondValid() {
+    updateIsPasswordSecondValid(): void {
       this.isPasswordSecondValid = this.passwordFirst === this.passwordSecond
     },
-    async handleSubmit() {
+    async handleSubmit(): Promise<void> {
       this.submitted = true
 
       this.updateIsUsernameValid()

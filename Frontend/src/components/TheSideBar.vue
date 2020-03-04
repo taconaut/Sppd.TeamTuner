@@ -13,6 +13,7 @@ import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import { authorizationService } from '@/_services'
 
 export default Vue.extend({
+  name: 'TheSideBar',
   components: {
     SidebarMenu
   },

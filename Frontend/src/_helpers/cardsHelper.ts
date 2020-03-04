@@ -8,7 +8,7 @@ export const cardsHelper = {
   getTypeIcon
 }
 
-function getRarityIcon(card: CardResponseDto) {
+function getRarityIcon(card: CardResponseDto): string {
   if (card.rarityId === cardIdentifiers.rarityCommonId) {
     return '/img/cards/theme-stones/common/' + card.themeId + '.png'
   } else {
@@ -16,32 +16,24 @@ function getRarityIcon(card: CardResponseDto) {
   }
 }
 
-function getThemeIcon(card: CardResponseDto) {
+function getThemeIcon(card: CardResponseDto): string {
   return '/img/cards/theme-icons/' + card.themeId + '.png'
 }
 
-function getTypeIcon(card: CardResponseDto) {
+function getTypeIcon(card: CardResponseDto): string {
   var typeId =
     card.typeId === cardIdentifiers.cardTypeSpellId ||
       card.typeId === cardIdentifiers.cardTypeTrapId
       ? card.typeId
       : card.characterTypeId
   if (card.rarityId === cardIdentifiers.rarityCommonId) {
-    return (
-      '/img/cards/type-icons/' + typeId + '/common/' + card.themeId + '.png'
-    )
+    return ''.concat('/img/cards/type-icons/', typeId, '/common/', card.themeId, '.png')
   } else {
-    return (
-      '/img/cards/type-icons/' +
-      typeId +
-      '/special/' +
-      card.rarityId +
-      '.png'
-    )
+    return ''.concat('/img/cards/type-icons/', typeId, '/special/', card.rarityId, '.png')
   }
 }
 
-function cardMatchesFilter(card: CardResponseDto, filter: Filter) {
+function cardMatchesFilter(card: CardResponseDto, filter: Filter): boolean {
   return (
     matchesThemeFilter(card, filter) &&
     matchesTypeFilter(card, filter) &&
@@ -49,7 +41,7 @@ function cardMatchesFilter(card: CardResponseDto, filter: Filter) {
   )
 }
 
-function matchesThemeFilter(card: CardResponseDto, filter: Filter) {
+function matchesThemeFilter(card: CardResponseDto, filter: Filter): boolean {
   if (filter.theme.adventure && card.themeId === cardIdentifiers.themeAdventureId) {
     return true
   }
@@ -71,7 +63,7 @@ function matchesThemeFilter(card: CardResponseDto, filter: Filter) {
   return false
 }
 
-function matchesTypeFilter(card: CardResponseDto, filter: Filter) {
+function matchesTypeFilter(card: CardResponseDto, filter: Filter): boolean {
   if (
     filter.type.tank &&
     card.characterTypeId != null &&
@@ -121,7 +113,7 @@ function matchesTypeFilter(card: CardResponseDto, filter: Filter) {
   return false
 }
 
-function matchesRarityFilter(card: CardResponseDto, filter: Filter) {
+function matchesRarityFilter(card: CardResponseDto, filter: Filter): boolean {
   if (filter.rarity.common && card.rarityId === cardIdentifiers.rarityCommonId) {
     return true
   }

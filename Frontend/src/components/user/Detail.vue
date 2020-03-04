@@ -96,39 +96,37 @@ export default Vue.extend({
     }
   },
   computed: {
-    userId: function() {
+    userId: function(): string {
       return this.$route.params.userId
     }
   },
-  async created() {
+  async created(): Promise<void> {
     this.originalUser = await userService.getUser(this.userId)
     this.refreshOriginalUser()
   },
   methods: {
-    async onSubmit() {
+    async onSubmit(): Promise<void> {
       // TODO: validate password
-      var password = this.isChangePassword
-        ? this.passwordFirst
-        : null
+      var password = this.isChangePassword ? this.passwordFirst : null
 
       this.originalUser = await userService.updateUser(
         this.editedUser,
         password
       )
     },
-    onReset() {
+    onReset(): void {
       this.setOriginalUserAsEditedUser()
     },
-    setOriginalUserAsEditedUser() {
+    setOriginalUserAsEditedUser(): void {
       // deep clone the user
       this.editedUser = JSON.parse(JSON.stringify(this.originalUser))
     },
-    updateIsCurrentUserAdmin() {
+    updateIsCurrentUserAdmin(): void {
       this.isCurrentUserAdmin = authorizationService.isCurrentUserInApplicationRole(
         roles.appAdmin
       )
     },
-    async refreshOriginalUser() {
+    refreshOriginalUser(): void {
       this.show = false
 
       this.setOriginalUserAsEditedUser()

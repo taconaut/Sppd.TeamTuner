@@ -1,7 +1,7 @@
 <template>
   <div>
-    <UserDetail />
-    <UserTeamSelection />
+    <user-detail />
+    <user-team-selection />
   </div>
 </template>
 

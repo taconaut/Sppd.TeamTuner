@@ -1,7 +1,7 @@
 import { stringHelper, axiosConfigurator } from '@/_helpers'
-import { storageKeys } from '@/_constants'
-import { UsersClient, AuthorizationRequestDto, UserAuthorizationResponseDto, UserCreateRequestDto, EmailVerificationClient } from '@/api'
-import { BehaviorSubject } from 'rxjs'
+import { storageKeys, roles } from '@/_constants'
+import { UsersClient, AuthorizationRequestDto, UserAuthorizationResponseDto, UserCreateRequestDto, EmailVerificationClient, UserResponseDto } from '@/api'
+import { BehaviorSubject, Observable } from 'rxjs'
 
 class AuthorizationService {
   private currentUserSubject: BehaviorSubject<UserAuthorizationResponseDto | null>
@@ -17,19 +17,28 @@ class AuthorizationService {
     this.currentUserSubject = new BehaviorSubject<UserAuthorizationResponseDto | null>(currentUser)
   }
 
-  public get currentUser() {
+  public get currentUser(): Observable<UserAuthorizationResponseDto> {
     return this.currentUserSubject.asObservable()
   }
 
-  public get currentUserValue() {
+  public get currentUserValue(): UserAuthorizationResponseDto {
     return this.currentUserSubject.value
   }
 
-  public get isAuthorized() {
-    return this.currentUserSubject.value != null
+  public get isAuthorized(): boolean {
+    return this.currentUserValue != null
   }
 
-  public async createUser(userName: string, email: string, password: string) {
+  public canEditTeam(teamId: string): boolean {
+    return this.currentUserValue.applicationRole === roles.appAdmin ||
+      (this.currentUserValue.teamId === teamId && this.isCurrentUserInTeamRoles([roles.teamLeader, roles.teamCoLeader]))
+  }
+
+  public canEditUser(userId: string): boolean {
+    return this.currentUserValue.applicationRole === roles.appAdmin || this.currentUserValue.id === userId
+  }
+
+  public async createUser(userName: string, email: string, password: string): Promise<UserResponseDto> {
     const userCreateRequest = new UserCreateRequestDto()
     userCreateRequest.name = userName
     userCreateRequest.sppdName = userName
@@ -39,7 +48,7 @@ class AuthorizationService {
     return this.getUsersClient().registerUser(userCreateRequest)
   }
 
-  public async login(userName: string, password: string) {
+  public async login(userName: string, password: string): Promise<UserAuthorizationResponseDto> {
     const authorizationRequest = new AuthorizationRequestDto()
     authorizationRequest.name = userName
     authorizationRequest.passwordMd5 = stringHelper.md5hash(password)
@@ -54,15 +63,15 @@ class AuthorizationService {
     return authorizationResponse
   }
 
-  public async verifyEmail(code: string) {
+  public async verifyEmail(code: string): Promise<boolean> {
     return this.getEmailVerificationClient().verifyEmail(code)
   }
 
-  public async resendVerificationEmail(code: string) {
+  public async resendVerificationEmail(code: string): Promise<void> {
     return this.getEmailVerificationClient().resendVerificationEmail(code)
   }
 
-  public logout() {
+  public logout(): void {
     localStorage.removeItem(storageKeys.currentUser)
     this.currentUserSubject.next(null)
 
@@ -71,7 +80,7 @@ class AuthorizationService {
     axiosConfigurator.setCurrentUser(null)
   }
 
-  public isCurrentUserInApplicationRoles(roles: string[]) {
+  public isCurrentUserInApplicationRoles(roles: string[]): boolean {
     for (var i = 0; i < roles.length; i++) {
       var role = roles[i]
       if (this.isCurrentUserInApplicationRole(role)) {
@@ -82,11 +91,11 @@ class AuthorizationService {
     return false
   }
 
-  public isCurrentUserInApplicationRole(role: string) {
+  public isCurrentUserInApplicationRole(role: string): boolean {
     return this.currentUserValue !== null && this.currentUserValue.applicationRole === role
   }
 
-  public isCurrentUserInTeamRoles(roles: string[]) {
+  public isCurrentUserInTeamRoles(roles: string[]): boolean {
     for (var i = 0; i < roles.length; i++) {
       var role = roles[i]
       if (this.isCurrentUserInTeamRole(role)) {
@@ -97,22 +106,22 @@ class AuthorizationService {
     return false
   }
 
-  public isCurrentUserInTeamRole(role: string) {
+  public isCurrentUserInTeamRole(role: string): boolean {
     return this.currentUserValue !== null && this.currentUserValue.teamRole === role
   }
 
-  private getCurrentUserFromLocalStorage() {
+  private getCurrentUserFromLocalStorage(): string {
     return localStorage.getItem(storageKeys.currentUser)
   }
 
-  private getUsersClient() {
+  private getUsersClient(): UsersClient {
     if (!this.usersClient) {
       this.usersClient = new UsersClient()
     }
     return this.usersClient
   }
 
-  private getEmailVerificationClient() {
+  private getEmailVerificationClient(): EmailVerificationClient {
     if (!this.emailVerificationClient) {
       this.emailVerificationClient = new EmailVerificationClient()
     }

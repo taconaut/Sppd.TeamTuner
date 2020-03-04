@@ -1,13 +1,13 @@
-import { AdministrationClient } from '@/api'
+import { AdministrationClient, SystemInfoDto } from '@/api'
 
 class AdministrationService {
   private administrationClient: AdministrationClient | undefined
 
-  async getSystemInfo() {
+  async getSystemInfo(): Promise<SystemInfoDto> {
     return this.getAdministrationClient().getSystemInfo()
   }
 
-  private getAdministrationClient() {
+  private getAdministrationClient(): AdministrationClient {
     if (!this.administrationClient) {
       this.administrationClient = new AdministrationClient()
     }

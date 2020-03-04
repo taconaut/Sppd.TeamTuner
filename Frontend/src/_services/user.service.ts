@@ -1,23 +1,23 @@
-import { UsersClient, UserUpdateRequestDto, UserResponseDto, TeamsClient } from '@/api'
+import { UsersClient, UserUpdateRequestDto, UserResponseDto, TeamsClient, UserCardResponseDto } from '@/api'
 import { stringHelper } from '@/_helpers'
 
 class UserService {
   private usersClient: UsersClient | undefined
   private teamsClient: TeamsClient | undefined
 
-  async getCards(userId: string) {
+  async getCards(userId: string): Promise<UserCardResponseDto[]> {
     return this.getUsersClient().getCardsWithUserLevels(userId)
   }
 
-  async getUser(userId: string) {
+  async getUser(userId: string): Promise<UserResponseDto> {
     return this.getUsersClient().getUserByUserId(userId)
   }
 
-  async leaveTeam(teamId: string, userId: string) {
+  async leaveTeam(teamId: string, userId: string): Promise<void> {
     return this.getTeamsClient().removeMember(teamId, userId)
   }
 
-  async updateUser(user: UserResponseDto, password: string | null) {
+  async updateUser(user: UserResponseDto, password: string | null): Promise<UserResponseDto> {
     var propertiesToUpdate = ['Name', 'SppdName', 'Description', 'Email']
 
     var request = new UserUpdateRequestDto()
@@ -37,14 +37,14 @@ class UserService {
     return this.getUsersClient().updateUser(request)
   }
 
-  private getUsersClient() {
+  private getUsersClient(): UsersClient {
     if (!this.usersClient) {
       this.usersClient = new UsersClient()
     }
     return this.usersClient
   }
 
-  private getTeamsClient() {
+  private getTeamsClient(): TeamsClient {
     if (!this.teamsClient) {
       this.teamsClient = new TeamsClient()
     }

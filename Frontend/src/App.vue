@@ -47,18 +47,18 @@ export default Vue.extend({
       contentLeftPadding: 0
     }
   },
-  created() {
+  created(): void {
     axiosConfigurator.configureDefaults()
   },
-  mounted() {
-    eventBus.$on(eventIdentifiers.showLoginDialog, (isVisible: Boolean) => {
+  mounted(): void {
+    eventBus.$on(eventIdentifiers.showLoginDialog, (isVisible: boolean) => {
       if (isVisible) {
         this.showLoginDialog()
       } else {
         this.hideLoginDialog()
       }
     })
-    eventBus.$on(eventIdentifiers.showRegisterDialog, (isVisible: Boolean) => {
+    eventBus.$on(eventIdentifiers.showRegisterDialog, (isVisible: boolean) => {
       if (isVisible) {
         this.showRegisterDialog()
       } else {
@@ -70,27 +70,27 @@ export default Vue.extend({
       this.setIsAuthorized(user != null)
     })
   },
-  destroyed() {
+  destroyed(): void {
     eventBus.$off(eventIdentifiers.showLoginDialog)
     eventBus.$off(eventIdentifiers.showRegisterDialog)
   },
   methods: {
-    showLoginDialog() {
+    showLoginDialog(): void {
       this.isLoginDialogVisible = true
     },
-    hideLoginDialog() {
+    hideLoginDialog(): void {
       this.isLoginDialogVisible = false
     },
-    showRegisterDialog() {
+    showRegisterDialog(): void {
       this.isRegisterDialogVisible = true
     },
-    hideRegisterDialog() {
+    hideRegisterDialog(): void {
       this.isRegisterDialogVisible = false
     },
-    updateContentLeftPadding() {
+    updateContentLeftPadding(): void {
       this.contentLeftPadding = this.isAuthorized ? 250 : 0
     },
-    setIsAuthorized(isAuthorized: boolean) {
+    setIsAuthorized(isAuthorized: boolean): void {
       this.isAuthorized = isAuthorized
       if (
         !this.isAuthorized &&
