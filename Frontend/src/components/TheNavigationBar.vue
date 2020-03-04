@@ -79,7 +79,8 @@ export default Vue.extend({
     },
     setCurrentUser(user: UserResponseDto): void {
       this.currentUser = user
-      this.canEditTeam = authorizationService.canEditTeam(user.teamId)
+      const teamId = user !== null ? user.teamId : null
+      this.canEditTeam = authorizationService.canEditTeam(teamId)
     },
     setSystemInfo(systemInfo: SystemInfoDto): void {
       var systemInfoText = systemInfo.version

@@ -19,7 +19,9 @@
       </template>
       <template v-slot:cell(cardName)="data">{{ data.item.cardName }}</template>
       <template v-slot:cell(level)="data">
+        <!-- Editable card levels -->
         <b-dropdown
+          v-if="canCurrentUserEdit"
           size="sm"
           :text="data.item.level !== null ? data.item.level.toString() : 'not set'"
         >
@@ -31,6 +33,8 @@
           <b-dropdown-item @click="updateLevel(data.item, 6)">6</b-dropdown-item>
           <b-dropdown-item @click="updateLevel(data.item, 7)">7</b-dropdown-item>
         </b-dropdown>
+        <!-- Read only card levels -->
+        <div v-else>{{ data.item.level !== null ? data.item.level : '-' }}</div>
       </template>
       <template
         v-slot:cell(levelLastModified)="data"
@@ -43,7 +47,7 @@
 import Vue from 'vue'
 
 // @ts-ignore
-import { userService, cardLevelService } from '@/_services'
+import { userService, cardLevelService, authorizationService } from '@/_services'
 // @ts-ignore
 import { cardIdentifiers } from '@/_constants'
 // @ts-ignore
@@ -92,6 +96,9 @@ export default Vue.extend({
   computed: {
     userId: function(): string {
       return this.$route.params.userId
+    },
+    canCurrentUserEdit: function(): boolean {
+      return authorizationService.canEditUser(this.userId)
     }
   },
   watch: {

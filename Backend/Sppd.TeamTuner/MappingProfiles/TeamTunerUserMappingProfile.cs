@@ -1,5 +1,6 @@
 ﻿using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Enumerations;
 using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.MappingProfiles
@@ -15,7 +16,9 @@ namespace Sppd.TeamTuner.MappingProfiles
 
             // DTO -> Entity
             CreateMap<UserCreateRequestDto, TeamTunerUser>()
-                .ForMember(dest => dest.ApplicationRole, opt => opt.MapFrom(src => CoreConstants.Authorization.Roles.USER));
+                .ForMember(dest => dest.ApplicationRole, opt => opt.MapFrom(src => CoreConstants.Authorization.Roles.USER))
+                // TODO: Allow to configure this in the frontend
+                .ForMember(dest => dest.ProfileVisibility, opt => opt.MapFrom(src => UserProfileVisibility.Team));
             CreateMap<AuthorizationRequestDto, TeamTunerUser>();
             CreateMap<UserUpdateRequestDto, TeamTunerUser>();
 
