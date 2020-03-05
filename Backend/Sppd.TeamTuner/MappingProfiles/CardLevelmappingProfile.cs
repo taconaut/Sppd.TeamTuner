@@ -3,7 +3,11 @@ using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.MappingProfiles
 {
-    internal class CardLevelMappingProfile : BaseMappingProfile<CardLevel>
+    /// <summary>
+    ///     Automapper mapping profile for <see cref="CardLevel" />.
+    /// </summary>
+    /// <seealso cref="EntityMappingProfileBase{CardLevel}" />
+    internal class CardLevelMappingProfile : EntityMappingProfileBase<CardLevel>
     {
         public CardLevelMappingProfile()
         {

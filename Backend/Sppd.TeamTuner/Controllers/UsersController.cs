@@ -25,7 +25,6 @@ namespace Sppd.TeamTuner.Controllers
     public class UsersController : AuthorizationController
     {
         private readonly ITeamTunerUserService _userService;
-        private readonly ICardService _cardService;
         private readonly ITokenProvider _tokenProvider;
         private readonly IMapper _mapper;
 
@@ -33,17 +32,15 @@ namespace Sppd.TeamTuner.Controllers
         ///     Initializes a new instance of the <see cref="UsersController" /> class.
         /// </summary>
         /// <param name="userService">The user service.</param>
-        /// <param name="cardService">The card service.</param>
         /// <param name="tokenProvider">The token provider.</param>
         /// <param name="authorizationService">The authorization service.</param>
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="mapper">The mapper.</param>
-        public UsersController(ITeamTunerUserService userService, ICardService cardService, ITokenProvider tokenProvider, IAuthorizationService authorizationService,
+        public UsersController(ITeamTunerUserService userService, ITokenProvider tokenProvider, IAuthorizationService authorizationService,
             IServiceProvider serviceProvider, IMapper mapper)
             : base(serviceProvider, authorizationService)
         {
             _userService = userService;
-            _cardService = cardService;
             _tokenProvider = tokenProvider;
             _mapper = mapper;
         }
@@ -144,7 +141,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The user identifier</param>
         [HttpGet("{id}/card-levels")]
-        public async Task<ActionResult<IEnumerable<CardLevelResponseDto>>> GetCardLevels(Guid id)
+        public async Task<ActionResult<IEnumerable<CardLevelResponseDto>>> GetUserCardLevels(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, new CanReadUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
@@ -161,7 +158,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The user identifier</param>
         [HttpGet("{id}/cards")]
-        public async Task<ActionResult<IEnumerable<UserCardResponseDto>>> GetCards(Guid id)
+        public async Task<ActionResult<UserCardsResponseDto>> GetUserCards(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, new CanReadUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
@@ -169,8 +166,8 @@ namespace Sppd.TeamTuner.Controllers
                 return Forbid();
             }
 
-            var cardsWithUserLevels = await _userService.GetCardsWithLevelsAsync(id);
-            return Ok(_mapper.Map<IEnumerable<UserCardResponseDto>>(cardsWithUserLevels));
+            var cardsWithUserLevels = await _userService.GetCardsAsync(id);
+            return Ok(_mapper.Map<UserCardsResponseDto>(cardsWithUserLevels));
         }
     }
 }

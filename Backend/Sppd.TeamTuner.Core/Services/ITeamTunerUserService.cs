@@ -97,6 +97,6 @@ namespace Sppd.TeamTuner.Core.Services
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <returns>All cards including their levels, if they have been set.</returns>
-        Task<IEnumerable<UserCard>> GetCardsWithLevelsAsync(Guid userId);
+        Task<UserCards> GetCardsAsync(Guid userId);
     }
 }

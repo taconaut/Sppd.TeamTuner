@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Objects;
 using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Repositories;
@@ -18,16 +19,21 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         private readonly ITeamRepository _teamRepository;
         private readonly ITeamTunerUserRepository _userRepository;
         private readonly ITeamMembershipRequestRepository _membershipRequestRepository;
+        private readonly ICardRepository _cardRepository;
+        private readonly ICardLevelRepository _cardLevelRepository;
         private readonly ITeamTunerUserProvider _userProvider;
 
         public TeamService(IEmailService emailService, ITeamRepository teamRepository, ITeamTunerUserRepository userRepository,
-            ITeamMembershipRequestRepository membershipRequestRepository, IUnitOfWork unitOfWork, ITeamTunerUserProvider userProvider)
+            ITeamMembershipRequestRepository membershipRequestRepository, ICardRepository cardRepository, ICardLevelRepository cardLevelRepository, IUnitOfWork unitOfWork,
+            ITeamTunerUserProvider userProvider)
             : base(teamRepository, unitOfWork)
         {
             _emailService = emailService;
             _teamRepository = teamRepository;
             _userRepository = userRepository;
             _membershipRequestRepository = membershipRequestRepository;
+            _cardRepository = cardRepository;
+            _cardLevelRepository = cardLevelRepository;
             _userProvider = userProvider;
         }
 
@@ -92,6 +98,27 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         {
             await _membershipRequestRepository.DeleteAsync(membershipRequestId);
             await UnitOfWork.CommitAsync();
+        }
+
+        public async Task<TeamCards> GetCardsAsync(Guid teamId)
+        {
+            var allCards = await _cardRepository.GetAllAsync();
+            var team = await Repository.GetAsync(teamId, new[] {nameof(Team.Users)});
+            var cardLevels = team.Users
+                                 .Select(async user => await _cardLevelRepository.GetAllForUserAsync(user.Id))
+                                 .SelectMany(task => task.Result);
+
+            return new TeamCards
+                   {
+                       Team = team,
+                       Cards = allCards.Select(card => new TeamCard
+                                               {
+                                                   Card = card,
+                                                   Levels = cardLevels.Where(cl => cl.CardId == card.Id)
+                                                                      .GroupBy(cl => cl.Level, cl => cl.User)
+                                                                      .ToDictionary(gr => gr.Key, gr => gr.Select(cl => cl))
+                                               })
+                   };
         }
 
         private async Task SendMembershipRequestEmailAsync(Guid userId)

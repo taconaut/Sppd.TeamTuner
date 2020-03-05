@@ -152,18 +152,21 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             await UnitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<UserCard>> GetCardsWithLevelsAsync(Guid userId)
+        public async Task<UserCards> GetCardsAsync(Guid userId)
         {
             var user = await GetByIdAsync(userId);
             var allCards = await _cardRepository.GetAllAsync();
             var userCardLevels = await _cardLevelRepository.GetAllForUserAsync(userId);
 
-            return allCards.Select(card => new UserCard
-                                           {
-                                               Card = card,
-                                               Level = userCardLevels.SingleOrDefault(cl => cl.CardId == card.Id),
-                                               User = user
-                                           });
+            return new UserCards
+                   {
+                       User = user,
+                       Cards = allCards.Select(card => new UserCard
+                                                       {
+                                                           Card = card,
+                                                           Level = userCardLevels.SingleOrDefault(cl => cl.CardId == card.Id)
+                                                       })
+                   };
         }
 
         public async Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)

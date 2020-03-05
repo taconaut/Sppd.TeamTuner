@@ -205,5 +205,23 @@ namespace Sppd.TeamTuner.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        ///     Gets the cards for the team.
+        /// </summary>
+        /// <param name="id">The team identifier.</param>
+        /// <returns>A <see cref="TeamCardsResponseDto" /> holding all card information for the team.</returns>
+        [HttpGet("{id}/cards")]
+        public async Task<ActionResult<TeamCardsResponseDto>> GetTeamCards([Required] Guid id)
+        {
+            var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_TEAM, new CanReadTeamResource {TeamId = id});
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var teamCards = await _teamService.GetCardsAsync(id);
+            return Ok(_mapper.Map<TeamCardsResponseDto>(teamCards));
+        }
     }
 }

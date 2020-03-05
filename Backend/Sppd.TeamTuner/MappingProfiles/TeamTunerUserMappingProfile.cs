@@ -5,7 +5,11 @@ using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.MappingProfiles
 {
-    internal class TeamTunerUserMappingProfile : BaseMappingProfile<TeamTunerUser>
+    /// <summary>
+    ///     Automapper mapping profile for <see cref="TeamTunerUser" />.
+    /// </summary>
+    /// <seealso cref="EntityMappingProfileBase{TeamTunerUser}" />
+    internal class TeamTunerUserMappingProfile : EntityMappingProfileBase<TeamTunerUser>
     {
         public TeamTunerUserMappingProfile()
         {

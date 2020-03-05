@@ -3,7 +3,11 @@ using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.MappingProfiles
 {
-    internal class TeamMappingProfile : BaseMappingProfile<Team>
+    /// <summary>
+    ///     Automapper mapping profile for <see cref="Team" />.
+    /// </summary>
+    /// <seealso cref="EntityMappingProfileBase{Team}" />
+    internal class TeamMappingProfile : EntityMappingProfileBase<Team>
     {
         public TeamMappingProfile()
         {

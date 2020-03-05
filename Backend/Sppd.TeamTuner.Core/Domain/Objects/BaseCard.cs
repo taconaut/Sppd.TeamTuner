@@ -3,16 +3,16 @@
 namespace Sppd.TeamTuner.Core.Domain.Objects
 {
     /// <summary>
-    ///     Specifies the level of a card for a user.
+    ///     Base class holding a card.
     /// </summary>
-    public class UserCard : BaseCard
+    public abstract class BaseCard
     {
         /// <summary>
-        ///     Gets or sets the level.
+        ///     Gets or sets the card.
         /// </summary>
         /// <value>
-        ///     The level.
+        ///     The card.
         /// </value>
-        public CardLevel Level { get; set; }
+        public Card Card { get; set; }
     }
 }

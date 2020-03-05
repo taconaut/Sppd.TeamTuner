@@ -7,7 +7,12 @@ using Sppd.TeamTuner.DTOs;
 
 namespace Sppd.TeamTuner.MappingProfiles
 {
-    internal abstract class BaseMappingProfile<TEntity> : Profile
+    /// <summary>
+    ///     Automapper base mapping profile for entities extending <see cref="BaseEntity" />.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <seealso cref="Profile" />
+    internal abstract class EntityMappingProfileBase<TEntity> : Profile
         where TEntity : BaseEntity
     {
         protected IMappingExpression<TDto, TEntity> CreateDtoToEntityMap<TDto>()

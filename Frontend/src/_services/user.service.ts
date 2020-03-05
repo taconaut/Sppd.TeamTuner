@@ -6,7 +6,7 @@ class UserService {
   private teamsClient: TeamsClient | undefined
 
   async getCards(userId: string): Promise<UserCardResponseDto[]> {
-    return this.getUsersClient().getCardsWithUserLevels(userId)
+    return (await this.getUsersClient().getUserCards(userId)).cards
   }
 
   async getUser(userId: string): Promise<UserResponseDto> {

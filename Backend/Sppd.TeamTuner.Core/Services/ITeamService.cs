@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Objects;
 
 namespace Sppd.TeamTuner.Core.Services
 {
@@ -66,5 +67,12 @@ namespace Sppd.TeamTuner.Core.Services
         /// </summary>
         /// <param name="membershipRequestId">The membership request identifier.</param>
         Task AbortMembershipRequestAsync(Guid membershipRequestId);
+
+        /// <summary>
+        ///     Gets all cards including the levels set by the users.
+        /// </summary>
+        /// <param name="teamId">The team identifier.</param>
+        /// <returns>All cards including the levels set by the users.</returns>
+        Task<TeamCards> GetCardsAsync(Guid teamId);
     }
 }
