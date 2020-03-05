@@ -203,14 +203,14 @@ namespace Sppd.TeamTuner.Tests.Api
 
             // Get all users (should fail)
             HttpResponseMessage getCardsWithUserLevels;
-            IEnumerable<UserCardResponseDto> cardResponseDtos;
+            UserCardsResponseDto cardsResponseDtos;
             var previousAuthenticationHeaderValue = Client.DefaultRequestHeaders.Authorization;
             try
             {
                 Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 getCardsWithUserLevels = await Client.GetAsync(s_getGetCardsWithUserLevelsRoute.Replace(s_userIdPlaceholder, TestingConstants.User.HOLY_COW_TEAM_CO_LEADER_ID));
-                cardResponseDtos = JsonConvert.DeserializeObject<IEnumerable<UserCardResponseDto>>(await getCardsWithUserLevels.Content.ReadAsStringAsync());
+                cardsResponseDtos = JsonConvert.DeserializeObject<UserCardsResponseDto>(await getCardsWithUserLevels.Content.ReadAsStringAsync());
             }
             finally
             {
@@ -219,7 +219,7 @@ namespace Sppd.TeamTuner.Tests.Api
 
             // Assert
             Assert.True(getCardsWithUserLevels.IsSuccessStatusCode);
-            Assert.NotEmpty(cardResponseDtos);
+            Assert.NotEmpty(cardsResponseDtos.Cards);
         }
     }
 }
