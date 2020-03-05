@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Sppd.TeamTuner.Core;
 using Sppd.TeamTuner.Core.Config;
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Objects;
 using Sppd.TeamTuner.Core.Exceptions;
 using Sppd.TeamTuner.Core.Providers;
 using Sppd.TeamTuner.Core.Repositories;
@@ -25,12 +26,13 @@ namespace Sppd.TeamTuner.Infrastructure.Services
         private readonly IRegistrationRequestRepository _registrationRequestRepository;
         private readonly IEmailVerificationService _emailVerificationService;
         private readonly ITeamMembershipRequestRepository _teamMembershipRequestRepository;
+        private readonly ICardRepository _cardRepository;
         private readonly ITeamTunerUserProvider _userProvider;
         private readonly Lazy<EmailConfig> _emailConfig;
 
         public TeamTunerUserService(ITeamTunerUserRepository teamTunerUserRepository, ICardLevelRepository cardLevelRepository,
             IRegistrationRequestRepository registrationRequestRepository, IEmailVerificationService emailVerificationService,
-            ITeamMembershipRequestRepository teamMembershipRequestRepository, IUnitOfWork unitOfWork, ITeamTunerUserProvider userProvider,
+            ITeamMembershipRequestRepository teamMembershipRequestRepository, ICardRepository cardRepository, IUnitOfWork unitOfWork, ITeamTunerUserProvider userProvider,
             IConfigProvider<EmailConfig> emailConfigProvider)
             : base(teamTunerUserRepository, unitOfWork)
         {
@@ -39,6 +41,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             _registrationRequestRepository = registrationRequestRepository;
             _emailVerificationService = emailVerificationService;
             _teamMembershipRequestRepository = teamMembershipRequestRepository;
+            _cardRepository = cardRepository;
             _userProvider = userProvider;
             _emailConfig = new Lazy<EmailConfig>(() => emailConfigProvider.Config);
         }
@@ -115,7 +118,7 @@ namespace Sppd.TeamTuner.Infrastructure.Services
                 new[] {nameof(TeamMembershipRequest.User), $"{nameof(TeamMembershipRequest.Team)}.{nameof(Team.Users)}"});
         }
 
-        public async Task<TeamTunerUser> LeaveTeam(Guid userId)
+        public async Task<TeamTunerUser> LeaveTeamAsync(Guid userId)
         {
             var user = await GetByIdAsync(userId);
 
@@ -147,6 +150,20 @@ namespace Sppd.TeamTuner.Infrastructure.Services
             user.TeamRole = role;
 
             await UnitOfWork.CommitAsync();
+        }
+
+        public async Task<IEnumerable<UserCard>> GetCardsWithLevelsAsync(Guid userId)
+        {
+            var user = await GetByIdAsync(userId);
+            var allCards = await _cardRepository.GetAllAsync();
+            var userCardLevels = await _cardLevelRepository.GetAllForUserAsync(userId);
+
+            return allCards.Select(card => new UserCard
+                                           {
+                                               Card = card,
+                                               Level = userCardLevels.SingleOrDefault(cl => cl.CardId == card.Id),
+                                               User = user
+                                           });
         }
 
         public async Task<IEnumerable<TeamTunerUser>> GetByTeamIdAsync(Guid teamId)

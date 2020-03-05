@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -145,7 +144,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The user identifier</param>
         [HttpGet("{id}/card-levels")]
-        public async Task<ActionResult<IEnumerable<CardLevelResponseDto>>> GetUserCardLevels(Guid id)
+        public async Task<ActionResult<IEnumerable<CardLevelResponseDto>>> GetCardLevels(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, new CanReadUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
@@ -162,7 +161,7 @@ namespace Sppd.TeamTuner.Controllers
         /// </summary>
         /// <param name="id">The user identifier</param>
         [HttpGet("{id}/cards")]
-        public async Task<ActionResult<IEnumerable<UserCardResponseDto>>> GetCardsWithUserLevels(Guid id)
+        public async Task<ActionResult<IEnumerable<UserCardResponseDto>>> GetCards(Guid id)
         {
             var authorizationResult = await AuthorizeAsync(AuthorizationConstants.Policies.CAN_READ_USER, new CanReadUserResource {UserId = id});
             if (!authorizationResult.Succeeded)
@@ -170,24 +169,8 @@ namespace Sppd.TeamTuner.Controllers
                 return Forbid();
             }
 
-            var cardsWithUserLevels = await _cardService.GetForUserAsync(id);
-            var userCardDtos = _mapper.Map<IEnumerable<UserCardResponseDto>>(cardsWithUserLevels.Select(kv => kv.Key)).ToList();
-
-            // Add user attributes
-            foreach (var (cardDto, cardLevel) in cardsWithUserLevels)
-            {
-                var userCardDto = userCardDtos.Single(d => cardDto.Id == d.CardId);
-                SetLevelForUserCard(userCardDto, cardLevel, id);
-            }
-
-            return Ok(userCardDtos);
-        }
-
-        private static void SetLevelForUserCard(UserCardResponseDto userCardDto, CardLevel cardLevel, Guid userId)
-        {
-            userCardDto.UserId = userId;
-            userCardDto.Level = cardLevel?.Level;
-            userCardDto.LevelLastModified = cardLevel?.ModifiedOnUtc;
+            var cardsWithUserLevels = await _userService.GetCardsWithLevelsAsync(id);
+            return Ok(_mapper.Map<IEnumerable<UserCardResponseDto>>(cardsWithUserLevels));
         }
     }
 }

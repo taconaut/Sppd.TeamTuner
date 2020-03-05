@@ -32,6 +32,7 @@ namespace Sppd.TeamTuner.Tests.Unit.Infrastructure
             var registrationRequestRepositoryMock = new Mock<IRegistrationRequestRepository>();
             var teamMembershipRequestRepositoryMock = new Mock<ITeamMembershipRequestRepository>();
             var cardLevelRepositoryMock = new Mock<ICardLevelRepository>();
+            var cardRepositoryMock = new Mock<ICardRepository>();
 
             // Services
             var emailServiceMock = new Mock<IEmailVerificationService>();
@@ -40,7 +41,8 @@ namespace Sppd.TeamTuner.Tests.Unit.Infrastructure
             var userProviderMock = new Mock<ITeamTunerUserProvider>();
 
             _userService = new TeamTunerUserService(teamTunerRepositoryMock.Object, cardLevelRepositoryMock.Object, registrationRequestRepositoryMock.Object,
-                emailServiceMock.Object, teamMembershipRequestRepositoryMock.Object, unitOfWorkMock.Object, userProviderMock.Object, emailConfigProviderMock.Object);
+                emailServiceMock.Object, teamMembershipRequestRepositoryMock.Object, cardRepositoryMock.Object, unitOfWorkMock.Object, userProviderMock.Object,
+                emailConfigProviderMock.Object);
         }
 
         private readonly TeamTunerUser _testUser;

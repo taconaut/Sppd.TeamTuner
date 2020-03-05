@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Sppd.TeamTuner.Core.Domain.Entities;
+using Sppd.TeamTuner.Core.Domain.Objects;
 
 namespace Sppd.TeamTuner.Core.Services
 {
@@ -64,7 +65,7 @@ namespace Sppd.TeamTuner.Core.Services
         Task<bool> VerifyEmailAsync(string code);
 
         /// <summary>
-        ///     Sends the same mail, previously sent by <see cref="SendEmailVerificationAsync" />.
+        ///     Sends the same mail, previously sent by <see cref="VerifyEmailAsync" />.
         /// </summary>
         /// <param name="code">The code.</param>
         /// <returns><c>True</c> if the mail could be sent; otherwise <c>false</c>.</returns>
@@ -82,7 +83,7 @@ namespace Sppd.TeamTuner.Core.Services
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <returns>The updated <see cref="TeamTunerUser" />.</returns>
-        Task<TeamTunerUser> LeaveTeam(Guid userId);
+        Task<TeamTunerUser> LeaveTeamAsync(Guid userId);
 
         /// <summary>
         ///     Updates the team role for the user.
@@ -90,5 +91,12 @@ namespace Sppd.TeamTuner.Core.Services
         /// <param name="userId">The user identifier.</param>
         /// <param name="role">The role.</param>
         Task UpdateTeamRoleAsync(Guid userId, string role);
+
+        /// <summary>
+        ///     Gets all cards including their levels, if they have been set.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>All cards including their levels, if they have been set.</returns>
+        Task<IEnumerable<UserCard>> GetCardsWithLevelsAsync(Guid userId);
     }
 }

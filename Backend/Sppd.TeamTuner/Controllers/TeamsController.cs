@@ -37,8 +37,8 @@ namespace Sppd.TeamTuner.Controllers
         /// <param name="authorizationService">The authorization service.</param>
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="mapper">The mapper.</param>
-        public TeamsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService, IServiceProvider serviceProvider,
-            IMapper mapper)
+        public TeamsController(ITeamService teamService, ITeamTunerUserService userService, IAuthorizationService authorizationService,
+            IServiceProvider serviceProvider, IMapper mapper)
             : base(serviceProvider, authorizationService)
         {
             _teamService = teamService;
@@ -151,7 +151,6 @@ namespace Sppd.TeamTuner.Controllers
                 new CanManageTeamMembershipRequestsResource {TeamId = id});
             if (!authorizationResult.Succeeded)
             {
-                var tt = authorizationResult.Failure.FailedRequirements;
                 return Forbid();
             }
 
@@ -202,7 +201,7 @@ namespace Sppd.TeamTuner.Controllers
 
             // It is not necessary to pass the team id to the service as it has been validated during authorization
             // that the user is being removed from the team he is currently part of.
-            await _userService.LeaveTeam(userId);
+            await _userService.LeaveTeamAsync(userId);
 
             return Ok();
         }
