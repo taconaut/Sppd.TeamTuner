@@ -2,13 +2,13 @@
 // Tools & Add-ins
 //////////////////////////////////////////////////////////////////////
 
-#tool nuget:?package=Codecov&version=1.8.0
+#tool nuget:?package=Codecov&version=1.13.0
 
-#addin nuget:?package=Cake.Coverlet&version=2.3.4
-#addin nuget:?package=Cake.Codecov&version=0.7.0
-#addin nuget:?package=Cake.Npm&version=0.17.0
+#addin nuget:?package=Cake.Coverlet&version=2.5.4
+#addin nuget:?package=Cake.Codecov&version=1.0.1
+#addin nuget:?package=Cake.Npm&version=1.0.0
 #addin nuget:?package=Cake.CodeGen.NSwag&version=1.2.0&loaddependencies=true
-#addin nuget:?package=Cake.Git&version=0.21.0
+#addin nuget:?package=Cake.Git&version=1.1.0
 
 //////////////////////////////////////////////////////////////////////
 // Arguments

@@ -263,5 +263,8 @@ pub/
 /Backend/src/SppdDocs/Logs
 /test-output
 /artifacts
-/tools
 /Frontend/dist
+
+# Cake
+tools/**
+!tools/packages.config
