@@ -8,18 +8,17 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-using AutoMapper;
-
 using Hangfire;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 using Sppd.TeamTuner.Authorization;
 using Sppd.TeamTuner.Core;
@@ -33,7 +32,6 @@ using Sppd.TeamTuner.Core.Utils.Helpers;
 using Sppd.TeamTuner.Extensions;
 
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Sppd.TeamTuner
 {
@@ -63,7 +61,7 @@ namespace Sppd.TeamTuner
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -79,8 +77,7 @@ namespace Sppd.TeamTuner
             // Support injecting any constructor parameter as lazy
             services.AddScoped(typeof(Lazy<>));
 
-            services.AddMvc()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options => options.EnableEndpointRouting = false);
 
             _logger.LogInformation("Services have been configured");
         }
@@ -90,7 +87,7 @@ namespace Sppd.TeamTuner
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The hosting environment.</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             _logger.LogDebug("Start configuring application");
 
@@ -101,7 +98,6 @@ namespace Sppd.TeamTuner
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -148,7 +144,7 @@ namespace Sppd.TeamTuner
                 // Make SwaggerUI available
                 services.AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc("v1", new Info {Title = "Sppd.TeamTuner", Version = "v1"});
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Sppd.TeamTuner", Version = "v1" });
 
                     // Set the path to the XML file containing comments for the Swagger JSON and UI.
                     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -156,12 +152,12 @@ namespace Sppd.TeamTuner
                     options.IncludeXmlComments(xmlPath);
 
                     // Below two options are being set to allow specifying the bearer token in SwaggerUI. This allows to authenticate using SwaggerUI.
-                    options.AddSecurityDefinition("oauth2", new ApiKeyScheme
+                    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                                                             {
                                                                 Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
-                                                                In = "header",
+                                                                In = ParameterLocation.Header,
                                                                 Name = "Authorization",
-                                                                Type = "apiKey"
+                                                                Type = SecuritySchemeType.ApiKey
                                                             });
                     options.OperationFilter<SecurityRequirementsOperationFilter>();
                 });
@@ -188,17 +184,17 @@ namespace Sppd.TeamTuner
                                        OnTokenValidated = context =>
                                        {
                                            var userService = context.HttpContext.RequestServices.GetService<ITeamTunerUserService>();
-                                           var userId = Guid.Parse(context.Principal.Claims.Single(c => c.Type == ClaimTypes.Name).Value);
+                                           var userId = Guid.Parse(context.Principal!.Claims.Single(c => c.Type == ClaimTypes.Name).Value);
 
                                            TeamTunerUser user;
                                            try
                                            {
-                                               var userTask = userService.GetByIdAsync(userId, new[]
-                                                                                               {
-                                                                                                   // Include all properties required to authorize access
-                                                                                                   nameof(TeamTunerUser.Team),
-                                                                                                   string.Join(".", nameof(TeamTunerUser.Federation), nameof(Federation.Teams))
-                                                                                               });
+                                               var userTask = userService!.GetByIdAsync(userId, new[]
+                                                                                                {
+                                                                                                    // Include all properties required to authorize access
+                                                                                                    nameof(TeamTunerUser.Team),
+                                                                                                    string.Join(".", nameof(TeamTunerUser.Federation), nameof(Federation.Teams))
+                                                                                                });
                                                userTask.Wait();
                                                user = userTask.Result;
 
@@ -219,7 +215,7 @@ namespace Sppd.TeamTuner
                                            }
 
                                            // Prepare the user provider so it can provide the currently logged in user though DI
-                                           var userProvider = context.HttpContext.RequestServices.GetService<ITeamTunerUserProvider>();
+                                           var userProvider = context.HttpContext.RequestServices.GetRequiredService<ITeamTunerUserProvider>();
                                            userProvider.CurrentUser = user;
 
                                            return Task.CompletedTask;
@@ -314,7 +310,7 @@ namespace Sppd.TeamTuner
 
             foreach (var typeToInstantiate in typesToInstantiate)
             {
-                yield return (T) Activator.CreateInstance(typeToInstantiate);
+                yield return (T)Activator.CreateInstance(typeToInstantiate);
             }
         }
     }
